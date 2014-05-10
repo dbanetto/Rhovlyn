@@ -1,3 +1,0 @@
-#Comment
-load>land;Content/sprites/land.png
-tile>0;500;land
