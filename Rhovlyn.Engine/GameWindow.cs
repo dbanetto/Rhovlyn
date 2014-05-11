@@ -23,6 +23,7 @@ namespace Rhovlyn.Engine
 		SpriteManager sprites;
 		Camera camera;
 		Map map;
+		Rhovlyn.Engine.IO.Settings settings;
 
 		public GameWindow()
 		{
@@ -32,7 +33,10 @@ namespace Rhovlyn.Engine
 			textures = new TextureMananger(this.graphics.GraphicsDevice);
 			sprites = new SpriteManager();
 			camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
-			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { camera.UpdateBounds(this.Window.ClientBounds); };
+
+			settings = new Rhovlyn.Engine.IO.Settings("Content/settings.ini");
+			bool o = false;
+			settings.GetBool("info" , "check" , ref o);
 		}
 
 		/// <summary>
@@ -50,6 +54,8 @@ namespace Rhovlyn.Engine
 			Window.AllowUserResizing = true;
 			graphics.IsFullScreen = false;
 
+			//Keep the camera up to date with the Client Size
+			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { camera.UpdateBounds(this.Window.ClientBounds); };
 		}
 
 		/// <summary>
