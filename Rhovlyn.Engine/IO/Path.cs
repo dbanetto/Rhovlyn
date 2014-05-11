@@ -19,9 +19,12 @@ namespace Rhovlyn.Engine.IO
 			set
 			{
 				cache_path = value;
-				if (!System.IO.Directory.Exists(cache_path))
+				if (cache_path[cache_path.Length-1] != '/')
+					cache_path += '/';
+
+				if (!Directory.Exists(cache_path))
 				{
-					System.IO.Directory.CreateDirectory(cache_path);
+					Directory.CreateDirectory(cache_path);
 				}
 			}
 		}
