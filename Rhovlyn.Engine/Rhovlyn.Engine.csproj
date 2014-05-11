@@ -52,6 +52,9 @@
     <Compile Include="Util\SpriteManager.cs" />
     <Compile Include="Util\Camera.cs" />
     <Compile Include="IO\Settings.cs" />
+    <Compile Include="Maps\MapGenerator.cs" />
+    <Compile Include="IO\Path.cs" />
+    <Compile Include="Security\Hash.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -59,6 +62,7 @@
     <Folder Include="Maps\" />
     <Folder Include="Util\" />
     <Folder Include="IO\" />
+    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StyleCop.Cache">

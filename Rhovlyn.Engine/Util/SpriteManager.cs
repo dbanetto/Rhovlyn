@@ -1,21 +1,18 @@
-using System;
 using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Graphics;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace Rhovlyn.Engine.Util
 {
 	public class SpriteManager : Graphics.IDrawable
-    {
+	{
 		private Dictionary< string , Sprite > sprites;
 
 		public SpriteManager()
-        {
+		{
 			sprites = new Dictionary< string , Sprite >();
-        }
+		}
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
@@ -59,6 +56,6 @@ namespace Rhovlyn.Engine.Util
 			return this.sprites.ContainsKey(name);
 		}
 		#endregion
-    }
+	}
 }
 

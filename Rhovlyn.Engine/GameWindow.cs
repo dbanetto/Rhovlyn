@@ -29,14 +29,9 @@ namespace Rhovlyn.Engine
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
-			graphics.IsFullScreen = true;
-			textures = new TextureMananger(this.graphics.GraphicsDevice);
-			sprites = new SpriteManager();
-			camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
+
 
 			settings = new Rhovlyn.Engine.IO.Settings("Content/settings.ini");
-			bool o = false;
-			settings.GetBool("info" , "check" , ref o);
 		}
 
 		/// <summary>
@@ -47,15 +42,19 @@ namespace Rhovlyn.Engine
 		/// </summary>
 		protected override void Initialize()
 		{
-			base.Initialize();
+			ApplySettings();
 			IsMouseVisible = true;
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
-			Window.AllowUserResizing = true;
-			graphics.IsFullScreen = false;
+
+			textures = new TextureMananger(this.graphics.GraphicsDevice);
+			sprites = new SpriteManager();
+			camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
+
 
 			//Keep the camera up to date with the Client Size
 			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { camera.UpdateBounds(this.Window.ClientBounds); };
+			base.Initialize();
 		}
 
 		/// <summary>
@@ -65,7 +64,7 @@ namespace Rhovlyn.Engine
 		protected override void LoadContent()
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			textures.Add("player" , "Content/sprites/player.png");
+			textures.Add("player" , "Content/sprites/sheep.png");
 
 			sprites.Add( "player" , new Sprite(Vector2.Zero , textures["player"] ));
 			map = new Map( "Content/map.txt" , this.textures);
@@ -101,7 +100,7 @@ namespace Rhovlyn.Engine
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear(Color.BurlyWood);
+			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
 				this.sprites.Draw(gameTime , spriteBatch, this.camera);
@@ -109,6 +108,35 @@ namespace Rhovlyn.Engine
 			spriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+
+		public void ApplySettings()
+		{
+			//Texture & Web Resourses
+			bool webresource = false;
+			settings.GetBool("Textures" , "AllowWebResources" , ref webresource);
+			IO.Path.AllowWebResouces = webresource;
+
+			bool webcache = webresource;
+			settings.GetBool("Textures" , "AllowWebResources" , ref webcache);
+			IO.Path.AllowWebResoucesCaching = webcache;
+
+			string cachepath = IO.Path.WebResoucesCachePath;
+			settings.Get("Textures" , "AllowWebResources" , ref cachepath);
+			IO.Path.WebResoucesCachePath = cachepath;
+
+			LoadGraphicsSettings();
+		}
+
+		public void LoadGraphicsSettings()
+		{
+			bool resizable = false;
+			this.settings.GetBool("window", "resizable", ref resizable);
+			Window.AllowUserResizing = resizable;
+
+			bool fullscreen = false;
+			this.settings.GetBool("window", "fullscreen", ref fullscreen);
+			graphics.IsFullScreen = fullscreen;
 		}
 	}
 }

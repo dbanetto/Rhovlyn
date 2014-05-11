@@ -24,20 +24,83 @@ namespace Rhovlyn.Engine.Util
 			set { textures[index] = value; }
 		}
 
-		public bool Add (string name , string path)
+		public bool Add (string name , Stream stream)
 		{
 			if (!Exists(name))
 			{
-				var tex = Texture2D.FromStream( this.graphics , new System.IO.FileStream( path , FileMode.Open ));
-				textures.Add( name , tex );
+				textures.Add( name , Texture2D.FromStream( this.graphics , stream) );
 				return true;
 			}
 			return false;
 		}
 
+		public bool Add (string name , string path)
+		{
+			return this.Add(name, new FileStream(path, FileMode.Open));
+		}
+
 		public bool Exists (string name)
 		{
 			return textures.ContainsKey(name);
+		}
+
+		/// <summary>
+		/// Load a local file.
+		/// </summary>
+		/// <param name="path">Path</param>
+		public bool Load(string path)
+		{
+			using (var fs = new FileStream(path , FileMode.Open))
+			{
+				return Load(fs);
+			}
+		}
+
+		/// <summary>
+		/// Load the specified stream.
+		/// </summary>
+		/// <param name="stream">Input Stream</param>
+		public bool Load (Stream stream)
+		{
+			using (var reader = new StreamReader(stream))
+			{
+				try {
+					while (!reader.EndOfStream)
+					{
+						var line = reader.ReadLine();
+						if (line.IndexOf("#") != -1)
+							line = line.Substring(0, line.IndexOf("#"));
+						line.Trim();
+						if (string.IsNullOrEmpty(line))
+							continue;
+
+						//Process commands
+						if (line.StartsWith("@"))
+						{
+							line = line.Substring(1);
+
+							if (line.StartsWith("include:"))
+							{
+								var obj = line.Substring(line.IndexOf("include:"));
+								this.Load( Engine.IO.Path.ResolvePath(obj) );
+							}
+						} else {
+							//Loads Local file
+							var args = line.Split(',');
+
+							var tname = args[0];
+							var tpath = args[1];
+
+							this.Add( tname , Engine.IO.Path.ResolvePath(tpath) );
+						}
+					}
+				}	catch (Exception ex)
+				{
+					Console.WriteLine(ex);
+					return false;
+				}
+			}
+			return true;
 		}
 
     }

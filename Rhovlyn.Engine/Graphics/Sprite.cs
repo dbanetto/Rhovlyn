@@ -14,26 +14,30 @@ using Rhovlyn.Engine.Util;
 #endregion
 namespace Rhovlyn.Engine.Graphics
 {
-	public class Sprite
+	public class Sprite : IDrawable
 	{
 		#region Feilds
-		protected Vector2 postion;
+		protected Vector2 position;
 		protected Rectangle area;
 		protected Texture2D texture;
 		#endregion
 
 		#region Constructor
-		public Sprite(Vector2 positon , Texture2D texture)
+		public Sprite(Vector2 position , Texture2D texture)
 		{
-			this.postion = positon;
+			this.Position = position;
 			this.texture = texture;
+			this.area.Width = texture.Width;
+			this.area.Height = texture.Height;
 		}
 		#endregion
 
 		#region Methods
 		public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
 		{
-			spriteBatch.Draw( this.texture , Vector2.Subtract(this.postion , camera.Position)  , Color.White  );
+			//Check if on screen
+			if (camera.Bounds.Intersects(this.area))
+				spriteBatch.Draw( this.texture , Vector2.Subtract(this.position , camera.Position)  , Color.White  );
 		}
 
 		public virtual void Update(GameTime gameTime)
@@ -46,8 +50,8 @@ namespace Rhovlyn.Engine.Graphics
 		public Texture2D Texture { get { return this.texture; } }
 
 		public Vector2 Position { 
-			get { return this.postion; } 
-			set { this.postion = value;
+			get { return this.position; } 
+			set { this.position = value;
 				this.area.X = (int)value.X;
 				this.area.Y = (int)value.Y; } 
 		}
@@ -56,8 +60,8 @@ namespace Rhovlyn.Engine.Graphics
 			get { return this.area; }
 			set {
 				this.area = value;
-				this.area.X = (int)this.postion.X;
-				this.area.Y = (int)this.postion.Y;
+				this.area.X = (int)this.position.X;
+				this.area.Y = (int)this.position.Y;
 			}
 		}
 		#endregion 
