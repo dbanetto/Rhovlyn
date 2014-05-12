@@ -12,37 +12,19 @@ namespace Rhovlyn.Engine.Graphics
 		#region Feilds
 		protected Vector2 position;
 		protected Rectangle area;
-		protected Texture2D texture;
 		protected float rotation;
-		protected List<Rectangle> frames; //Animation Frames or Sprite sheets
+		protected int frameindex;
 		#endregion
 
 		#region Constructor
-		public Sprite(Vector2 position , Texture2D texture)
+		public Sprite(Vector2 position, SpriteMap spritemap)
 		{
 			this.Position = position;
-			this.texture = texture;
-			this.area.Width = texture.Width;
-			this.area.Height = texture.Height;
+			this.SpriteMap = spritemap;
+			this.area.Width = SpriteMap.Frames[0].Width;
+			this.area.Height = SpriteMap.Frames[0].Height;
+			this.frameindex = 0;
 
-			frames = new List<Rectangle>();
-			frames.Add(texture.Bounds);
-			Frameindex = 0;
-			Origin = Vector2.Zero;
-			Scale = Vector2.One;
-			Effect = SpriteEffects.None;
-			Colour = Color.White;
-		}
-
-		public Sprite(Vector2 position , Texture2D texture , List<Rectangle> frames)
-		{
-			this.Position = position;
-			this.texture = texture;
-			this.area.Width = texture.Width;
-			this.area.Height = texture.Height;
-			this.frames = frames;
-
-			Frameindex = 0;
 			Origin = Vector2.Zero;
 			Scale = Vector2.One;
 			Effect = SpriteEffects.None;
@@ -55,7 +37,8 @@ namespace Rhovlyn.Engine.Graphics
 		{
 			//Check if on screen
 			if (camera.Bounds.Intersects(this.area))
-				spriteBatch.Draw(this.texture, Vector2.Subtract(this.position , camera.Position) , frames[Frameindex] ,  Colour, Rotation , Origin , Scale, Effect, Depth );
+				spriteBatch.Draw(SpriteMap.Texture, Vector2.Subtract(this.position , camera.Position) ,
+					SpriteMap.Frames[Frameindex] ,  Colour, Rotation , Origin , Scale, Effect, Depth );
 		}
 
 		public virtual void Update(GameTime gameTime)
@@ -65,8 +48,17 @@ namespace Rhovlyn.Engine.Graphics
 		#endregion
 
 		#region Properties
-		public Texture2D Texture { get { return this.texture; } }
-		public int Frameindex { get; set; }
+		public SpriteMap SpriteMap { get; private set; }
+
+		public int Frameindex { get { return frameindex; }
+			set
+			{
+				this.frameindex = value;
+				this.area.Width = SpriteMap.Frames[value].Width;
+				this.area.Height = SpriteMap.Frames[value].Height;
+			} 
+		}
+
 		public int Depth { get; set;}
 		public Vector2 Origin { get; set; }
 		public Vector2 Scale { get; set; }
@@ -87,11 +79,6 @@ namespace Rhovlyn.Engine.Graphics
 				this.area.X = (int)this.position.X;
 				this.area.Y = (int)this.position.Y;
 			}
-		}
-
-		public List<Rectangle> Frames
-		{
-			get {return this.frames;}
 		}
 
 		public float Rotation {

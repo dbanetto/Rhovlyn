@@ -7,8 +7,8 @@ namespace Rhovlyn.Engine.Maps
 {
 	public class MapObject : Sprite
     {
-		public MapObject(Vector2 positon , Texture2D texture)
-			: base(positon , texture)
+		public MapObject(Vector2 positon , SpriteMap spritemap)
+			: base(positon , spritemap)
         {
 
         }
