@@ -38,4 +38,10 @@
     <Compile Include="Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Rhovlyn.Engine\Rhovlyn.Engine.csproj">
+      <Project>{7F0330DE-7136-4C6A-AECF-1DD47612135C}</Project>
+      <Name>Rhovlyn.Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

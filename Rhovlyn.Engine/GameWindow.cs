@@ -118,12 +118,16 @@ namespace Rhovlyn.Engine
 			IO.Path.AllowWebResouces = webresource;
 
 			bool webcache = webresource;
-			settings.GetBool("Textures" , "AllowWebResources" , ref webcache);
+			settings.GetBool("Textures" , "AllowWebResourcesCache" , ref webcache);
 			IO.Path.AllowWebResoucesCaching = webcache;
 
 			string cachepath = IO.Path.WebResoucesCachePath;
-			settings.Get("Textures" , "AllowWebResources" , ref cachepath);
+			settings.Get("Textures" , "CachePath" , ref cachepath);
 			IO.Path.WebResoucesCachePath = cachepath;
+
+			int cachetimeout = IO.Path.WebResoucesCacheTimeOut;
+			settings.GetInt("Textures" , "CacheTimeout" , ref cachetimeout);
+			IO.Path.WebResoucesCacheTimeOut = cachetimeout;
 
 			LoadGraphicsSettings();
 		}

@@ -10,5 +10,4 @@
 #		It may also be a http:// https:// and ftp:// url if AllowWebResource true
 
 land,Content/sprites/grass.png
-
 gluttony,http://i.imgur.com/h3G6JEq.jpg

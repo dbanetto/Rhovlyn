@@ -10,9 +10,17 @@ namespace Rhovlyn.Engine.IO
 	public static class Path
 	{
 		static string cache_path = "Content/cache/"; 
+		static int cache_timeout = 10; //Minutes
 
 		public static bool AllowWebResouces { get; set; }
 		public static bool AllowWebResoucesCaching { get; set; }
+		public static int WebResoucesCacheTimeOut { 
+			get { return cache_timeout; }
+			set {
+				cache_timeout = value;
+				CheckTimeOut(value);
+			}
+		}
 		public static string WebResoucesCachePath
 		{
 			get { return cache_path; } 
@@ -26,6 +34,7 @@ namespace Rhovlyn.Engine.IO
 				{
 					Directory.CreateDirectory(cache_path);
 				}
+				CheckTimeOut();
 			}
 		}
 
@@ -73,7 +82,6 @@ namespace Rhovlyn.Engine.IO
 
 		public static void CacheFile ( Stream data , string cachepath)
 		{
-
 			using (var fs = new BinaryWriter( new FileStream(cachepath, FileMode.Create)))
 			{
 				using (var reader = new BinaryReader(data))
@@ -81,10 +89,7 @@ namespace Rhovlyn.Engine.IO
 					try {
 					while (reader.BaseStream.CanRead)
 						fs.Write( reader.ReadByte() );
-					} catch (EndOfStreamException ex )
-					{
-
-					}
+					} catch (EndOfStreamException ex ) {}
 					fs.Flush();
 				}
 			}
@@ -95,6 +100,24 @@ namespace Rhovlyn.Engine.IO
 			var name = System.IO.Path.GetFileName(url);
 			name = Hash.GetHashMD5Hex(Encoding.UTF8.GetBytes(url)) + "-" + name;
 			return  cache_path + name;
+		}
+
+		public static void CheckTimeOut ()
+		{
+			CheckTimeOut(WebResoucesCacheTimeOut);
+		}
+
+		public static void CheckTimeOut (long minutes)
+		{
+			foreach ( var file in Directory.EnumerateFiles(WebResoucesCachePath) )
+			{
+				FileInfo info = new FileInfo(file);
+				var past = DateTime.Now.Subtract(info.LastWriteTime);
+				if ( past.TotalMinutes > minutes )
+				{
+					File.Delete(file);
+				}
+			}
 		}
 	}
 }

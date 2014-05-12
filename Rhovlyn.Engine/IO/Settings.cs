@@ -70,7 +70,7 @@ namespace Rhovlyn.Engine.IO
 							//Split the line at the ='s
 							var key = line.Substring(0, line.IndexOf('=')).Trim().ToLower();
 							if (!Exists(header, key))
-								current.Add(key, line.Substring(line.IndexOf('=') + 1).Trim().ToLower());
+								current.Add(key, line.Substring(line.IndexOf('=') + 1).Trim());
 							else
 								Console.WriteLine("WARNING Double definition of " + header + "::" + key + "\nIgnoring new definition");
 						}
