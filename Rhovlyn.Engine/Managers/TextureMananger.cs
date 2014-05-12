@@ -7,7 +7,7 @@ using System.IO;
 using Rhovlyn.Engine.Graphics;
 using Microsoft.Xna.Framework;
 
-namespace Rhovlyn.Engine.Util
+namespace Rhovlyn.Engine.Managers
 {
     public class TextureMananger
     {

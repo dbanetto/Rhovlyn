@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rhovlyn.Engine.States;
 
-namespace Rhovlyn.Engine.Util
+namespace Rhovlyn.Engine.Managers
 {
     public class GameStateManager
     {

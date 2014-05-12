@@ -9,6 +9,7 @@ using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.States;
+using Rhovlyn.Engine.Managers;
 
 #endregion
 namespace Rhovlyn.Engine

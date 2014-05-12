@@ -2,8 +2,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Rhovlyn.Engine.Util;
 
-namespace Rhovlyn.Engine.Util
+namespace Rhovlyn.Engine.Managers
 {
 	public class SpriteManager : Graphics.IDrawable
 	{

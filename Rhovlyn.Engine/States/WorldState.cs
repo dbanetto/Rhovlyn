@@ -2,6 +2,7 @@ using System;
 using Rhovlyn.Engine.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Rhovlyn.Engine.Managers;
 
 namespace Rhovlyn.Engine.States
 {

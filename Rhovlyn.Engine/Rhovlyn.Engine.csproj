@@ -48,8 +48,6 @@
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\IDrawable.cs" />
     <Compile Include="Maps\MapObject.cs" />
-    <Compile Include="Util\TextureMananger.cs" />
-    <Compile Include="Util\SpriteManager.cs" />
     <Compile Include="Util\Camera.cs" />
     <Compile Include="IO\Settings.cs" />
     <Compile Include="Maps\MapGenerator.cs" />
@@ -57,10 +55,12 @@
     <Compile Include="Security\Hash.cs" />
     <Compile Include="Graphics\SpriteMap.cs" />
     <Compile Include="States\IGameState.cs" />
-    <Compile Include="Util\ContentManager.cs" />
-    <Compile Include="Util\GameStateManager.cs" />
     <Compile Include="States\WorldState.cs" />
-    <Compile Include="Util\MapManager.cs" />
+    <Compile Include="Managers\ContentManager.cs" />
+    <Compile Include="Managers\GameStateManager.cs" />
+    <Compile Include="Managers\MapManager.cs" />
+    <Compile Include="Managers\SpriteManager.cs" />
+    <Compile Include="Managers\TextureMananger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,6 +70,7 @@
     <Folder Include="IO\" />
     <Folder Include="Security\" />
     <Folder Include="States\" />
+    <Folder Include="Managers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StyleCop.Cache">
