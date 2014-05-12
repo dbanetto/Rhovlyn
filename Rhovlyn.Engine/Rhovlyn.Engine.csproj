@@ -56,6 +56,11 @@
     <Compile Include="IO\Path.cs" />
     <Compile Include="Security\Hash.cs" />
     <Compile Include="Graphics\SpriteMap.cs" />
+    <Compile Include="States\IGameState.cs" />
+    <Compile Include="Util\ContentManager.cs" />
+    <Compile Include="Util\GameStateManager.cs" />
+    <Compile Include="States\WorldState.cs" />
+    <Compile Include="Util\MapManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -64,6 +69,7 @@
     <Folder Include="Util\" />
     <Folder Include="IO\" />
     <Folder Include="Security\" />
+    <Folder Include="States\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StyleCop.Cache">

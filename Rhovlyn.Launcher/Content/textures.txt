@@ -1,7 +1,7 @@
 # Texture List
 # Commands :
 #	load
-#		Syntax : name,path
+#		Syntax : name,path[,rows*columns|x:y:w:h@...]
 #		Note : path can be relative or absolute
 #		It may also be a http:// https:// and ftp:// url if AllowWebResource true
 #	Inlcude

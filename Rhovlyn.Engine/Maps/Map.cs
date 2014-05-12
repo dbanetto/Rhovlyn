@@ -18,6 +18,7 @@ namespace Rhovlyn.Engine.Maps
 	public class Map : Graphics.IDrawable
     {
 		private Dictionary< Point , MapObject > mapobjects;
+		public SpriteManager Sprites { get; private set; }
 		public static readonly int TILE_WIDTH = 64;
 		public static readonly int TILE_HIGHT = 64;
 
@@ -25,6 +26,7 @@ namespace Rhovlyn.Engine.Maps
 		public Map(string path , TextureMananger textures)
 		{
 			mapobjects = new Dictionary<Point, MapObject>();
+			Sprites = new SpriteManager();
 			this.Load(path , textures);
 		}
 		public Map() {}
@@ -62,7 +64,19 @@ namespace Rhovlyn.Engine.Maps
 							int y = int.Parse(args[1]);
 							var tex = args[2];
 
-							mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , textures[tex] ) );
+							if ( args.Length > 3  )
+							{
+								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , textures[tex] );
+
+								int index = int.Parse(args[3]);
+								obj.Frameindex = index;
+
+								mapobjects.Add( new Point(x , y) , obj );
+							} else
+							{
+								mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , textures[tex] ) );
+							} 
+
 						}
 
 					}

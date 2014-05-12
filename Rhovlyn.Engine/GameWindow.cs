@@ -8,6 +8,7 @@ using System.Security.Policy;
 using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Maps;
+using Rhovlyn.Engine.States;
 
 #endregion
 namespace Rhovlyn.Engine
@@ -19,19 +20,18 @@ namespace Rhovlyn.Engine
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-		TextureMananger textures;
-		SpriteManager sprites;
 		Camera camera;
 		Map map;
-		Rhovlyn.Engine.IO.Settings settings;
+
+		ContentManager content;
 
 		public GameWindow()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
+			content = new ContentManager("Content/settings.ini");
 
-			settings = new Rhovlyn.Engine.IO.Settings("Content/settings.ini");
 		}
 
 		/// <summary>
@@ -47,8 +47,7 @@ namespace Rhovlyn.Engine
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
 
-			textures = new TextureMananger(this.graphics.GraphicsDevice);
-			sprites = new SpriteManager();
+			content.Init(graphics.GraphicsDevice);
 			camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
 
 
@@ -64,10 +63,11 @@ namespace Rhovlyn.Engine
 		protected override void LoadContent()
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			textures.Add("player" , "Content/sprites/sheep.png");
+			content.Textures.Add("player" , "Content/sprites/sheep.png");
 
-			sprites.Add( "player" , new Sprite(Vector2.Zero , textures["player"] ));
-			map = new Map( "Content/map.txt" , this.textures);
+			content.Maps.Add( "test" , new Map( "Content/map.txt" , content.Textures) );
+			content.CurrnetMap.Sprites.Add( "player" , new Sprite(Vector2.Zero , content.Textures["player"] ));
+			content.GameStates.Add("world" , new WorldState() );
 		}
 
 		/// <summary>
@@ -87,9 +87,8 @@ namespace Rhovlyn.Engine
 				this.camera.Position = new Vector2(this.camera.Position.X, this.camera.Position.Y + 5);
 			}
 
+			content.CurrentState.Update(gameTime);
 
-
-			this.sprites.Update(gameTime);
 			this.Window.Title = this.camera.Bounds.ToString();
 			base.Update(gameTime);
 		}
@@ -103,8 +102,7 @@ namespace Rhovlyn.Engine
 			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
-				this.sprites.Draw(gameTime , spriteBatch, this.camera);
-				this.map.Draw(gameTime , spriteBatch, this.camera);
+			this.content.CurrentState.Draw(gameTime, spriteBatch , camera);
 			spriteBatch.End();
 
 			base.Draw(gameTime);
@@ -114,19 +112,19 @@ namespace Rhovlyn.Engine
 		{
 			//Texture & Web Resourses
 			bool webresource = false;
-			settings.GetBool("Textures" , "AllowWebResources" , ref webresource);
+			content.Settings.GetBool("Textures" , "AllowWebResources" , ref webresource);
 			IO.Path.AllowWebResouces = webresource;
 
 			bool webcache = webresource;
-			settings.GetBool("Textures" , "AllowWebResourcesCache" , ref webcache);
+			content.Settings.GetBool("Textures" , "AllowWebResourcesCache" , ref webcache);
 			IO.Path.AllowWebResoucesCaching = webcache;
 
 			string cachepath = IO.Path.WebResoucesCachePath;
-			settings.Get("Textures" , "CachePath" , ref cachepath);
+			content.Settings.Get("Textures" , "CachePath" , ref cachepath);
 			IO.Path.WebResoucesCachePath = cachepath;
 
 			int cachetimeout = IO.Path.WebResoucesCacheTimeOut;
-			settings.GetInt("Textures" , "CacheTimeout" , ref cachetimeout);
+			content.Settings.GetInt("Textures" , "CacheTimeout" , ref cachetimeout);
 			IO.Path.WebResoucesCacheTimeOut = cachetimeout;
 
 			LoadGraphicsSettings();
@@ -135,11 +133,11 @@ namespace Rhovlyn.Engine
 		public void LoadGraphicsSettings()
 		{
 			bool resizable = false;
-			this.settings.GetBool("window", "resizable", ref resizable);
+			content.Settings.GetBool("window", "resizable", ref resizable);
 			Window.AllowUserResizing = resizable;
 
 			bool fullscreen = false;
-			this.settings.GetBool("window", "fullscreen", ref fullscreen);
+			content.Settings.GetBool("window", "fullscreen", ref fullscreen);
 			graphics.IsFullScreen = fullscreen;
 		}
 	}
