@@ -18,7 +18,7 @@ namespace Rhovlyn.Engine.IO
 			get { return cache_timeout; }
 			set {
 				cache_timeout = value;
-				CheckTimeOut(value);
+				CheckCacheTimeOutAll();
 			}
 		}
 		public static string WebResoucesCachePath
@@ -34,7 +34,7 @@ namespace Rhovlyn.Engine.IO
 				{
 					Directory.CreateDirectory(cache_path);
 				}
-				CheckTimeOut();
+				CheckCacheTimeOutAll();
 			}
 		}
 
@@ -45,6 +45,7 @@ namespace Rhovlyn.Engine.IO
 				if (AllowWebResoucesCaching)
 				{
 					var c_path = GetCachePath(path);
+					CheckCacheTimeOut(c_path);
 					if (File.Exists(c_path))
 					{
 						return new FileStream(c_path, FileMode.Open);
@@ -102,21 +103,26 @@ namespace Rhovlyn.Engine.IO
 			return  cache_path + name;
 		}
 
-		public static void CheckTimeOut ()
+		public static void CheckCacheTimeOutAll ()
 		{
-			CheckTimeOut(WebResoucesCacheTimeOut);
+			foreach (var file in Directory.EnumerateFiles(WebResoucesCachePath))
+			{
+				CheckCacheTimeOut( file , WebResoucesCacheTimeOut);
+			}
 		}
 
-		public static void CheckTimeOut (long minutes)
+		public static void CheckCacheTimeOut (string file)
 		{
-			foreach ( var file in Directory.EnumerateFiles(WebResoucesCachePath) )
+			CheckCacheTimeOut(file, WebResoucesCacheTimeOut);
+		}
+
+		public static void CheckCacheTimeOut (string file , long minutes)
+		{
+			FileInfo info = new FileInfo(file);
+			var past = DateTime.Now.Subtract(info.LastWriteTime);
+			if ( past.TotalMinutes > minutes )
 			{
-				FileInfo info = new FileInfo(file);
-				var past = DateTime.Now.Subtract(info.LastWriteTime);
-				if ( past.TotalMinutes > minutes )
-				{
-					File.Delete(file);
-				}
+				File.Delete(file);
 			}
 		}
 	}
