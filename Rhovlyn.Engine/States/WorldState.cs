@@ -3,6 +3,7 @@ using Rhovlyn.Engine.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Managers;
+using Rhovlyn.Engine.Graphics;
 
 namespace Rhovlyn.Engine.States
 {
@@ -21,7 +22,8 @@ namespace Rhovlyn.Engine.States
 		public void LoadContent(ContentManager content)
 		{
 			this.content = content;
-			content.Maps.Add( "test" , "Content/map.txt" , content.Textures );
+			content.Maps.Add( "test" ,  "Content/map.txt" , content.Textures );
+			content.CurrnetMap.Sprites.Add( "player" , new Sprite(Vector2.Zero , content.Textures["player"] ));
 		}
 
 		public void UnLoadContent(ContentManager content)

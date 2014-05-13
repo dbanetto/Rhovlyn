@@ -4,7 +4,7 @@ using Rhovlyn.Engine.Maps;
 
 namespace Rhovlyn.Engine.Managers
 {
-    public class MapManager
+	public class MapManager
     {
 		Dictionary< string , Map > maps;
 
@@ -48,6 +48,14 @@ namespace Rhovlyn.Engine.Managers
 				return true;
 			}
 			return false;
+		}
+
+		public void Remove (string name)
+		{
+			if (Exists(name))
+			{
+				this.maps.Remove(name);
+			}
 		}
 
 		public Map this[string name]

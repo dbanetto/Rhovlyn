@@ -21,9 +21,8 @@ namespace Rhovlyn.Engine
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-		Camera camera;
-		Map map;
 
+		Camera camera;
 		ContentManager content;
 
 		public GameWindow()
@@ -64,10 +63,7 @@ namespace Rhovlyn.Engine
 		protected override void LoadContent()
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			content.Textures.Add("player" , "Content/sprites/sheep.png");
 
-			content.Maps.Add( "test" , new Map( "Content/map.txt" , content.Textures) );
-			content.CurrnetMap.Sprites.Add( "player" , new Sprite(Vector2.Zero , content.Textures["player"] ));
 			content.GameStates.Add("world" , new WorldState() );
 		}
 

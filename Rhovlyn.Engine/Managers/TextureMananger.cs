@@ -116,10 +116,10 @@ namespace Rhovlyn.Engine.Managers
 
 							if (args.Length > 2)
 							{
-								List<Rectangle> rects = new List<Rectangle>();
 								var tex = Texture2D.FromStream( graphics , Engine.IO.Path.ResolvePath(tpath));
 								if (args[2].Contains("@"))
 								{								
+									List<Rectangle> rects = new List<Rectangle>();
 									// Explict Rectangle Declearations
 									// x:y:w:h@....
 									// 0:0:64:64@0:0:128:32
@@ -137,6 +137,7 @@ namespace Rhovlyn.Engine.Managers
 
 										rects.Add(new Rectangle( x, y, w, h ));
 									}
+									this.Add( tname , new SpriteMap( tex , rects ) );
 								} 
 								// Semi-Implicit Bounds 
 								// rows*colms
@@ -150,18 +151,8 @@ namespace Rhovlyn.Engine.Managers
 									int row = int.Parse(parms[0]);
 									int col = int.Parse(parms[1]);
 
-									int w = (tex.Width / row);
-									int h = (tex.Height / col);
-
-									for (int y = 0; y < tex.Width; y += h)
-									{
-										for (int x = 0; x < tex.Width; x += w)
-										{
-											rects.Add(new Rectangle(x, y, w, h));
-										}
-									}
+									this.Add( tname , new SpriteMap( tex , row , col ) );
 								}
-								this.Add( tname , new SpriteMap( tex , rects ) );
 							} else {
 								this.Add( tname , Engine.IO.Path.ResolvePath(tpath) );
 							}

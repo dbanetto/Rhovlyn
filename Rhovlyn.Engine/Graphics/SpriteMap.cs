@@ -22,6 +22,22 @@ namespace Rhovlyn.Engine.Graphics
 			this.Texture = texture;
 			this.Frames = frames;
         }
+
+		public SpriteMap(Texture2D texture , int rows , int coloumns )
+		{
+			this.Texture = texture;
+			int w = Texture.Width / rows;
+			int h = Texture.Height / coloumns;
+
+			Frames = new List<Rectangle>();
+			for (int y = 0; y < Texture.Height; y += h)
+			{
+				for (int x = 0; x < Texture.Width; x += w)
+				{
+					Frames.Add(new Rectangle(x, y, w, h));
+				}
+			}
+		}
     }
 }
 
