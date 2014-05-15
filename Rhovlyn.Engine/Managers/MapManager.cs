@@ -7,10 +7,12 @@ namespace Rhovlyn.Engine.Managers
 	public class MapManager
     {
 		Dictionary< string , Map > maps;
+		public ContentManager Content { get; private set;}
 
-        public MapManager()
+		public MapManager(ContentManager content)
         {
 			maps = new Dictionary<string, Map>();
+			Content = content;
         }
 
 		#region Management
@@ -26,11 +28,11 @@ namespace Rhovlyn.Engine.Managers
 			return null;
 		} 
 
-		public bool Add (string name , string path , TextureMananger textures )
+		public bool Add (string name , string path )
 		{
 			if (!Exists(name))
 			{
-				maps.Add(name, new Map( path , textures ));
+				maps.Add(name, new Map( path , Content ) );
 				if (maps.Count == 1)
 					Current = name;
 				return true;

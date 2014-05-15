@@ -30,7 +30,7 @@ namespace Rhovlyn.Engine.Managers
 		{
 			if (!Exists(name))
 			{
-				textures.Add( name , spritemap );
+				this.textures.Add( name , spritemap );
 				return true;
 			}
 			return false;
@@ -41,7 +41,7 @@ namespace Rhovlyn.Engine.Managers
 
 			if (!Exists(name))
 			{
-				textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream)  , frames ) );
+				this.textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream)  , frames ) );
 				return true;
 			}
 			return false;
@@ -51,7 +51,7 @@ namespace Rhovlyn.Engine.Managers
 		{
 			if (!Exists(name))
 			{
-				textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream) ) );
+				this.textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream) ) );
 				return true;
 			}
 			return false;
@@ -64,7 +64,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Exists (string name)
 		{
-			return textures.ContainsKey(name);
+			return this.textures.ContainsKey(name);
 		}
 
 		/// <summary>
@@ -167,6 +167,19 @@ namespace Rhovlyn.Engine.Managers
 			return true;
 		}
 
+		/// <summary>
+		/// Remove the SpriteMap with the specified name safely.
+		/// </summary>
+		/// <param name="name">Name of the sprite</param>
+		public bool Remove (string name)
+		{
+			if (Exists(name))
+			{
+				textures[name].Texture.Dispose();
+				textures.Remove(name);
+			}
+			return false;
+		}
     }
 }
 

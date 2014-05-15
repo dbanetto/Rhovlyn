@@ -19,18 +19,23 @@ namespace Rhovlyn.Engine.Maps
 	public class Map : Graphics.IDrawable
     {
 		private Dictionary< Point , MapObject > mapobjects;
-		public SpriteManager Sprites { get; private set; }
+		public ContentManager Content { get; private set; }
 		public static readonly int TILE_WIDTH = 64;
 		public static readonly int TILE_HIGHT = 64;
 
-		#region Contructor
-		public Map(string path , TextureMananger textures)
+		#region Constructor
+		public Map( string path , ContentManager content )
 		{
 			mapobjects = new Dictionary<Point, MapObject>();
-			Sprites = new SpriteManager();
-			this.Load(path , textures);
+			Content = content;
+			this.Load(path);
 		}
-		public Map() {}
+
+		public Map( ContentManager content ) 
+		{
+			Content = content;
+			mapobjects = new Dictionary<Point, MapObject>();
+		}
 
 		~Map()
 		{
@@ -39,7 +44,7 @@ namespace Rhovlyn.Engine.Maps
 		#endregion
 
 		#region Methods
-		public bool Load(Stream stream , TextureMananger textures)
+		public bool Load( Stream stream )
 		{
 			using ( var reader =  new StreamReader( stream ) )
 			{
@@ -62,7 +67,13 @@ namespace Rhovlyn.Engine.Maps
 							if (line.StartsWith("include:"))
 							{
 								var obj = line.Substring("include:".Length);
-								textures.Load( IO.Path.ResolvePath( obj ) );
+								Content.Textures.Load( IO.Path.ResolvePath( obj ) );
+							}
+
+							if (line.StartsWith("sprites:"))
+							{
+								var obj = line.Substring("sprites:".Length);
+								Content.Sprites.Load( IO.Path.ResolvePath( obj ) , Content.Textures );
 							}
 
 							//Hard check for a texture
@@ -71,7 +82,7 @@ namespace Rhovlyn.Engine.Maps
 								var obj = line.Substring("require:".Length);
 								foreach (var tex in obj.Split(','))
 								{
-									if (!textures.Exists(tex) )
+									if (!Content.Textures.Exists(tex) )
 									{
 										//TODO : Make a exception class for this
 										throw new Exception("Failed to meet the require texture " + tex);
@@ -87,7 +98,7 @@ namespace Rhovlyn.Engine.Maps
 
 							if ( args.Length > 3  )
 							{
-								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , textures[tex] );
+								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] );
 
 								int index = int.Parse(args[3]);
 								obj.Frameindex = index;
@@ -95,7 +106,7 @@ namespace Rhovlyn.Engine.Maps
 								mapobjects.Add( new Point(x , y) , obj );
 							} else
 							{
-								mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , textures[tex] ) );
+								mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] ) );
 							} 
 
 						}
@@ -109,9 +120,9 @@ namespace Rhovlyn.Engine.Maps
 			return true;
 		}
 
-		public bool Load (string path , TextureMananger textures)
+		public bool Load (string path )
 		{
-			return this.Load( IO.Path.ResolvePath(path) , textures);
+			return this.Load( IO.Path.ResolvePath(path));
 		}
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
