@@ -90,7 +90,8 @@ namespace Rhovlyn.Engine.IO
 					try {
 					while (reader.BaseStream.CanRead)
 						fs.Write( reader.ReadByte() );
-					} catch (EndOfStreamException ex ) {}
+					} catch (EndOfStreamException ex ) { //Expected Error, everthing will be fine* 
+					}
 					fs.Flush();
 				}
 			}

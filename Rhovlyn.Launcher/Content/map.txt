@@ -1,12 +1,21 @@
 #Map Format
 # Commands :
-#	Inlcude
+#	inlcude
 #		Syntax : @include:path
 #		Note : Loads the path as a texture list
 #		It may also be a http:// https:// and ftp:// url if AllowWebResource true
-#	Tile
+#		Example : @include:http://example.com/textures.txt
+#
+#	tile
 #		Syntax : x,y,name[,spritemap index]
 #		Note : Creates a tile at ( x*TILE_WIDTH , y*TILE_HEIGHT ) with the texture "name"
+#		Example : 0,0,tile
+#
+#	require
+#		Syntax : @require:name1[,name2...]
+#		Note : Comma sperated list of texture names to check for. If one is missing an Exception is thrown
+#		Example : @require:fire,water,earth,air
+#
 @include:Content/textures.txt
 0,1,land,0
 0,2,gluttony

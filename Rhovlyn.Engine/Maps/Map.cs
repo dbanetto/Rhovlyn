@@ -58,10 +58,25 @@ namespace Rhovlyn.Engine.Maps
 						if (line.StartsWith("@"))
 						{
 							line = line.Substring(1);
+							//Load a Texture list
 							if (line.StartsWith("include:"))
 							{
 								var obj = line.Substring("include:".Length);
 								textures.Load( IO.Path.ResolvePath( obj ) );
+							}
+
+							//Hard check for a texture
+							if (line.StartsWith("require:"))
+							{
+								var obj = line.Substring("require:".Length);
+								foreach (var tex in obj.Split(','))
+								{
+									if (!textures.Exists(tex) )
+									{
+										//TODO : Make a exception class for this
+										throw new Exception("Failed to meet the require texture " + tex);
+									}
+								}
 							}
 						} else{
 							var args = line.Split(',');
@@ -96,10 +111,7 @@ namespace Rhovlyn.Engine.Maps
 
 		public bool Load (string path , TextureMananger textures)
 		{
-			using ( var f = new FileStream ( path , FileMode.Open) )
-			{
-				return this.Load(f , textures);
-			}
+			return this.Load( IO.Path.ResolvePath(path) , textures);
 		}
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
