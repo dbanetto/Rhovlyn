@@ -119,6 +119,9 @@ namespace Rhovlyn.Engine.IO
 
 		public static void CheckCacheTimeOut (string file , long minutes)
 		{
+			if (!File.Exists(file))
+				return;
+
 			FileInfo info = new FileInfo(file);
 			var past = DateTime.Now.Subtract(info.LastWriteTime);
 			if ( past.TotalMinutes > minutes )

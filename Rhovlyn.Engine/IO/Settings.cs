@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using MonoGame.Framework.MonoLive;
 
 namespace Rhovlyn.Engine.IO
 {
@@ -12,11 +11,17 @@ namespace Rhovlyn.Engine.IO
     {
 		// < Header , Contents >
 		private Dictionary<string , Dictionary< string , string >  > settings;
+		public bool isLoaded { get; private set; }
 
 		public Settings(string path)
-        {
-			this.Load(path);
-        }
+		{
+			isLoaded = this.Load(path);
+		}
+
+		public Settings() 
+		{
+			isLoaded = false;
+		}
 
 		/// <summary>
 		/// Load the specified path.
@@ -36,6 +41,7 @@ namespace Rhovlyn.Engine.IO
 		/// <param name="stream">Stream.</param>
 		public bool Load (Stream stream)
 		{
+			isLoaded = false;
 			settings = new Dictionary<string, Dictionary< string , string > >();
 			settings.Add( "" , new Dictionary< string , string >() );
 			using (var reader = new StreamReader(stream))
@@ -82,15 +88,22 @@ namespace Rhovlyn.Engine.IO
 					}
 				}
 			}
+			isLoaded = true;
 			return true;
 		}
 
 		public bool Exists (string header)
 		{
+			if (!isLoaded)
+				return false;
+
 			return this.settings.ContainsKey(header.ToLower());
 		}
 		public bool Exists (string header , string key)
 		{
+			if (!isLoaded)
+				return false;
+
 			if (Exists(header))
 			{
 				return this.settings[header.ToLower()].ContainsKey(key.ToLower());
@@ -119,6 +132,9 @@ namespace Rhovlyn.Engine.IO
 		/// <param name="result">Result</param>
 		public bool Get (string header , string key , ref string result)
 		{
+			if (!isLoaded)
+				return false;
+
 			if (Exists(header, key))
 			{
 				result = this.settings[header.ToLower()][key.ToLower()];
@@ -129,6 +145,9 @@ namespace Rhovlyn.Engine.IO
 		/// <seealso cref="Get"></seealso>
 		public bool GetBool (string header , string key , ref bool result)
 		{
+			if (!isLoaded)
+				return false;
+
 			string val = "";
 			if (Get(header, key , ref val))
 			{
@@ -140,6 +159,9 @@ namespace Rhovlyn.Engine.IO
 		/// <seealso cref="Get"></seealso>
 		public bool GetInt (string header , string key , ref int result)
 		{
+			if (!isLoaded)
+				return false;
+
 			string val = "";
 			if (Get(header, key , ref val))
 			{

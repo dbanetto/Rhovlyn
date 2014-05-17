@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Engine", "Rhovlyn.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Launcher", "Rhovlyn.Launcher\Rhovlyn.Launcher.csproj", "{A2C6A2FB-2FF3-4595-AF45-149C43A4FFBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Engine.Test", "Rhovlyn.Engine.Test\Rhovlyn.Engine.Test.csproj", "{B5A26DA3-6EAB-448C-B709-BED9923B68D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Test.Engine", "Rhovlyn.Test.Engine\Rhovlyn.Test.Engine.csproj", "{B5A26DA3-6EAB-448C-B709-BED9923B68D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
