@@ -9,16 +9,18 @@ using Microsoft.Xna.Framework;
 
 namespace Rhovlyn.Engine.Managers
 {
-    public class TextureMananger
-    {
+	public class TextureMananger
+	{
 		private GraphicsDevice graphics;
 		private Dictionary< string , SpriteMap > textures;
 
 		public TextureMananger(GraphicsDevice graphics )
-        {
+		{
 			this.graphics = graphics;
 			textures = new Dictionary<string, SpriteMap>();
-        }
+		}
+
+		#region Management
 
 		public SpriteMap this[string index]
 		{
@@ -180,6 +182,7 @@ namespace Rhovlyn.Engine.Managers
 			}
 			return false;
 		}
-    }
+		#endregion
+	}
 }
 

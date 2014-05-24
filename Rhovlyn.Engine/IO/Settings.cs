@@ -7,8 +7,8 @@ namespace Rhovlyn.Engine.IO
 	/// <summary>
 	/// <remarks>All Internal string must be in lower case</remarks>
 	/// </summary>
-    public class Settings
-    {
+	public class Settings
+	{
 		// < Header , Contents >
 		private Dictionary<string , Dictionary< string , string >  > settings;
 		public bool isLoaded { get; private set; }
@@ -174,6 +174,6 @@ namespace Rhovlyn.Engine.IO
 			return false;
 		}
 
-    }
+	}
 }
 

@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace Rhovlyn.Engine.Graphics
 {
-    public class SpriteMap
-    {
+	public class SpriteMap
+	{
 		public Texture2D Texture {get; private set;}
 		public List<Rectangle> Frames { get; private set;}
 
@@ -18,10 +18,10 @@ namespace Rhovlyn.Engine.Graphics
 		}
 
 		public SpriteMap(Texture2D texture , List<Rectangle> frames )
-        {
+		{
 			this.Texture = texture;
 			this.Frames = frames;
-        }
+		}
 
 		public SpriteMap(Texture2D texture , int rows , int coloumns )
 		{
@@ -38,6 +38,6 @@ namespace Rhovlyn.Engine.Graphics
 				}
 			}
 		}
-    }
+	}
 }
 

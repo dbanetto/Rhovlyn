@@ -10,4 +10,3 @@
 #		It may also be a http:// https:// and ftp:// url if AllowWebResource true
 player,Content/sprites/sheep.png,2*2
 land,Content/sprites/grass.png,4*4
-gluttony,http://i.imgur.com/h3G6JEq.jpg,2*3

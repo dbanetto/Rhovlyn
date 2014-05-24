@@ -77,12 +77,6 @@ namespace Rhovlyn.Engine
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit();
 			}
-			if (Keyboard.GetState().IsKeyDown(Keys.W)) {
-				this.camera.Position = new Vector2(this.camera.Position.X, this.camera.Position.Y - 5);
-			}
-			if (Keyboard.GetState().IsKeyDown(Keys.S)) {
-				this.camera.Position = new Vector2(this.camera.Position.X, this.camera.Position.Y + 5);
-			}
 
 			content.CurrentState.Update(gameTime);
 

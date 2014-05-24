@@ -74,6 +74,7 @@ namespace Rhovlyn.Engine.Managers
 						} else{
 							// Sprite Example
 							// x,y,name,Texture[,TextureIndex]
+							//TODO : Load different Sprite types
 							var args = line.Split(',');
 
 							int x = int.Parse(args[0]);
@@ -84,7 +85,7 @@ namespace Rhovlyn.Engine.Managers
 							if ( args.Length > 3  )
 							{
 								var obj = new Sprite( new Vector2( x , y) , textures[tex] );
-					          	int index = int.Parse(args[4]);
+							  	int index = int.Parse(args[4]);
 								obj.Frameindex = index;
 
 								sprites.Add(  name , obj );

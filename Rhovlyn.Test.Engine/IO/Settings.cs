@@ -6,8 +6,8 @@ using System.IO;
 namespace Rhovlyn.Test.Engine.IO
 {
 	[TestFixture()]
-    public class Settings
-    {
+	public class Settings
+	{
 		[Test]
 		[Category("Settings")]
 		public void SettingsLoad ()
@@ -125,6 +125,6 @@ namespace Rhovlyn.Test.Engine.IO
 				throw new  IOException("Settings failed to report a bad get for test:badint");
 			}
 		}
-    }
+	}
 }
 

@@ -4,16 +4,16 @@ using Rhovlyn.Engine.States;
 
 namespace Rhovlyn.Engine.Managers
 {
-    public class GameStateManager
-    {
+	public class GameStateManager
+	{
 		Dictionary< string , IGameState > states;
 		string currnet;
 		ContentManager content;
 		public GameStateManager(ContentManager content)
-        {
+		{
 			states = new Dictionary<string, IGameState>();
 			this.content = content; 
-        }
+		}
 
 		#region Management
 		public IGameState CurrnetState { get { return this.states[Current]; } }
@@ -48,6 +48,6 @@ namespace Rhovlyn.Engine.Managers
 			return this.states.ContainsKey(name);
 		}
 		#endregion
-    }
+	}
 }
 

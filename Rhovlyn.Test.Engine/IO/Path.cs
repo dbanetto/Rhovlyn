@@ -7,8 +7,8 @@ using System.IO;
 namespace Rhovlyn.Test.Engine.IO
 {
 	[TestFixture()]
-    public class Path
-    {
+	public class Path
+	{
 		[Test]
 		[ExpectedException( typeof( IOException ) )]
 		public void PathWebResoucesDisabled( )
@@ -57,6 +57,6 @@ namespace Rhovlyn.Test.Engine.IO
 			}
 		}
 
-    }
+	}
 }
 

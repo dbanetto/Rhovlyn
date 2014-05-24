@@ -17,5 +17,8 @@
 #		Example : @require:fire,water,earth,air
 #
 @include:Content/textures.txt
-0,1,land,0
-0,2,gluttony
+
+0,0,land,0
+0,1,land,1
+1,1,land,2
+1,0,land,3

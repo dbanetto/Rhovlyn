@@ -12,6 +12,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public InputManager(string settingsPath )
         {
+			inputs = new Dictionary< string , IInputProvider >();
         }
 
 

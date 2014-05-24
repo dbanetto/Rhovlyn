@@ -61,12 +61,6 @@ namespace Rhovlyn.Engine.Input
 		/// </remarks>
 		void ParseSettings ();
 
-		/// <summary>
-		/// Parse an individual condition from a string
-		/// </summary>
-		/// <param name="name">Name of the condition</param>
-		/// <param name="value">Value of the condition</param>
-		bool ParseSetting( string name , string value );
     }
 }
 

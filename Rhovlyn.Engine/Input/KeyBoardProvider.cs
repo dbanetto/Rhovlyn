@@ -5,10 +5,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Rhovlyn.Engine.Input
 {
-	public class KeyCondition
+	public struct KeyCondition
 	{
-		public List<Keys> Keys { get; set; }
-		public int Modifer {get; set; }
+		public KeyCondition( List<Keys> keys = null )
+		{
+			if (keys != null)
+				this.keys = keys;
+			else
+				this.keys = new List<Keys>();
+		}
+
+		List<Keys> keys;
+		public List<Keys> Keys { get{ return keys; } }
 	}
 
 	public class KeyBoardProvider : IInputProvider
@@ -21,6 +29,7 @@ namespace Rhovlyn.Engine.Input
         public KeyBoardProvider()
         {
 			SettingsPostfix = "keys";
+			keys = new Dictionary<string ,  KeyCondition >();
         }
 
 		public bool Load ( string path )
@@ -45,6 +54,16 @@ namespace Rhovlyn.Engine.Input
 
 		public bool GetState ( string name )
 		{
+			if (this.Exists(name))
+			{
+				var state = Keyboard.GetState();
+				foreach (var k in keys[name].Keys)
+				{
+					if (state.IsKeyDown(k) == false)
+						return false;
+				}
+				return true;
+			}
 			return false;
 		}
 
@@ -55,7 +74,8 @@ namespace Rhovlyn.Engine.Input
 
 			if (Exists(name))
 			{
-				this.keys[name] = condition;
+				object key = condition;
+				this.keys[name] = (KeyCondition)(key);
 				return true;
 			}
 			return false;
@@ -69,7 +89,8 @@ namespace Rhovlyn.Engine.Input
 
 			if (!Exists(name))
 			{
-				this.keys[name] = condition;
+				object key = condition;
+				this.keys[name] = (KeyCondition)(key);
 				return true;
 			} 
 			return false;
@@ -87,18 +108,54 @@ namespace Rhovlyn.Engine.Input
 					//if they have THIS Providers SettingsPostfix then deal with it
 					if (key.EndsWith(SettingsPostfix))
 					{
-						//Remove SettingsPostfix from the key
-						//On a unsuccessful Parse, stop
-						ParseSetting(header + "." + key.Substring(0, key.Length - SettingsPostfix.Length - 1),
-							settings[header][key]);						
+						KeyCondition result = new KeyCondition(null);
+						if (ParseSetting(settings[header][key], ref result))
+						{
+							//Remove SettingsPostfix from the key
+							//On a unsuccessful Parse, stop
+							this.Add(header + "." + key.Substring(0, key.Length - SettingsPostfix.Length - 1),
+								result);
+						}
+						else
+						{
+							throw new InvalidDataException("Input Settings failed to load");
+						}
 					}
 				}
 			}
 		}
 
-		public bool ParseSetting( string name , string value )
+		public bool ParseSetting( string keystring , ref KeyCondition key )
 		{
-			return false;
+			var segs = keystring.Split('+');
+			foreach (var seg in segs)
+			{
+				//Convert a singel letter to scancode
+				if (seg.Length == 1)
+				{
+					//XNA Scan codes for letters are mapped to UTF-8's upper case english letters
+					var bytes = System.Text.UTF8Encoding.UTF8.GetBytes(seg.ToUpper());
+					if (bytes.Length == 1)
+					{
+						if (bytes[0] >= 65 &&  bytes[0] <= 90)
+						{
+							key.Keys.Add((Keys)bytes[0]);
+							continue;
+						}
+					}
+				}
+				//Read in as Scancodes
+				int code;
+				if (int.TryParse(seg, out code))
+				{
+					key.Keys.Add((Keys)code);
+				}
+				else
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
     }

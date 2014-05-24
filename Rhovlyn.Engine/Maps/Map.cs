@@ -17,7 +17,7 @@ using Rhovlyn.Engine.Managers;
 namespace Rhovlyn.Engine.Maps
 {
 	public class Map : Graphics.IDrawable
-    {
+	{
 		private Dictionary< Point , MapObject > mapobjects;
 		public ContentManager Content { get; private set; }
 		public static readonly int TILE_WIDTH = 64;
@@ -159,6 +159,6 @@ namespace Rhovlyn.Engine.Maps
 			}
 		}
 		#endregion
-    }
+	}
 }
 

@@ -64,6 +64,10 @@
     <Compile Include="Input\IInputProvider.cs" />
     <Compile Include="Input\KeyBoardProvider.cs" />
     <Compile Include="Managers\InputManager.cs" />
+    <Compile Include="Controller\IController.cs" />
+    <Compile Include="Controller\LocalController.cs" />
+    <Compile Include="Controller\CameraController.cs" />
+    <Compile Include="Graphics\AnimatedSprite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -75,6 +79,7 @@
     <Folder Include="States\" />
     <Folder Include="Managers\" />
     <Folder Include="Input\" />
+    <Folder Include="Controller\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StyleCop.Cache">

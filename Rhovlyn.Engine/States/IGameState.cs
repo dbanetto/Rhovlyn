@@ -7,7 +7,7 @@ using Rhovlyn.Engine.Managers;
 namespace Rhovlyn.Engine.States
 {
 	public interface IGameState
-    {
+	{
 		/// <summary>
 		/// Initialize the GameState
 		/// </summary>

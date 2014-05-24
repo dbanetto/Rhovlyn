@@ -5,15 +5,15 @@ using Rhovlyn.Engine.Maps;
 namespace Rhovlyn.Engine.Managers
 {
 	public class MapManager
-    {
+	{
 		Dictionary< string , Map > maps;
 		public ContentManager Content { get; private set;}
 
 		public MapManager(ContentManager content)
-        {
+		{
 			maps = new Dictionary<string, Map>();
 			Content = content;
-        }
+		}
 
 		#region Management
 		public string Current { get; set; }
@@ -70,6 +70,6 @@ namespace Rhovlyn.Engine.Managers
 			return this.maps.ContainsKey(name);
 		}
 		#endregion
-    }
+	}
 }
 

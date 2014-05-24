@@ -7,18 +7,18 @@ using System.Runtime.Remoting.Channels;
 
 namespace Rhovlyn.Engine.Util
 {
-    public class Camera
-    {
+	public class Camera
+	{
 
 		private Rectangle bounds;
 		private Vector2 position;
 
 
 		public Camera(Vector2 position, Rectangle bounds )
-        {
+		{
 			this.bounds = bounds;
 			this.Position = position;
-        }
+		}
 
 
 		public void UpdateBounds (Rectangle bounds)
@@ -41,6 +41,6 @@ namespace Rhovlyn.Engine.Util
 				this.bounds.Y = (int)value.Y;
 			}
 		}
-    }
+	}
 }
 

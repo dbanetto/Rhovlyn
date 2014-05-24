@@ -3,14 +3,25 @@ using Rhovlyn.Engine.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.States;
+using System.IO;
 
 namespace Rhovlyn.Engine.Managers
 {
-    public class ContentManager
+	public class ContentManager
 	{
 		public ContentManager (string settingsPath)
 		{
 			Settings = new Settings(settingsPath);
+			string path = "";
+			if (Settings.Get("core", "input.settings", ref path))
+			{
+				Input = new InputManager(path);
+			}
+			else
+			{
+				throw new IOException("Cannot find input settings");
+			}
+
 		}
 
 		public void Init (GraphicsDevice device)
@@ -19,6 +30,7 @@ namespace Rhovlyn.Engine.Managers
 			GameStates = new GameStateManager(this);
 			Sprites = new SpriteManager(this);
 			Maps = new MapManager(this);
+
 		}
 
 		public Map CurrnetMap {get { return Maps.CurrentMap; } }
@@ -29,7 +41,8 @@ namespace Rhovlyn.Engine.Managers
 		public TextureMananger Textures { get; private set; }
 		public MapManager Maps { get; private set; }
 		public GameStateManager GameStates { get; private set; }
+		public InputManager Input { get; private set; }
 
-    }
+	}
 }
 

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 namespace Rhovlyn.Engine.Maps
 {
 	public static class MapGenerator
-    {
+	{
 		public static void GenerateMap (string outPath , int seed)
 		{
 
@@ -121,6 +121,6 @@ namespace Rhovlyn.Engine.Maps
 			}
 		} 
 
-    }
+	}
 }
 
