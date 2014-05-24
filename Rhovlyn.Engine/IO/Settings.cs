@@ -120,6 +120,10 @@ namespace Rhovlyn.Engine.IO
 			get { return this.settings[header.ToLower()]; }
 		}
 
+		public List<string> Headers { get { return new List<string>(this.settings.Keys); } }
+
+		//TODO : Replace Get series with generic funcion
+
 		/// <summary>
 		/// Get the specified header, key and return the value.
 		/// </summary>

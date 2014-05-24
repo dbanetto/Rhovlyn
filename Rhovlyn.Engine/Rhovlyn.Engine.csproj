@@ -61,6 +61,9 @@
     <Compile Include="Managers\MapManager.cs" />
     <Compile Include="Managers\SpriteManager.cs" />
     <Compile Include="Managers\TextureMananger.cs" />
+    <Compile Include="Input\IInputProvider.cs" />
+    <Compile Include="Input\KeyBoardProvider.cs" />
+    <Compile Include="Managers\InputManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -71,6 +74,7 @@
     <Folder Include="Security\" />
     <Folder Include="States\" />
     <Folder Include="Managers\" />
+    <Folder Include="Input\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StyleCop.Cache">

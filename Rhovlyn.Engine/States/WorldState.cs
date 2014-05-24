@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Managers;
 using Rhovlyn.Engine.Graphics;
+using Rhovlyn.Engine.Input;
 
 namespace Rhovlyn.Engine.States
 {
@@ -24,6 +25,9 @@ namespace Rhovlyn.Engine.States
 			this.content = content;
 			content.Maps.Add( "test" ,  "Content/map.txt" );
 			content.Sprites.Add( "player" , new Sprite(Vector2.Zero , content.Textures["player"] ));
+
+			var v = new KeyBoardProvider();
+			v.Load("Content/input.ini");
 		}
 
 		public void UnLoadContent(ContentManager content)
