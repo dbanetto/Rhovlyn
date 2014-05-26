@@ -9,7 +9,7 @@ using System;
 
 namespace Rhovlyn.Engine.Managers
 {
-	public class SpriteManager : Graphics.IDrawable
+	public class SpriteManager
 	{
 		private Dictionary< string , Sprite > sprites;
 		public ContentManager Content { get; private set; }

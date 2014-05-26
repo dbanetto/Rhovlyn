@@ -22,7 +22,6 @@ namespace Rhovlyn.Engine
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
-		Camera camera;
 		ContentManager content;
 
 		public GameWindow()
@@ -47,12 +46,12 @@ namespace Rhovlyn.Engine
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
 
-			content.Init(graphics.GraphicsDevice);
-			camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
 
+			content.Camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
+			content.Init(graphics.GraphicsDevice);
 
 			//Keep the camera up to date with the Client Size
-			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { camera.UpdateBounds(this.Window.ClientBounds); };
+			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { content.Camera.UpdateBounds(this.Window.ClientBounds); };
 			base.Initialize();
 		}
 
@@ -80,7 +79,7 @@ namespace Rhovlyn.Engine
 
 			content.CurrentState.Update(gameTime);
 
-			this.Window.Title = this.camera.Bounds.ToString();
+			this.Window.Title = this.content.Camera.Bounds.ToString();
 			base.Update(gameTime);
 		}
 
@@ -93,7 +92,7 @@ namespace Rhovlyn.Engine
 			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
-			this.content.CurrentState.Draw(gameTime, spriteBatch , camera);
+			this.content.CurrentState.Draw(gameTime, spriteBatch , content.Camera);
 			spriteBatch.End();
 
 			base.Draw(gameTime);

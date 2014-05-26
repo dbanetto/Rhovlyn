@@ -16,7 +16,7 @@ namespace Rhovlyn.Engine.Input
 		}
 
 		List<Keys> keys;
-		public List<Keys> Keys { get{ return keys; } }
+		public List<Keys> Keys { get{ return keys; } set { keys = value; } }
 	}
 
 	public class KeyBoardProvider : IInputProvider
@@ -94,7 +94,6 @@ namespace Rhovlyn.Engine.Input
 				return true;
 			} 
 			return false;
-
 		}
 
 		public void ParseSettings ()
@@ -109,7 +108,7 @@ namespace Rhovlyn.Engine.Input
 					if (key.EndsWith(SettingsPostfix))
 					{
 						KeyCondition result = new KeyCondition(null);
-						if (ParseSetting(settings[header][key], ref result))
+						if (ParseKeyBinding(settings[header][key], ref result))
 						{
 							//Remove SettingsPostfix from the key
 							//On a unsuccessful Parse, stop
@@ -125,9 +124,21 @@ namespace Rhovlyn.Engine.Input
 			}
 		}
 
-		public bool ParseSetting( string keystring , ref KeyCondition key )
+		/// <summary>
+		/// Parses a Key binding
+		/// </summary>
+		/// <returns><c>true</c>, if setting was parsed, <c>false</c> otherwise error has occured.</returns>
+		/// <param name="keystring">Key string.</param>
+		/// <remarks>Key String is a + sperated list containing English letters or scan-codes
+		/// refer to https://github.com/mono/MonoGame/blob/develop/MonoGame.Framework/Input/Keys.cs for scan-codes
+		/// </remark>
+		/// <param name="key">Key.</param>
+		public static bool ParseKeyBinding( string keystring , ref KeyCondition key )
 		{
 			var segs = keystring.Split('+');
+			if (key.Keys == null)
+				key.Keys = new List<Keys>();
+
 			foreach (var seg in segs)
 			{
 				//Convert a singel letter to scancode

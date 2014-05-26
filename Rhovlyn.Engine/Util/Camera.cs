@@ -13,7 +13,6 @@ namespace Rhovlyn.Engine.Util
 		private Rectangle bounds;
 		private Vector2 position;
 
-
 		public Camera(Vector2 position, Rectangle bounds )
 		{
 			this.bounds = bounds;

@@ -9,6 +9,9 @@ namespace Rhovlyn.Engine.Graphics
 	{
 		void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera);
 		void Update (GameTime gameTime);
+
+		Vector2 Position { get; set; }
+		Rectangle Area { get; set; }
 	}
 }
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Rhovlyn.Engine.Graphics
 {
-	public class Sprite : IDrawable
+	public class Sprite : Graphics.IDrawable
 	{
 		#region Feilds
 		protected Vector2 position;

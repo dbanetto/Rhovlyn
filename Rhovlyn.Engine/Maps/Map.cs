@@ -16,7 +16,7 @@ using Rhovlyn.Engine.Managers;
 #endregion
 namespace Rhovlyn.Engine.Maps
 {
-	public class Map : Graphics.IDrawable
+	public class Map 
 	{
 		private Dictionary< Point , MapObject > mapobjects;
 		public ContentManager Content { get; private set; }

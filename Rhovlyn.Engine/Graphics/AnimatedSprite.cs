@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.IO;
 
 namespace Rhovlyn.Engine.Graphics
 {
@@ -108,9 +109,9 @@ namespace Rhovlyn.Engine.Graphics
 
 		#region Animation Management
 
-		public bool Add (string name , Animation animation )
+		public bool AddAnimation (string name , Animation animation )
 		{
-			if (!Exists(name))
+			if (!ExistsAnimation(name))
 			{
 				animations.Add(name, animation);
 				return true;
@@ -118,14 +119,14 @@ namespace Rhovlyn.Engine.Graphics
 			return false;
 		}
 
-		public bool Exists ( string name)
+		public bool ExistsAnimation ( string name)
 		{
 			return this.animations.ContainsKey(name);
 		}
 
 		public bool SetAnimation ( string name )
 		{
-			if (Exists(name))
+			if (ExistsAnimation(name))
 			{
 				//End the last animation
 				if (CurrentAnimation != null)
@@ -143,6 +144,36 @@ namespace Rhovlyn.Engine.Graphics
 				return true;
 			}
 			return false;
+		}
+
+		public static bool LoadAnimation (string raw , ref Animation ani)
+		{
+			List<int> frames = new List<int>();
+			List<double> times = new List<double>();
+			int loops = 0;
+			//Example
+			// 1,2:0.1,3:1.0
+			// Read as : 1 loop , 1st index frame=2 for 0.1sec, 2nd index frame=3 for 1.0sec
+			foreach (var seg in raw.Split(','))
+			{
+				var opt = seg.Split(':');
+				if (opt.Length == 1)
+				{
+					loops = int.Parse(opt[0]);
+				}
+				else if (opt.Length == 2)
+				{
+					frames.Add( int.Parse(opt[0]));
+					times.Add( double.Parse(opt[1]));
+				}
+				else
+				{
+					throw new InvalidDataException("Invalid Animation segment : " + seg);
+					return false;
+				}
+			}
+			ani = new Animation(frames, times, loops);
+	      return true;
 		}
 		#endregion
 

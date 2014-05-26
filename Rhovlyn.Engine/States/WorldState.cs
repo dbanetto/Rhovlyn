@@ -14,6 +14,8 @@ namespace Rhovlyn.Engine.States
 	{
 		private ContentManager content;
 		private LocalController player;
+		private CameraController cameracontroll;
+
 		public WorldState()
 		{
 		}
@@ -30,15 +32,15 @@ namespace Rhovlyn.Engine.States
 			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["player"] ));
 
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
-			playersprite.Add("up"    , new Animation( new List<int> { 3 } , new List<double> { 0.0 } ));
-			playersprite.Add("down"  , new Animation( new List<int> { 2 } , new List<double> { 0.0 } ));
+			playersprite.AddAnimation("up"    , new Animation( new List<int> { 3 } , new List<double> { 0.0 } ));
+			playersprite.AddAnimation("down"  , new Animation( new List<int> { 2 } , new List<double> { 0.0 } ));
 
 			var right = new Animation(new List<int> { 0 }, new List<double> { 0.0 });
 			right.AnimationStarted += (AnimatedSprite sprite) => ( sprite.Effect = SpriteEffects.FlipHorizontally );
 			right.AnimationEnded += (AnimatedSprite sprite) => ( sprite.Effect = SpriteEffects.None );
-			playersprite.Add("right" , right );
+			playersprite.AddAnimation("right" , right );
 
-			playersprite.Add("left"  , new Animation( new List<int> { 0 } , new List<double> { 0.0 } ));
+			playersprite.AddAnimation("left"  , new Animation( new List<int> { 0 } , new List<double> { 0.0 } ));
 
 			player = new LocalController(playersprite);
 			player.Initialize();
@@ -47,7 +49,10 @@ namespace Rhovlyn.Engine.States
 			var key = new KeyBoardProvider();
 			key.Load("Content/input.ini");
 			key.ParseSettings();
-			content.Input.Add("keyboard", key); 
+			content.Input.Add("keyboard", key);
+
+			cameracontroll = new CameraController(content.Camera);
+			cameracontroll.FocusOn(content.Sprites["player"]);
 		}
 
 		public void UnLoadContent(ContentManager content)
@@ -57,12 +62,14 @@ namespace Rhovlyn.Engine.States
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
+			cameracontroll.Update(gameTime);
 			content.CurrnetMap.Draw(gameTime , spriteBatch , camera);
 			content.Sprites.Draw(gameTime , spriteBatch , camera);
 		}
 		public void Update (GameTime gameTime)
 		{
 			player.Update(gameTime);
+			cameracontroll.Update(gameTime);
 		}
 	}
 }

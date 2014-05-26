@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.States;
 using System.IO;
+using Rhovlyn.Engine.Util;
 
 namespace Rhovlyn.Engine.Managers
 {
@@ -35,6 +36,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public Map CurrnetMap {get { return Maps.CurrentMap; } }
 		public IGameState CurrentState { get { return GameStates.CurrnetState; }} 
+		public Camera Camera { get; set; }
 
 		public SpriteManager Sprites { get; private set; }
 		public Settings Settings { get; private set; }
