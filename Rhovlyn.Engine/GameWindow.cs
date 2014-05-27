@@ -24,6 +24,7 @@ namespace Rhovlyn.Engine
 
 		ContentManager content;
 
+
 		public GameWindow()
 		{
 			graphics = new GraphicsDeviceManager(this);
@@ -89,7 +90,10 @@ namespace Rhovlyn.Engine
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
+			if (this.content.CurrnetMap != null)
+				graphics.GraphicsDevice.Clear(this.content.CurrnetMap.Background);
+			else
+				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
 			this.content.CurrentState.Draw(gameTime, spriteBatch , content.Camera);

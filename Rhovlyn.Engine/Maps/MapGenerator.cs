@@ -27,7 +27,7 @@ namespace Rhovlyn.Engine.Maps
 			tiles.Add(new Point(0, 0), 2);
 
 			//Tile names to varry between
-			var tile_names = new List<string>() { "land,0" , "land,1" , "land,2" , "land,3" };
+			var tile_names = new List<string>() { "cobble,0" , "cobble,1" , "cobble,2" , "cobble,3"};
 
 			//Initial room
 			for (int x = -1; x <= 1; x++) {
@@ -112,14 +112,18 @@ namespace Rhovlyn.Engine.Maps
 				outX += (int)node.X;
 				outY += (int)node.Y;
 
-				if (!tiles.ContainsKey(new Point(outX, outY))) {
+				if (!tiles.ContainsKey(new Point(outX, outY))) 
+				{
 					tiles.Add(new Point(outX, outY), type);
 					nodes.Add(new Point(outX, outY));
 				}
 			}
 
+
+			writer.WriteLine("@background:14,14,14");
 			//Write out all the tiles to file
-			foreach (var t in tiles) {
+			foreach (var t in tiles) 
+			{
 				writer.WriteLine((int)t.Key.X + "," + (int)t.Key.Y + "," + tile_names[t.Value]);
 			}
 		} 
