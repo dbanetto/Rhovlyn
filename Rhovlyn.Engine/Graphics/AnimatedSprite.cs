@@ -169,7 +169,6 @@ namespace Rhovlyn.Engine.Graphics
 				else
 				{
 					throw new InvalidDataException("Invalid Animation segment : " + seg);
-					return false;
 				}
 			}
 			ani = new Animation(frames, times, loops);

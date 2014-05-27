@@ -31,27 +31,28 @@ namespace Rhovlyn.Engine.Controller
 
         public void Update (GameTime gameTime)
 		{
+			int speed = 128;
             if (content.Input["player.up"])
             {
-				Target.Position = Vector2.Add(Target.Position, new Vector2( 0 , -1 ));
+				Target.Position = Vector2.Add(Target.Position, new Vector2( 0 , -speed * (float)gameTime.ElapsedGameTime.TotalSeconds ));
 				Target.SetAnimation("up");
             }
 
             if (content.Input["player.down"])
             {
-				Target.Position = Vector2.Add(Target.Position, new Vector2( 0 , 1 ));
+				Target.Position = Vector2.Add(Target.Position, new Vector2( 0 , speed * (float)gameTime.ElapsedGameTime.TotalSeconds ));
 				Target.SetAnimation("down");
             }
 
             if (content.Input["player.left"])
             {
-				Target.Position = Vector2.Add(Target.Position, new Vector2( -1 , 0 ));
+				Target.Position = Vector2.Add(Target.Position, new Vector2( -speed * (float)gameTime.ElapsedGameTime.TotalSeconds , 0 ));
 				Target.SetAnimation("left");
             }
 
             if (content.Input["player.right"])
             {
-				Target.Position = Vector2.Add(Target.Position, new Vector2( 1 , 0 ));
+				Target.Position = Vector2.Add(Target.Position, new Vector2( speed * (float)gameTime.ElapsedGameTime.TotalSeconds , 0 ));
 				Target.SetAnimation("right");
             }
 		}

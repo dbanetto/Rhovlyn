@@ -7,24 +7,27 @@ namespace Rhovlyn.Engine.Maps
 {
 	public static class MapGenerator
 	{
-		public static void GenerateMap (string outPath , int seed)
+		public static void GenerateDungeonMap (string outPath , int seed)
 		{
 
 			using (var writer = new StreamWriter(new FileStream(outPath , FileMode.Create)))
 			{
-				GenerateMap( writer, seed);
+				GenerateDungeonMap( writer, seed);
 			}
 
 
 		}
 
-		public static void GenerateMap( StreamWriter writer , int seed )
+		public static void GenerateDungeonMap( StreamWriter writer , int seed )
 		{
 			var rnd = new Random(seed);
 			var tiles = new Dictionary<Point, int>();
 			var nodes = new List<Point>();
 
 			tiles.Add(new Point(0, 0), 2);
+
+			//Tile names to varry between
+			var tile_names = new List<string>() { "land,0" , "land,1" , "land,2" , "land,3" };
 
 			//Initial room
 			for (int x = -1; x <= 1; x++) {
@@ -117,7 +120,7 @@ namespace Rhovlyn.Engine.Maps
 
 			//Write out all the tiles to file
 			foreach (var t in tiles) {
-				writer.WriteLine(t.Value + "," + (int)t.Key.X + "," + (int)t.Key.Y);
+				writer.WriteLine((int)t.Key.X + "," + (int)t.Key.Y + "," + tile_names[t.Value]);
 			}
 		} 
 

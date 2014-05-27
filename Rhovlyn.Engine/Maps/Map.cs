@@ -128,10 +128,10 @@ namespace Rhovlyn.Engine.Maps
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
 			//Get a "Rectangle" of all the possible sprites 
-			int tile_x = (camera.Bounds.X / TILE_WIDTH);
-			int tile_y = (camera.Bounds.Y / TILE_HIGHT);
-			int tile_w = (camera.Bounds.Width / TILE_WIDTH) + 1;
-			int tile_h = (camera.Bounds.Height / TILE_HIGHT) + 1;
+			int tile_x = (camera.Bounds.X / TILE_WIDTH) - 1;
+			int tile_y = (camera.Bounds.Y / TILE_HIGHT) - 1 ;
+			int tile_w = (camera.Bounds.Width / TILE_WIDTH) + 3;
+			int tile_h = (camera.Bounds.Height / TILE_HIGHT) + 3;
 
 			//Check which method is cheaper
 			if (mapobjects.Count < (tile_w * tile_h))

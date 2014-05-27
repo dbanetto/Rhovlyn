@@ -27,8 +27,12 @@ namespace Rhovlyn.Engine.States
 
 		public void LoadContent(ContentManager content)
 		{
+			Rhovlyn.Engine.Maps.MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() );
+	
+
 			this.content = content;
-			content.Maps.Add( "test" ,  "Content/map.txt" );
+			content.Textures.Load("Content/textures.txt");
+			content.Maps.Add( "test" ,  "gen-map.map" );
 			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["player"] ));
 
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
