@@ -5,12 +5,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Rhovlyn.Test.Engine.Input
 {
-    [TestFixture()]
+	[TestFixture()]
 	public class KeyboardProviderTest
-    {
-        [Test()]
+	{
+		[Test()]
 		public void LoadKeys()
-        {
+		{
 			KeyCondition cond = new KeyCondition();
 			if (KeyBoardProvider.ParseKeyBinding("W", ref cond))
 			{
@@ -47,7 +47,7 @@ namespace Rhovlyn.Test.Engine.Input
 			{
 				throw new Exception("Invalid Key Parse for \'Waa+91\'" );
 			}
-        }
-    }
+		}
+	}
 }
 

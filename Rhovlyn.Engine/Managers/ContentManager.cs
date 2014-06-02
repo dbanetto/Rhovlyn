@@ -31,6 +31,7 @@ namespace Rhovlyn.Engine.Managers
 			GameStates = new GameStateManager(this);
 			Sprites = new SpriteManager(this);
 			Maps = new MapManager(this);
+			Audio = new AudioManager();
 
 		}
 
@@ -38,6 +39,7 @@ namespace Rhovlyn.Engine.Managers
 		public IGameState CurrentState { get { return GameStates.CurrnetState; }} 
 		public Camera Camera { get; set; }
 
+		public AudioManager Audio { get; private set; }
 		public SpriteManager Sprites { get; private set; }
 		public Settings Settings { get; private set; }
 		public TextureMananger Textures { get; private set; }

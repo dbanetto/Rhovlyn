@@ -3,8 +3,8 @@ using System.IO;
 
 namespace Rhovlyn.Engine.Input
 {
-    public interface IInputProvider
-    {
+	public interface IInputProvider
+	{
 		/// <summary>
 		/// The end of the Provider's settings to be checked when parsing the settings
 		/// </summary>
@@ -61,6 +61,6 @@ namespace Rhovlyn.Engine.Input
 		/// </remarks>
 		void ParseSettings ();
 
-    }
+	}
 }
 

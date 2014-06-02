@@ -9,13 +9,10 @@ namespace Rhovlyn.Engine.Maps
 	{
 		public static void GenerateDungeonMap (string outPath , int seed)
 		{
-
 			using (var writer = new StreamWriter(new FileStream(outPath , FileMode.Create)))
 			{
 				GenerateDungeonMap( writer, seed);
 			}
-
-
 		}
 
 		public static void GenerateDungeonMap( StreamWriter writer , int seed )
@@ -26,6 +23,7 @@ namespace Rhovlyn.Engine.Maps
 
 			tiles.Add(new Point(0, 0), 2);
 
+			// HACK : Temp 'fixed' types
 			//Tile names to varry between
 			var tile_names = new List<string>() { "cobble,0" , "cobble,1" , "cobble,2" , "cobble,3"};
 
@@ -42,8 +40,9 @@ namespace Rhovlyn.Engine.Maps
 			while (nodes.Count != 0 && tiles.Count < 1000) {
 				var node = nodes[0];
 				nodes.RemoveAt(0);
-				//const type due to stone
-				int type = 2;
+
+				//Random "sub"-texture of stone
+				int type = rnd.Next( 0,tile_names.Count - 1);
 
 				double sumX = 0, sumY = 0, sumN = 0;
 				for (int x = (int)node.X - 1; x <= (int)node.X + 1; x++) {
@@ -119,8 +118,8 @@ namespace Rhovlyn.Engine.Maps
 				}
 			}
 
-
-			writer.WriteLine("@background:14,14,14");
+			writer.WriteLine("#Generated with seed " + seed);
+			writer.WriteLine("@background:36,36,36");
 			//Write out all the tiles to file
 			foreach (var t in tiles) 
 			{

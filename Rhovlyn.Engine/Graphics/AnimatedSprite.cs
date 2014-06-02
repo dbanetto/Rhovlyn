@@ -62,7 +62,7 @@ namespace Rhovlyn.Engine.Graphics
 	};
 
 	public class AnimatedSprite : Sprite
-    {
+	{
 		private Dictionary < string , Animation > animations;
 		public string CurrentAnimation { get; private set; }
 		private int index;
@@ -172,7 +172,7 @@ namespace Rhovlyn.Engine.Graphics
 				}
 			}
 			ani = new Animation(frames, times, loops);
-	      return true;
+			return true;
 		}
 		#endregion
 

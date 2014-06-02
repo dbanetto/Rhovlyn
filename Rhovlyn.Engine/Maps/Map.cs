@@ -175,6 +175,39 @@ namespace Rhovlyn.Engine.Maps
 				obj.Update(gameTime);
 			}
 		}
+
+		public bool IsOnMap( Rectangle area )
+		{
+			//Get the X,Y,W,H in terms of Map Objects
+			double ax = (double)area.X / (double)TILE_WIDTH;
+			double ay = (double)area.Y / (double)TILE_HIGHT;
+			double aw = ((double)area.Width / (double)TILE_WIDTH) + ax;
+			double ah = ((double)area.Height / (double)TILE_HIGHT) + ay;
+
+			for (double x = ax; x < aw; x++ )
+			{
+				for (double y = ay; y < ah; y++ )
+				{
+					//Check both rounded and floored values
+					//Both are check because of a bug occurs when only 1 is checked
+					var p_xs = new int[] { (int)Math.Round(x) , (int)Math.Floor(x) };
+					var p_ys = new int[] { (int)Math.Round(y), (int)Math.Floor(y) };
+
+					//Check all the values for a fail
+					foreach (var p_x in p_xs){
+						foreach (var p_y in p_ys){
+							var pt = new Point( p_x , p_y );
+							if (!mapobjects.ContainsKey(pt))
+							{
+								return false;
+							}
+						}
+					}
+
+				}
+			}
+			return true;
+		}
 		#endregion
 	}
 }

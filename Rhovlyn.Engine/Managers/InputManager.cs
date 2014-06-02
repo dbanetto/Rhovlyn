@@ -4,18 +4,16 @@ using System.Collections.Generic;
 
 namespace Rhovlyn.Engine.Managers
 {
-    public class InputManager
-    {
+	public class InputManager
+	{
 		Dictionary< string , IInputProvider > inputs;
 
 
 
 		public InputManager(string settingsPath )
-        {
+		{
 			inputs = new Dictionary< string , IInputProvider >();
-        }
-
-
+		}
 
 		#region Management
 		public bool this[string name]
@@ -47,6 +45,6 @@ namespace Rhovlyn.Engine.Managers
 			return this.inputs.ContainsKey(name);
 		}
 		#endregion
-    }
+	}
 }
 

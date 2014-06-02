@@ -21,9 +21,12 @@ namespace Rhovlyn.Engine
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-
 		ContentManager content;
 
+		int frames_past = 0;
+		double frames_timer = 0;
+
+		public double FPS { get; private set; }
 
 		public GameWindow()
 		{
@@ -50,6 +53,7 @@ namespace Rhovlyn.Engine
 
 			content.Camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
 			content.Init(graphics.GraphicsDevice);
+
 
 			//Keep the camera up to date with the Client Size
 			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { content.Camera.UpdateBounds(this.Window.ClientBounds); };
@@ -79,9 +83,17 @@ namespace Rhovlyn.Engine
 			}
 
 			content.CurrentState.Update(gameTime);
+			content.Audio.Update();
 
-			this.Window.Title = this.content.Camera.Bounds.ToString();
+			this.Window.Title = "FPS:" + (int)FPS +  " " + this.content.Camera.Bounds.ToString();
 			base.Update(gameTime);
+			frames_timer += gameTime.ElapsedGameTime.TotalSeconds;
+			if (frames_timer > 1)
+			{
+				FPS = frames_past / frames_timer;
+				frames_past = 0;
+				frames_timer = 0;
+			}
 		}
 
 		/// <summary>
@@ -96,9 +108,10 @@ namespace Rhovlyn.Engine
 				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
-			this.content.CurrentState.Draw(gameTime, spriteBatch , content.Camera);
+				this.content.CurrentState.Draw(gameTime, spriteBatch , content.Camera);
 			spriteBatch.End();
 
+			frames_past++;
 			base.Draw(gameTime);
 		}
 
@@ -133,6 +146,11 @@ namespace Rhovlyn.Engine
 			bool fullscreen = false;
 			content.Settings.GetBool("window", "fullscreen", ref fullscreen);
 			graphics.IsFullScreen = fullscreen;
+
+			//Does not work on Linux
+			bool vsync = true;
+			content.Settings.GetBool("window", "vsync", ref fullscreen);
+			graphics.SynchronizeWithVerticalRetrace = vsync;
 		}
 	}
 }

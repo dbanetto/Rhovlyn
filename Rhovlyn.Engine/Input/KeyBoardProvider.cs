@@ -20,17 +20,17 @@ namespace Rhovlyn.Engine.Input
 	}
 
 	public class KeyBoardProvider : IInputProvider
-    {
+	{
 		public string SettingsPostfix { get; private set; }
 
 		private IO.Settings settings;
 		private Dictionary<string ,  KeyCondition > keys;
 
-        public KeyBoardProvider()
-        {
+		public KeyBoardProvider()
+		{
 			SettingsPostfix = "keys";
 			keys = new Dictionary<string ,  KeyCondition >();
-        }
+		}
 
 		public bool Load ( string path )
 		{
@@ -169,6 +169,6 @@ namespace Rhovlyn.Engine.Input
 			return true;
 		}
 
-    }
+	}
 }
 

@@ -26,7 +26,7 @@ namespace Rhovlyn.Engine.Controller
 	}
 
 	public class CameraController : IController
-    {
+	{
 		private const double INF_TIME = double.MinValue;
 
 
@@ -37,10 +37,10 @@ namespace Rhovlyn.Engine.Controller
 		private CameraCommand current;
 
 		public CameraController(Camera camera)
-        {
+		{
 			Camera = camera;
 			commands = new List<CameraCommand>();
-        }
+		}
 
 		public void Initialize()
 		{
@@ -169,6 +169,6 @@ namespace Rhovlyn.Engine.Controller
 		public void MoveTo(Vector2 point, double time) {
 			commands.Add(new CameraCommand( time, point, false ,  Vector2.Zero));
 		}
-    }
+	}
 }
 

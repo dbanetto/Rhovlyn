@@ -69,6 +69,7 @@
     <Compile Include="Controller\LocalController.cs" />
     <Compile Include="Controller\CameraController.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
+    <Compile Include="Managers\AudioManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

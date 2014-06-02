@@ -4,8 +4,8 @@ using Rhovlyn.Engine.Managers;
 
 namespace Rhovlyn.Engine.Controller
 {
-    public interface IController
-    {
+	public interface IController
+	{
 		/// <summary>
 		/// Initialize the GameState
 		/// </summary>
@@ -26,6 +26,6 @@ namespace Rhovlyn.Engine.Controller
 
 		void Update (GameTime gameTime);
 
-    }
+	}
 }
 

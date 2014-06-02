@@ -27,10 +27,15 @@ namespace Rhovlyn.Engine.States
 
 		public void LoadContent(ContentManager content)
 		{
-			Rhovlyn.Engine.Maps.MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() );
-	
-
 			this.content = content;
+
+			Rhovlyn.Engine.Maps.MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() );
+
+
+			this.content.Audio.Add("sfx", "Content/sfx.wav");
+
+
+
 			content.Textures.Load("Content/textures.txt");
 			content.Maps.Add( "test" ,  "gen-map.map" );
 			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["player"] ));
@@ -38,7 +43,7 @@ namespace Rhovlyn.Engine.States
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
 			playersprite.AddAnimation("up"    , new Animation( new List<int> { 3 } , new List<double> { 0.0 } ));
 			playersprite.AddAnimation("down"  , new Animation( new List<int> { 2 } , new List<double> { 0.0 } ));
-
+			this.content.Audio.ListenerObject = playersprite;
 			var right = new Animation(new List<int> { 0 }, new List<double> { 0.0 });
 			right.AnimationStarted += (AnimatedSprite sprite) => ( sprite.Effect = SpriteEffects.FlipHorizontally );
 			right.AnimationEnded += (AnimatedSprite sprite) => ( sprite.Effect = SpriteEffects.None );
@@ -72,6 +77,10 @@ namespace Rhovlyn.Engine.States
 		}
 		public void Update (GameTime gameTime)
 		{
+			if (this.content.Input["player.sound"])
+			{
+				this.content.Audio.Play("sfx");
+			}
 			player.Update(gameTime);
 			cameracontroll.Update(gameTime);
 		}
