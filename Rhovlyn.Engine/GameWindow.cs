@@ -30,6 +30,10 @@ namespace Rhovlyn.Engine
 		int frames_past = 0;
 		double frames_timer = 0;
 
+		double draw_graph_timer = 0;
+		double update_graph_timer = 0;
+
+
 		public double FPS { get; private set; }
 
 		public GameWindow()
@@ -54,11 +58,24 @@ namespace Rhovlyn.Engine
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
 
-			draw_time = new Graph(new Vector2(100,100), 400, 100);
+			draw_time = new Graph(new Vector2(10, 10), 200, 50, true , 100, MaxType.Auto , Color.LightGray);
 			draw_time.ZeroIsMinimum = true;
-			update_time = new Graph(new Vector2(500,100), 400, 100);
+			update_time = new Graph(new Vector2(220,10), 200, 50 , true , 100 , MaxType.Auto , Color.LightGray);
 			update_time.ZeroIsMinimum = true;
 			effect = new BasicEffect(graphics.GraphicsDevice);
+
+			draw_time.Lines.Add(new Line(128, Color.DarkRed));
+			draw_time.Lines.Add(new Line(64, Color.Red));
+			draw_time.Lines.Add(new Line(32, Color.Orange));
+			draw_time.Lines.Add(new Line(16, Color.Green));
+			draw_time.Lines.Add(new Line(8, Color.CornflowerBlue));
+			draw_time.Lines.Add(new Line(1, Color.Purple));
+
+
+			update_time.Lines.Add(new Line(16, Color.Red));
+			update_time.Lines.Add(new Line(8, Color.Orange));
+			update_time.Lines.Add(new Line(1, Color.Green));
+
 
 			content.Camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
 			content.Init(graphics.GraphicsDevice);
@@ -97,8 +114,6 @@ namespace Rhovlyn.Engine
 			content.Audio.Update();
 
 			this.Window.Title = "FPS:" + (int)FPS +  " " + this.content.Camera.Bounds.ToString();
-			base.Update(gameTime);
-
 
 			frames_timer += gameTime.ElapsedGameTime.TotalSeconds;
 			if (frames_timer > 1)
@@ -109,8 +124,16 @@ namespace Rhovlyn.Engine
 			}
 
 			draw_time.Update(gameTime);
-			update_time.Data.Add((DateTime.Now - then).TotalSeconds);
 			update_time.Update(gameTime);
+
+			update_graph_timer += gameTime.ElapsedGameTime.TotalSeconds;
+			if (update_graph_timer > 0.1)
+			{
+				update_time.Data.Add((DateTime.Now - then).TotalMilliseconds);
+				update_graph_timer = 0;
+			}
+
+			base.Update(gameTime);
 		}
 
 		/// <summary>
@@ -134,9 +157,12 @@ namespace Rhovlyn.Engine
 
 			frames_past++;
 
-			draw_time.Data.Add((DateTime.Now - then).TotalSeconds);
-
-
+			draw_graph_timer += gameTime.ElapsedGameTime.TotalSeconds;
+			if (draw_graph_timer > 0.1)
+			{
+				draw_time.Data.Add((DateTime.Now - then).TotalMilliseconds);
+				draw_graph_timer = 0;
+			}
 			base.Draw(gameTime);
 		}
 
