@@ -105,6 +105,11 @@ namespace Rhovlyn.Engine.Managers
 			return true;
 		}
 
+        public bool Load(string path)
+        {
+			return this.Load(new FileStream(path , FileMode.Open), this.Content.Textures);
+        }
+
 		public Sprite Get(string name)
 		{
 			if (Exists(name))
@@ -136,4 +141,3 @@ namespace Rhovlyn.Engine.Managers
 		#endregion
 	}
 }
-

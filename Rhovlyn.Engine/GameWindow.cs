@@ -23,6 +23,10 @@ namespace Rhovlyn.Engine
 		SpriteBatch spriteBatch;
 		ContentManager content;
 
+		Graph draw_time;
+		Graph update_time;
+
+		BasicEffect effect;
 		int frames_past = 0;
 		double frames_timer = 0;
 
@@ -50,10 +54,16 @@ namespace Rhovlyn.Engine
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
 
+			draw_time = new Graph(new Vector2(100,100), 400, 100);
+			draw_time.ZeroIsMinimum = true;
+			update_time = new Graph(new Vector2(500,100), 400, 100);
+			update_time.ZeroIsMinimum = true;
+			effect = new BasicEffect(graphics.GraphicsDevice);
 
 			content.Camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
 			content.Init(graphics.GraphicsDevice);
 
+			this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
 			//Keep the camera up to date with the Client Size
 			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { content.Camera.UpdateBounds(this.Window.ClientBounds); };
@@ -78,6 +88,7 @@ namespace Rhovlyn.Engine
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
+			var then = DateTime.Now;
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit();
 			}
@@ -87,6 +98,8 @@ namespace Rhovlyn.Engine
 
 			this.Window.Title = "FPS:" + (int)FPS +  " " + this.content.Camera.Bounds.ToString();
 			base.Update(gameTime);
+
+
 			frames_timer += gameTime.ElapsedGameTime.TotalSeconds;
 			if (frames_timer > 1)
 			{
@@ -94,6 +107,10 @@ namespace Rhovlyn.Engine
 				frames_past = 0;
 				frames_timer = 0;
 			}
+
+			draw_time.Update(gameTime);
+			update_time.Data.Add((DateTime.Now - then).TotalSeconds);
+			update_time.Update(gameTime);
 		}
 
 		/// <summary>
@@ -102,6 +119,8 @@ namespace Rhovlyn.Engine
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
+			var then = DateTime.Now;
+
 			if (this.content.CurrnetMap != null)
 				graphics.GraphicsDevice.Clear(this.content.CurrnetMap.Background);
 			else
@@ -109,9 +128,15 @@ namespace Rhovlyn.Engine
 
 			spriteBatch.Begin();
 				this.content.CurrentState.Draw(gameTime, spriteBatch , content.Camera);
+				draw_time.Draw(gameTime, spriteBatch, content.Camera);
+				update_time.Draw(gameTime, spriteBatch, content.Camera);
 			spriteBatch.End();
 
 			frames_past++;
+
+			draw_time.Data.Add((DateTime.Now - then).TotalSeconds);
+
+
 			base.Draw(gameTime);
 		}
 

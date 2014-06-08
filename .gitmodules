@@ -1,0 +1,3 @@
+[submodule "xna-primitives"]
+	path = xna-primitives
+	url = ssh://git@bitbucket.org/zyphrus/xna-primitives

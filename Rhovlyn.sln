@@ -7,12 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Launcher", "Rhovlyn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Test.Engine", "Rhovlyn.Test.Engine\Rhovlyn.Test.Engine.csproj", "{B5A26DA3-6EAB-448C-B709-BED9923B68D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Primitives2D", "xna-primitives\Primitives2D.csproj", "{39AD1482-1881-4852-A05D-DC61B0D3446A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39AD1482-1881-4852-A05D-DC61B0D3446A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39AD1482-1881-4852-A05D-DC61B0D3446A}.Debug|x86.Build.0 = Debug|Any CPU
+		{39AD1482-1881-4852-A05D-DC61B0D3446A}.Release|x86.ActiveCfg = Release|Any CPU
+		{39AD1482-1881-4852-A05D-DC61B0D3446A}.Release|x86.Build.0 = Release|Any CPU
 		{7F0330DE-7136-4C6A-AECF-1DD47612135C}.Debug|x86.ActiveCfg = Debug|x86
 		{7F0330DE-7136-4C6A-AECF-1DD47612135C}.Debug|x86.Build.0 = Debug|x86
 		{7F0330DE-7136-4C6A-AECF-1DD47612135C}.Release|x86.ActiveCfg = Release|x86

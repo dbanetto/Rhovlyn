@@ -71,6 +71,7 @@
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Managers\AudioManager.cs" />
     <Compile Include="Util\AreaMap.cs" />
+    <Compile Include="Util\Graph.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -88,5 +89,11 @@
     <None Include="StyleCop.Cache">
       <Visible>False</Visible>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xna-primitives\Primitives2D.csproj">
+      <Project>{39AD1482-1881-4852-A05D-DC61B0D3446A}</Project>
+      <Name>Primitives2D</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

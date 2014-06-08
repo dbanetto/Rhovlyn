@@ -52,6 +52,10 @@ namespace Rhovlyn.Engine.Maps
 		#endregion
 
 		#region Methods
+		/// <summary>
+		/// Load map from a stream, does not override current Map
+		/// </summary>
+		/// <param name="stream">Stream.</param>
 		public bool Load( Stream stream )
 		{
 			mapArea = Rectangle.Empty;
@@ -171,11 +175,22 @@ namespace Rhovlyn.Engine.Maps
 			return true;
 		}
 
+		/// <summary>
+		/// Load a map from a file
+		/// </summary>
+		/// <remark>
+		/// Does clear current map.
+		/// </remark>
+		/// <param name="path">Path.</param>
 		public bool Load (string path )
 		{
 			return this.Load( IO.Path.ResolvePath(path));
 		}
 
+		/// <summary>
+		/// Unload all Map Tiles in an area
+		/// </summary>
+		/// <param name="area">Area.</param>
 		public void Unload(Rectangle area)
 		{
 			foreach (var t in PointsUnderArea(area))
@@ -191,7 +206,15 @@ namespace Rhovlyn.Engine.Maps
 			{
 				obj.Draw(gameTime, spriteBatch, camera);
 			}
+
 		}
+
+		/// <summary>
+		/// Updates the Area Map object.
+		/// </summary>
+		/// <remark>
+		/// Should be used when editting the Map objects
+		/// </remark>
 		public void UpdateAreaMap()
 		{
 			areamap = new AreaMap<MapObject>(MapArea);
@@ -200,6 +223,7 @@ namespace Rhovlyn.Engine.Maps
 				areamap.Add(c.Value);
 			}
 		}
+
 		public void Update (GameTime gameTime)
 		{
 			foreach (var obj in mapobjects.Values)
@@ -208,12 +232,17 @@ namespace Rhovlyn.Engine.Maps
 			}
 		}
 
+		/// <summary>
+		/// Get all Map Objects in the Area
+		/// </summary>
+		/// <returns>The Map Objects in the area</returns>
+		/// <param name="area">Area</param>
 		public MapObject[] TilesInArea (Rectangle area)
 		{
 			List<MapObject> output = new List<MapObject>();
 			foreach (var pt in PointsUnderArea(area))
 			{
-				if (!mapobjects.ContainsKey(pt))
+				if (mapobjects.ContainsKey(pt))
 				{
 					output.Add(mapobjects[pt]);
 				}
@@ -221,6 +250,28 @@ namespace Rhovlyn.Engine.Maps
 			return output.ToArray();
 		}
 
+		/// <summary>
+		/// Determines if the given area in completely on the map
+		/// </summary>
+		/// <returns><c>true</c> if area give is completely on the map ; otherwise, <c>false</c>.</returns>
+		/// <param name="area">Area to check</param>
+		public bool IsOnMap( Rectangle area )
+		{
+			foreach (var pt in PointsUnderArea(area))
+			{
+				if (!mapobjects.ContainsKey(pt))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Get all of the Map Points in the given area
+		/// </summary>
+		/// <returns>The Map Points in the given area</returns>
+		/// <param name="area">Area</param>
 		public static Point[] PointsUnderArea(Rectangle area)
 		{
 			List<Point> output = new List<Point>();
@@ -252,17 +303,13 @@ namespace Rhovlyn.Engine.Maps
 			return output.ToArray();
 		}
 
-		public bool IsOnMap( Rectangle area )
+		public static int NumPointsUnderArea (Rectangle area)
 		{
-			foreach (var pt in PointsUnderArea(area))
-			{
-				if (!mapobjects.ContainsKey(pt))
-				{
-					return false;
-				}
-			}
-			return true;
+			return (int)((double)area.Width / (double)TILE_WIDTH *
+						 (double)area.Height / (double)TILE_HIGHT);
+
 		}
+
 		#endregion
 	}
 }
