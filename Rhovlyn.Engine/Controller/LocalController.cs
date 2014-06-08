@@ -14,6 +14,7 @@ namespace Rhovlyn.Engine.Controller
 		public LocalController(AnimatedSprite target)
 		{
 			Target = target;
+			target.Controller = this;
 		}
 
 		public void Initialize()
@@ -55,19 +56,19 @@ namespace Rhovlyn.Engine.Controller
 				delta.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
+			var diff = Target.Position - delta;
+			if (diff.X < 0)
+				last_dir = "right";
+			if (diff.X > 0)
+				last_dir = "left";
+			if (diff.Y < 0)
+				last_dir = "down";
+			if (diff.Y > 0)
+				last_dir = "up";
+
 			if (delta != Target.Position && content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
 				Target.Area.Width, Target.Area.Height)))
 			{
-				var diff = Target.Position - delta;
-				if (diff.X < 0)
-					last_dir = "right";
-				if (diff.X > 0)
-					last_dir = "left";
-				if (diff.Y < 0)
-					last_dir = "down";
-				if (diff.Y > 0)
-					last_dir = "up";
-
 				Target.SetAnimation("move_" + last_dir);
 				Target.Position = delta;
 			}

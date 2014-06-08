@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Util;
 using System.Collections.Generic;
+using Rhovlyn.Engine.Controller;
+
+
 #endregion
 
 namespace Rhovlyn.Engine.Graphics
@@ -14,6 +17,7 @@ namespace Rhovlyn.Engine.Graphics
 		protected Rectangle area;
 		protected float rotation;
 		protected int frameindex;
+		protected IController controller;
 		#endregion
 
 		#region Constructor
@@ -37,13 +41,16 @@ namespace Rhovlyn.Engine.Graphics
 		{
 			//Check if on screen
 			if (camera.Bounds.Intersects(this.area))
-				spriteBatch.Draw(SpriteMap.Texture, Vector2.Subtract(this.position , camera.Position) ,
-					SpriteMap.Frames[Frameindex] ,  Colour, Rotation , Origin , Scale, Effect, Depth );
+			{
+				spriteBatch.Draw(SpriteMap.Texture, Vector2.Subtract(this.position, camera.Position),
+					SpriteMap.Frames[Frameindex], Colour, Rotation, Origin, Scale, Effect, Depth);
+			}
 		}
 
 		public virtual void Update(GameTime gameTime)
 		{
-
+			if (HasController)
+				this.controller.Update(gameTime);
 		}
 		#endregion
 
@@ -59,7 +66,7 @@ namespace Rhovlyn.Engine.Graphics
 			} 
 		}
 
-		public int Depth { get; set;}
+		public float Depth { get; set; }
 		public Vector2 Origin { get; set; }
 		public Vector2 Scale { get; set; }
 		public SpriteEffects Effect { get; set; }
@@ -80,6 +87,16 @@ namespace Rhovlyn.Engine.Graphics
 				this.area.Y = (int)this.position.Y;
 			}
 		}
+
+		public bool HasController { get; private set; }
+
+		public IController Controller { get { return this.controller; } 
+			set { 
+				this.controller = value;
+				if (this.controller != null)
+					HasController = true;
+			}
+		 }
 
 		public float Rotation {
 			get { return this.rotation;}

@@ -41,12 +41,14 @@
     <Compile Include="IO\Path.cs" />
     <Compile Include="IO\Settings.cs" />
     <Compile Include="Input\KeyboardProvider.cs" />
+    <Compile Include="RectangleTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="IO\" />
     <Folder Include="Content\" />
     <Folder Include="Input\" />
+    <Folder Include="Util\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\settings.ini">

@@ -70,6 +70,7 @@
     <Compile Include="Controller\CameraController.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Managers\AudioManager.cs" />
+    <Compile Include="Util\AreaMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

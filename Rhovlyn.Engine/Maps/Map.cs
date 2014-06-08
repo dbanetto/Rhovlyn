@@ -24,9 +24,15 @@ namespace Rhovlyn.Engine.Maps
 		public static readonly int TILE_HIGHT = 64;
 		public Color Background { get; set; }
 
+		public Rectangle MapArea {get { return mapArea; }}
+		Rectangle mapArea;
+
+		private AreaMap<MapObject> areamap;
+
 		#region Constructor
 		public Map( string path , ContentManager content )
 		{
+			areamap = new AreaMap<MapObject>();
 			mapobjects = new Dictionary<Point, MapObject>();
 			Content = content;
 			this.Load(path);
@@ -35,6 +41,7 @@ namespace Rhovlyn.Engine.Maps
 		public Map( ContentManager content ) 
 		{
 			Content = content;
+			areamap = new AreaMap<MapObject>();
 			mapobjects = new Dictionary<Point, MapObject>();
 		}
 
@@ -47,9 +54,9 @@ namespace Rhovlyn.Engine.Maps
 		#region Methods
 		public bool Load( Stream stream )
 		{
+			mapArea = Rectangle.Empty;
 			using ( var reader =  new StreamReader( stream ) )
 			{
-				mapobjects.Clear();
 				try {
 					while (!reader.EndOfStream)
 					{
@@ -70,7 +77,7 @@ namespace Rhovlyn.Engine.Maps
 								var obj = line.Substring("include:".Length);
 								Content.Textures.Load( IO.Path.ResolvePath( obj ) );
 							}
-
+							// Load a sprite list
 							if (line.StartsWith("sprites:"))
 							{
 								var obj = line.Substring("sprites:".Length);
@@ -91,12 +98,14 @@ namespace Rhovlyn.Engine.Maps
 								}
 							}
 
+
 							if (line.StartsWith("background:"))
 							{
 								var obj = line.Substring("background:".Length);
 								int r = 0, g = 0, b = 0;
 								var rgb = obj.Split(',');
 
+								//Parse a RGB comma sperated string
 								if ( rgb.Length != 3)
 									throw new InvalidDataException("Expected a comma sperated RGB value");
 								r = byte.Parse( rgb[0] );
@@ -107,12 +116,17 @@ namespace Rhovlyn.Engine.Maps
 							}
 
 						} else{
+							//Load a Map object
+							// Example x,y,Texture Name[,Texture Index]
+							// Eg. 0,0,wood
+							// Creates an object at 0,0 with texture "wood"
 							var args = line.Split(',');
 
 							int x = int.Parse(args[0]);
 							int y = int.Parse(args[1]);
 							var tex = args[2];
 
+							//Check if Texture index is defined
 							if ( args.Length > 3  )
 							{
 								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] );
@@ -126,6 +140,24 @@ namespace Rhovlyn.Engine.Maps
 								mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] ) );
 							} 
 
+							var new_obj = mapobjects[new Point(x , y)];
+							if (new_obj.Area.Top < MapArea.Top)
+							{
+								mapArea.Y = new_obj.Area.Y;
+							}
+							if (new_obj.Area.Bottom > MapArea.Bottom)
+							{
+								mapArea.Height = new_obj.Area.Bottom - mapArea.Y;
+							}
+							if (new_obj.Area.Left < MapArea.Left)
+							{
+								mapArea.X = new_obj.Area.X;
+							}
+							if (new_obj.Area.Right > MapArea.Right)
+							{
+								mapArea.Width = new_obj.Area.Right - mapArea.X ;
+							}
+
 						}
 
 					}
@@ -134,6 +166,8 @@ namespace Rhovlyn.Engine.Maps
 					return false;
 				}
 			}
+
+			UpdateAreaMap();
 			return true;
 		}
 
@@ -142,32 +176,30 @@ namespace Rhovlyn.Engine.Maps
 			return this.Load( IO.Path.ResolvePath(path));
 		}
 
-		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
+		public void Unload(Rectangle area)
 		{
-			//Get a "Rectangle" of all the possible sprites 
-			int tile_x = (camera.Bounds.X / TILE_WIDTH) - 1;
-			int tile_y = (camera.Bounds.Y / TILE_HIGHT) - 1 ;
-			int tile_w = (camera.Bounds.Width / TILE_WIDTH) + 3;
-			int tile_h = (camera.Bounds.Height / TILE_HIGHT) + 3;
-
-			//Check which method is cheaper
-			if (mapobjects.Count < (tile_w * tile_h))
+			foreach (var t in PointsUnderArea(area))
 			{
-				foreach (var obj in mapobjects.Values)
-				{
-					obj.Draw(gameTime, spriteBatch, camera);
-				}
-			} else {
-				for (int x = tile_x; x < tile_w + tile_x; x++) {
-					for (int y = tile_y; y < tile_h + tile_y; y++) {
-						if (this.mapobjects.ContainsKey(new Point(x, y))) {
-							mapobjects[new Point(x, y)].Draw(gameTime, spriteBatch, camera);
-						}
-					}
-				}
+				this.mapobjects.Remove(t);
 			}
+			UpdateAreaMap();
 		}
 
+		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
+		{
+			foreach (var obj in areamap.Get(camera.Bounds))
+			{
+				obj.Draw(gameTime, spriteBatch, camera);
+			}
+		}
+		public void UpdateAreaMap()
+		{
+			areamap = new AreaMap<MapObject>(MapArea);
+			foreach (var c in mapobjects)
+			{
+				areamap.Add(c.Value);
+			}
+		}
 		public void Update (GameTime gameTime)
 		{
 			foreach (var obj in mapobjects.Values)
@@ -176,8 +208,22 @@ namespace Rhovlyn.Engine.Maps
 			}
 		}
 
-		public bool IsOnMap( Rectangle area )
+		public MapObject[] TilesInArea (Rectangle area)
 		{
+			List<MapObject> output = new List<MapObject>();
+			foreach (var pt in PointsUnderArea(area))
+			{
+				if (!mapobjects.ContainsKey(pt))
+				{
+					output.Add(mapobjects[pt]);
+				}
+			}
+			return output.ToArray();
+		}
+
+		public static Point[] PointsUnderArea(Rectangle area)
+		{
+			List<Point> output = new List<Point>();
 			//Get the X,Y,W,H in terms of Map Objects
 			double ax = (double)area.X / (double)TILE_WIDTH;
 			double ay = (double)area.Y / (double)TILE_HIGHT;
@@ -197,13 +243,22 @@ namespace Rhovlyn.Engine.Maps
 					foreach (var p_x in p_xs){
 						foreach (var p_y in p_ys){
 							var pt = new Point( p_x , p_y );
-							if (!mapobjects.ContainsKey(pt))
-							{
-								return false;
-							}
+							if (!output.Contains(pt))
+								output.Add(pt);
 						}
 					}
+				}
+			}
+			return output.ToArray();
+		}
 
+		public bool IsOnMap( Rectangle area )
+		{
+			foreach (var pt in PointsUnderArea(area))
+			{
+				if (!mapobjects.ContainsKey(pt))
+				{
+					return false;
 				}
 			}
 			return true;

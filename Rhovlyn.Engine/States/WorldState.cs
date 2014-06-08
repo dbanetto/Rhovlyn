@@ -14,7 +14,6 @@ namespace Rhovlyn.Engine.States
 	public class WorldState : IGameState
 	{
 		private ContentManager content;
-		private LocalController player;
 		private CameraController cameracontroll;
 
 		public WorldState()
@@ -50,7 +49,7 @@ namespace Rhovlyn.Engine.States
 			playersprite.AddAnimation("look_left"  , new Animation(new List<int> { 10}, new List<double> { 0 }));
 
 			this.content.Audio.ListenerObject = playersprite;
-			player = new LocalController(playersprite);
+			var player = new LocalController(playersprite);
 			player.Initialize();
 			player.LoadContent(content);
 
@@ -66,23 +65,16 @@ namespace Rhovlyn.Engine.States
 
 		public void UnLoadContent(ContentManager content)
 		{
-			player.UnLoadContent(content);
 		}
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
-			cameracontroll.Update(gameTime);
 			content.CurrnetMap.Draw(gameTime , spriteBatch , camera);
 			content.Sprites.Draw(gameTime , spriteBatch , camera);
 		}
 		public void Update (GameTime gameTime)
 		{
-			if (this.content.Input["player.sound"])
-			{
-				this.content.Audio.Play("sfx");
-			}
 			this.content.Sprites.Update(gameTime);
-			player.Update(gameTime);
 			cameracontroll.Update(gameTime);
 		}
 	}
