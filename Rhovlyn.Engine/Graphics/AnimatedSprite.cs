@@ -36,7 +36,7 @@ namespace Rhovlyn.Engine.Graphics
 		public List<double> Times { get { return  times; } } //Times for each frames
 
 		int loop;
-		public int Loop { get{ return this.Loop; } }
+		public int Loop { get{ return this.loop; } }
 
 		//Events for Starting, Ending and changes in animation
 		public event AnimationStartedHandler AnimationStarted;
@@ -68,6 +68,7 @@ namespace Rhovlyn.Engine.Graphics
 		private int index;
 		private double current_delta;
 		private int loop_count = 0;
+		public bool AnimationInProgress { get; private set;}
 
 		public AnimatedSprite(Vector2 position, SpriteMap spritemap)
 			: base ( position , spritemap )
@@ -77,14 +78,19 @@ namespace Rhovlyn.Engine.Graphics
 
 		public override void Update (GameTime gameTime )
 		{
+			base.Update(gameTime);
+
+			if (CurrentAnimation == null)
+				return;
+
 			//Update Timer for the frame
 			current_delta -= gameTime.ElapsedGameTime.TotalSeconds;
 			if (current_delta < 0)
 			{
-				if (animations[CurrentAnimation].Frames.Count > index + 1)
+				if (animations[CurrentAnimation].Frames.Count == index + 1)
 				{
 					loop_count++;
-					if (animations[CurrentAnimation].Loop < loop_count)
+					if (animations[CurrentAnimation].Loop > loop_count)
 					{
 						index = 0;
 						this.Frameindex = animations[CurrentAnimation].Frames[index];
@@ -94,6 +100,7 @@ namespace Rhovlyn.Engine.Graphics
 					else
 					{
 						animations[CurrentAnimation].OnAnimationEnded(this);
+						AnimationInProgress = false;
 					}
 				}
 				else
@@ -105,6 +112,11 @@ namespace Rhovlyn.Engine.Graphics
 				}
 
 			}
+		}
+
+		public override void Draw(GameTime gameTime, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Rhovlyn.Engine.Util.Camera camera)
+		{
+			base.Draw(gameTime, spriteBatch, camera);
 		}
 
 		#region Animation Management
@@ -129,9 +141,13 @@ namespace Rhovlyn.Engine.Graphics
 			if (ExistsAnimation(name))
 			{
 				//End the last animation
-				if (CurrentAnimation != null)
-					animations[CurrentAnimation].OnAnimationEnded(this);
-
+				if (AnimationInProgress && CurrentAnimation != null)
+				{
+					if (CurrentAnimation != name)
+						animations[CurrentAnimation].OnAnimationEnded(this);
+					else
+						return true;
+				}
 				//Set up for the new animation
 				CurrentAnimation = name;
 				this.index = 0;
@@ -140,7 +156,7 @@ namespace Rhovlyn.Engine.Graphics
 				current_delta = animations[CurrentAnimation].Times[index];
 				animations[CurrentAnimation].OnAnimationStarted(this);
 				animations[CurrentAnimation].OnFrameChanged(this , index);
-
+				AnimationInProgress = true;
 				return true;
 			}
 			return false;
@@ -153,6 +169,7 @@ namespace Rhovlyn.Engine.Graphics
 			int loops = 0;
 			//Example
 			// 1,2:0.1,3:1.0
+			// #loops,[FrameIndex:Time]...
 			// Read as : 1 loop , 1st index frame=2 for 0.1sec, 2nd index frame=3 for 1.0sec
 			foreach (var seg in raw.Split(','))
 			{

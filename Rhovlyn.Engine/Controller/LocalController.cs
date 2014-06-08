@@ -9,6 +9,8 @@ namespace Rhovlyn.Engine.Controller
 	{
 		public AnimatedSprite Target { get; private set; }
 		private ContentManager content;
+		private string last_dir = "";
+
 		public LocalController(AnimatedSprite target)
 		{
 			Target = target;
@@ -36,31 +38,42 @@ namespace Rhovlyn.Engine.Controller
 			if (content.Input["player.up"])
 			{
 				delta.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-				Target.SetAnimation("up");
 			}
 
 			if (content.Input["player.down"])
 			{
 				delta.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-				Target.SetAnimation("down");
 			}
 
 			if (content.Input["player.left"])
 			{
 				delta.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-				Target.SetAnimation("left");
 			}
 
 			if (content.Input["player.right"])
 			{
 				delta.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-				Target.SetAnimation("right");
 			}
 
-			if (delta != Target.Position && content.CurrnetMap.IsOnMap( new Rectangle( (int)delta.X , (int)delta.Y,
-											 Target.Area.Width , Target.Area.Height)))
+			if (delta != Target.Position && content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
+				Target.Area.Width, Target.Area.Height)))
 			{
+				var diff = Target.Position - delta;
+				if (diff.X < 0)
+					last_dir = "right";
+				if (diff.X > 0)
+					last_dir = "left";
+				if (diff.Y < 0)
+					last_dir = "down";
+				if (diff.Y > 0)
+					last_dir = "up";
+
+				Target.SetAnimation("move_" + last_dir);
 				Target.Position = delta;
+			}
+			else
+			{
+				Target.SetAnimation("look_" + last_dir);
 			}
 
 		}

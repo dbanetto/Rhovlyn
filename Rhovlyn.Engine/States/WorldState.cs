@@ -7,6 +7,7 @@ using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Input;
 using Rhovlyn.Engine.Controller;
 using System.Collections.Generic;
+using Rhovlyn.Engine.Maps;
 
 namespace Rhovlyn.Engine.States
 {
@@ -31,26 +32,24 @@ namespace Rhovlyn.Engine.States
 
 			Rhovlyn.Engine.Maps.MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() );
 
-
 			this.content.Audio.Add("sfx", "Content/sfx.wav");
-
-
 
 			content.Textures.Load("Content/textures.txt");
 			content.Maps.Add( "test" ,  "gen-map.map" );
-			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["player"] ));
+			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["male"] ));
 
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
-			playersprite.AddAnimation("up"    , new Animation( new List<int> { 3 } , new List<double> { 0.0 } ));
-			playersprite.AddAnimation("down"  , new Animation( new List<int> { 2 } , new List<double> { 0.0 } ));
+			playersprite.AddAnimation("move_up"    , new Animation(new List<int> { 0 ,1 ,2, 1 }, new List<double> { 0.1 , 0.1 , 0.1, 0.1 }));
+			playersprite.AddAnimation("move_down"  , new Animation(new List<int> { 6 ,7 ,8, 7 }, new List<double> { 0.1 , 0.1 , 0.1, 0.1 }));
+			playersprite.AddAnimation("move_right" , new Animation(new List<int> { 3 ,4 ,5, 4 }, new List<double> { 0.1 , 0.1 , 0.1, 0.1 }));
+			playersprite.AddAnimation("move_left"  , new Animation(new List<int> { 9 ,10,11,10}, new List<double> { 0.1 , 0.1 , 0.1, 0.1 }));
+
+			playersprite.AddAnimation("look_up"    , new Animation(new List<int> { 1 }, new List<double> { 0 }));
+			playersprite.AddAnimation("look_down"  , new Animation(new List<int> { 7 }, new List<double> { 0 }));
+			playersprite.AddAnimation("look_right" , new Animation(new List<int> { 4 }, new List<double> { 0 }));
+			playersprite.AddAnimation("look_left"  , new Animation(new List<int> { 10}, new List<double> { 0 }));
+
 			this.content.Audio.ListenerObject = playersprite;
-			var right = new Animation(new List<int> { 0 }, new List<double> { 0.0 });
-			right.AnimationStarted += (AnimatedSprite sprite) => ( sprite.Effect = SpriteEffects.FlipHorizontally );
-			right.AnimationEnded += (AnimatedSprite sprite) => ( sprite.Effect = SpriteEffects.None );
-			playersprite.AddAnimation("right" , right );
-
-			playersprite.AddAnimation("left"  , new Animation( new List<int> { 0 } , new List<double> { 0.0 } ));
-
 			player = new LocalController(playersprite);
 			player.Initialize();
 			player.LoadContent(content);
@@ -62,6 +61,7 @@ namespace Rhovlyn.Engine.States
 
 			cameracontroll = new CameraController(content.Camera);
 			cameracontroll.FocusOn(content.Sprites["player"]);
+			cameracontroll.Update(new GameTime());
 		}
 
 		public void UnLoadContent(ContentManager content)
@@ -81,6 +81,7 @@ namespace Rhovlyn.Engine.States
 			{
 				this.content.Audio.Play("sfx");
 			}
+			this.content.Sprites.Update(gameTime);
 			player.Update(gameTime);
 			cameracontroll.Update(gameTime);
 		}

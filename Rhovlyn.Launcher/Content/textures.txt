@@ -8,6 +8,7 @@
 #		Syntax : @include:path
 #		Note : Loads the path as a texture list
 #		It may also be a http:// https:// and ftp:// url if AllowWebResource true
-player,Content/sprites/sheep.png,2*2
+male,Content/sprites/male-white-template.png,3*4
+female,Content/sprites/female-white-template.png,3*4
 cobble,Content/sprites/cobble.png,2*2
 land,Content/sprites/grass.png,4*4

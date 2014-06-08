@@ -28,7 +28,7 @@ namespace Rhovlyn.Engine.Managers
 				}
 				return false;
 			}
-		} 
+		}
 
 		public bool Add (string name , IInputProvider state )
 		{

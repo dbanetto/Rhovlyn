@@ -1,0 +1,5 @@
+The file(s) : male-white-template.png, female-white-template.png 
+Is based off the work by Charles Gabriel that is hosted on OpenGameArt.org.
+Base template from http://opengameart.org/content/24x32-rpg-character-template,
+link to creator's blog http://cgartsenal.blogspot.com/
+
