@@ -6,23 +6,25 @@ using System.Collections.Generic;
 namespace Rhovlyn.Engine.Util
 {
 	public class AreaMap<T>  where T : Graphics.IDrawable
-    {
+	{
+		public const int NodesToSplit = 10;
+
 		public List<T> Nodes { get; private set;}
 		public AreaMap<T>[] Children { get; private set;}
 		public Rectangle Area { get; private set; }
 		public bool HasChildren {get; private set;}
 
 		//Root Node declearation
-        public AreaMap()
+		public AreaMap()
 		{
 			Nodes = new List<T>();
 			Children = new AreaMap<T>[4];
 			Area = Rectangle.Empty;
 
 			Children[0] = new AreaMap<T>(new Rectangle( int.MinValue, int.MinValue , int.MaxValue, int.MaxValue ));
-			Children[1] = new AreaMap<T>(new Rectangle( int.MinValue,            0 , int.MaxValue, int.MaxValue ));
-			Children[2] = new AreaMap<T>(new Rectangle( int.MinValue,            0 , int.MaxValue, int.MaxValue ));
-			Children[3] = new AreaMap<T>(new Rectangle(            0,            0 , int.MaxValue, int.MaxValue ));
+			Children[1] = new AreaMap<T>(new Rectangle( int.MinValue,			0 , int.MaxValue, int.MaxValue ));
+			Children[2] = new AreaMap<T>(new Rectangle( int.MinValue,			0 , int.MaxValue, int.MaxValue ));
+			Children[3] = new AreaMap<T>(new Rectangle(			0,			0 , int.MaxValue, int.MaxValue ));
 			HasChildren = true;
 		}
 
@@ -85,7 +87,7 @@ namespace Rhovlyn.Engine.Util
 			}
 
 			this.Nodes.Add(obj);
-			if (!HasChildren && this.Nodes.Count > 10)
+			if (!HasChildren && this.Nodes.Count > NodesToSplit)
 			{
 				this.Split();
 			}
@@ -108,6 +110,6 @@ namespace Rhovlyn.Engine.Util
 
 		}
 
-    }
+	}
 }
 

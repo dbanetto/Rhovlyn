@@ -7,17 +7,38 @@ using C3.XNA;
 
 namespace Rhovlyn.Engine.Util
 {
+	public enum MaxType
+	{
+		Auto = 0,
+		AllTimeHigh = 1
+	};
+
+	public struct Line {
+		public Line (double point, Color colour)
+		{
+			this.point = point;
+			this.colour = colour;
+		}
+
+		public double point;
+		public Color colour;
+	}
+
 	public class Graph : Engine.Graphics.IDrawable
-    {
+	{
 		public List<double> Data { get; set; }
 		public bool ZeroIsMinimum { get ; set; }
 		public int MaxDataPoints { get; set; }
+		public Color Colour { get; set; }
+
+		public MaxType MaxMode { get; set; }
 
 		private double max = double.MinValue;
 		private double min = 0;
 		private double intervals = 0;
 
 		private Vector2[] points;
+		public List<Line> Lines {get; set; } //Lines arcoss the 
 
 		public Vector2 Position { get; set; }
 		public Rectangle Area { get; set; }
@@ -25,18 +46,48 @@ namespace Rhovlyn.Engine.Util
 		public Graph(Vector2 position , int width , int height)
 		{
 			this.Data = new List<double>();
+			this.Lines = new List<Line>();
 			this.ZeroIsMinimum = false;
 			this.MaxDataPoints = 100;
 			this.Position = position;
 			this.Area = new Rectangle((int)this.Position.X , (int)this.Position.Y, width, height);
+			this.MaxMode = MaxType.Auto;
+			this.Colour = Colour;
+		}
+
+		public Graph(Vector2 position , int width , int height, bool zeroIsMinimum, int maxDataPoints , MaxType type , Color colour)
+		{
+			this.Data = new List<double>();
+			this.Lines = new List<Line>();
+			this.ZeroIsMinimum = zeroIsMinimum;
+			this.MaxDataPoints = maxDataPoints;
+			this.Position = position;
+			this.Area = new Rectangle((int)this.Position.X , (int)this.Position.Y, width, height);
+			this.MaxMode = type;
+			this.Colour = colour;
 		}
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
+			
 			for (int i = 0; i < points.Length - 1; i++)
 			{
-				C3.XNA.Primitives2D.DrawLine( spriteBatch , points[i] , points[i+1] , Color.White );
+				C3.XNA.Primitives2D.DrawLine( spriteBatch , points[i] , points[i+1] , Colour );
 			}
+
+			//Draw 
+			foreach (var l in Lines)
+			{
+				var y = calculateY(l.point);
+				if (y > this.Position.Y)
+					C3.XNA.Primitives2D.DrawLine(spriteBatch , new Vector2(  this.Position.X , y) 
+						,new Vector2( this.Position.X + this.Area.Width , y) , l.colour);
+			}
+			//Draw Axies
+			C3.XNA.Primitives2D.DrawLine(spriteBatch , Position , Position + new Vector2(0,this.Area.Height) , Colour);
+			C3.XNA.Primitives2D.DrawLine(spriteBatch , Position + new Vector2(this.Area.Width,this.Area.Height) 
+				,Position + new Vector2(0,this.Area.Height) , Colour);
+
 		}
 
 		public void Update (GameTime gameTime)
@@ -45,10 +96,16 @@ namespace Rhovlyn.Engine.Util
 				Data.RemoveAt(0);
 
 			points = new Vector2[Data.Count];
-			intervals = this.Area.Width / MaxDataPoints;
+			intervals = (double)this.Area.Width / (double)MaxDataPoints;
 
 			min = ( ZeroIsMinimum ? 0 : double.MaxValue);
-			int n = 0;
+
+			if (this.MaxMode == MaxType.Auto)
+				max = double.MinValue;
+
+		   
+
+			int n = Data.Count - 1;
 			foreach (var pt in Data)
 			{
 				if (pt > max)
@@ -57,12 +114,15 @@ namespace Rhovlyn.Engine.Util
 				if (!ZeroIsMinimum && pt < min)
 					min = pt;
 
-				points[n] = new Vector2( 
-					(float)(this.Position.X + n*intervals), 
-					(float)(this.Position.Y + (pt-min)/(max-min)*this.Area.Height - this.Area.Height));
-				n++;
+				points[n--] = new Vector2( (float)(this.Position.X + n*intervals), calculateY(pt));
 			}
 		}
-    }
+
+		private float calculateY (double pt)
+		{
+			return (float)(this.Position.Y - (pt-min)/(max-min)*(double)this.Area.Height + this.Area.Height);
+		}
+
+	}
 }
 

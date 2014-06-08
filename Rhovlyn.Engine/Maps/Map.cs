@@ -28,12 +28,16 @@ namespace Rhovlyn.Engine.Maps
 		Rectangle mapArea;
 
 		private AreaMap<MapObject> areamap;
+		private MapObject[] last_tiles;
+		private Rectangle last_camera= Rectangle.Empty;
+
 
 		#region Constructor
 		public Map( string path , ContentManager content )
 		{
 			areamap = new AreaMap<MapObject>();
 			mapobjects = new Dictionary<Point, MapObject>();
+			last_tiles = new MapObject[0];
 			Content = content;
 			this.Load(path);
 		}
@@ -42,6 +46,7 @@ namespace Rhovlyn.Engine.Maps
 		{
 			Content = content;
 			areamap = new AreaMap<MapObject>();
+			last_tiles = new MapObject[0];
 			mapobjects = new Dictionary<Point, MapObject>();
 		}
 
@@ -202,7 +207,7 @@ namespace Rhovlyn.Engine.Maps
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
-			foreach (var obj in areamap.Get(camera.Bounds))
+			foreach (var obj in last_tiles)
 			{
 				obj.Draw(gameTime, spriteBatch, camera);
 			}
@@ -226,10 +231,17 @@ namespace Rhovlyn.Engine.Maps
 
 		public void Update (GameTime gameTime)
 		{
-			foreach (var obj in mapobjects.Values)
+			if (last_camera != Content.Camera.Bounds)
+			{
+				last_tiles = areamap.Get(Content.Camera.Bounds);
+				last_camera = Content.Camera.Bounds;
+			}
+
+			foreach (var obj in last_tiles)
 			{
 				obj.Update(gameTime);
 			}
+
 		}
 
 		/// <summary>
