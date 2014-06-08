@@ -26,13 +26,11 @@ namespace Rhovlyn.Engine
 		Graph draw_time;
 		Graph update_time;
 
-		BasicEffect effect;
 		int frames_past = 0;
 		double frames_timer = 0;
 
 		double draw_graph_timer = 0;
 		double update_graph_timer = 0;
-
 
 		public double FPS { get; private set; }
 
@@ -59,18 +57,15 @@ namespace Rhovlyn.Engine
 			//Window.IsBorderless = false;
 
 			draw_time = new Graph(new Vector2(10, 10), 200, 50, true , 100, MaxType.Auto , Color.LightGray);
-			draw_time.ZeroIsMinimum = true;
 			update_time = new Graph(new Vector2(220,10), 200, 50 , true , 100 , MaxType.Auto , Color.LightGray);
-			update_time.ZeroIsMinimum = true;
-			effect = new BasicEffect(graphics.GraphicsDevice);
 
+			//Danger Lines
 			draw_time.Lines.Add(new Line(128, Color.DarkRed));
 			draw_time.Lines.Add(new Line(64, Color.Red));
 			draw_time.Lines.Add(new Line(32, Color.Orange));
 			draw_time.Lines.Add(new Line(16, Color.Green));
 			draw_time.Lines.Add(new Line(8, Color.CornflowerBlue));
 			draw_time.Lines.Add(new Line(1, Color.Purple));
-
 
 			update_time.Lines.Add(new Line(16, Color.Red));
 			update_time.Lines.Add(new Line(8, Color.Orange));

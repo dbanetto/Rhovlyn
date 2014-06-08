@@ -79,7 +79,7 @@ namespace Rhovlyn.Engine.Util
 			foreach (var l in Lines)
 			{
 				var y = calculateY(l.point);
-				if (y > this.Position.Y)
+				if (y > this.Position.Y && y < this.Area.Bottom)
 					C3.XNA.Primitives2D.DrawLine(spriteBatch , new Vector2(  this.Position.X , y) 
 						,new Vector2( this.Position.X + this.Area.Width , y) , l.colour);
 			}
