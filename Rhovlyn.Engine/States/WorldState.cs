@@ -29,15 +29,15 @@ namespace Rhovlyn.Engine.States
 		{
 			this.content = content;
 
-			//MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() , new Rectangle(-5000,-5000,10000,10000) );
+			MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() , new Rectangle(-50000,-50000,100000,100000) );
 
 			this.content.Audio.Add("sfx", "Content/sfx.wav");
 
 			content.Textures.Load("Content/textures.txt");
-			//content.Maps.Add( "test" ,  "gen-map.map" );
-			//this.content.CurrnetMap.Save("sdkljhgskl.map");
+			content.Maps.Add( "test" ,  "gen-map.map" );
+			this.content.CurrnetMap.Save("sdkljhgskl.map");
 			content.Maps.Add( "loadSaved" ,  "sdkljhgskl.map" );
-			//content.Maps.Current = "loadSaved";
+			content.Maps.Current = "loadSaved";
 
 			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["male"] ));
 

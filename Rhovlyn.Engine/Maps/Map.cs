@@ -22,11 +22,11 @@ namespace Rhovlyn.Engine.Maps
 		public Color Background { get; set; }
 
 		public Rectangle MapArea {get { return mapArea; }}
-		Rectangle mapArea;
+		private Rectangle mapArea;
 
-		private AreaMap<MapObject> areamap;
-		private MapObject[] last_tiles;
-		private Rectangle last_camera= Rectangle.Empty;
+		protected  AreaMap<MapObject> areamap;
+		protected  MapObject[] last_tiles;
+		protected Rectangle last_camera= Rectangle.Empty;
 
 		private bool ReqestAreaMapUpdate = false;
 
@@ -131,6 +131,9 @@ namespace Rhovlyn.Engine.Maps
 							// Creates an object at 0,0 with texture "wood"
 							var args = line.Split(',');
 
+							if (args.Length < 3)
+								continue;
+
 							int x = int.Parse(args[0]);
 							int y = int.Parse(args[1]);
 							var tex = args[2];
@@ -144,9 +147,12 @@ namespace Rhovlyn.Engine.Maps
 								obj.Frameindex = index;
 
 								this.Add( new Point(x , y) , obj );
+								this.areamap.Add(obj);
 							} else
 							{
-								this.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HEIGHT ) , Content.Textures[tex] ) );
+								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HEIGHT ) , Content.Textures[tex] );
+								this.Add( new Point(x , y) , obj );
+								this.areamap.Add(obj);
 							} 
 						}
 
@@ -156,12 +162,10 @@ namespace Rhovlyn.Engine.Maps
 					return false;
 				}
 			}
-
-			this.UpdateAreaMap(false);
 			return true;
 		}
 
-		public bool Save( string filepath , int blocksize = 16 )
+		public bool Save( string filepath , int blocksize = 8 )
 		{
 			List<string> required = new List<string>();
 
@@ -187,7 +191,7 @@ namespace Rhovlyn.Engine.Maps
 							continue;
 
 						writer.WriteLine(String.Format("<{0},{1},{2},{3}>" ,
-							new Object[] { area.X / TILE_WIDTH, area.Y /TILE_HEIGHT , blocksize , blocksize }));
+							new Object[] { area.X, area.Y , area.Width, area.Height }));
 						foreach ( var obj in  objs )
 						{
 							// x,y,Texture Name[,Texture Index]
@@ -259,7 +263,7 @@ namespace Rhovlyn.Engine.Maps
 		/// <param name="gameTime">Game time</param>
 		/// <param name="spriteBatch">Sprite batch to draw to</param>
 		/// <param name="camera">Camera of the map</param>
-		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
+		public virtual void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
 			foreach (var obj in last_tiles)
 			{
@@ -307,7 +311,7 @@ namespace Rhovlyn.Engine.Maps
 			}
 		}
 
-		public void Update (GameTime gameTime)
+		public virtual void Update (GameTime gameTime)
 		{
 			if (last_camera != Content.Camera.Bounds)
 			{

@@ -32,7 +32,7 @@ namespace Rhovlyn.Engine.IO
 				{
 					var line = reader.ReadLine();
 					var len = line.Length;
-					position += len;
+					position += len + 1;
 
 					if (line.IndexOf('#') != -1)
 						line = line.Substring(0, line.IndexOf('#')).Trim(); //removes all comments
@@ -46,7 +46,7 @@ namespace Rhovlyn.Engine.IO
 						blocks[line.Substring(1, line.Length - 2)] = new BlockInfo();
 						current = blocks[line.Substring(1, line.Length - 2)];
 
-						current.Start = position + len + 1;  
+						current.Start = position;  
 					}
 				}
 				current.Length = (int)(reader.BaseStream.Position - current.Start);
@@ -59,7 +59,7 @@ namespace Rhovlyn.Engine.IO
 			return this.blocks.ContainsKey(name);
 		}
 
-		public string[] GetBlockNames {
+		public string[] BlockNames {
 			get {
 				var names = new string[this.blocks.Keys.Count];
 				this.blocks.Keys.CopyTo(names, 0);
@@ -73,9 +73,10 @@ namespace Rhovlyn.Engine.IO
 				return null;
 			using (var reader = new  StreamReader(new FileStream(FilePath, FileMode.Open)))
 			{
-				Console.WriteLine("Getting Block " + name);
+
 				var info = this.blocks[name];
 				var buffer = new byte[info.Length];
+				Console.WriteLine("Getting Block " + name + " length " + info.Length + " @ " + info.Start);
 				reader.BaseStream.Seek(info.Start, SeekOrigin.Begin);
 				reader.BaseStream.Read(buffer, 0, info.Length);
 				return new MemoryStream(buffer);
