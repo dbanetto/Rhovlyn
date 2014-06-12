@@ -72,6 +72,8 @@
     <Compile Include="Managers\AudioManager.cs" />
     <Compile Include="Util\AreaMap.cs" />
     <Compile Include="Util\Graph.cs" />
+    <Compile Include="IO\PartialFile.cs" />
+    <Compile Include="Maps\PartialMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

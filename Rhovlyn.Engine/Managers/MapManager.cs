@@ -32,7 +32,7 @@ namespace Rhovlyn.Engine.Managers
 		{
 			if (!Exists(name))
 			{
-				maps.Add(name, new Map( path , Content ) );
+				maps.Add(name, new PartialMap( path , Content ) );
 				if (maps.Count == 1)
 					Current = name;
 				return true;

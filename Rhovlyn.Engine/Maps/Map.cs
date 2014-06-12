@@ -1,18 +1,15 @@
 #region Usings
 using System;
-using Rhovlyn.Engine.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Rhovlyn.Engine.Util;
-using System.Net.Configuration;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Net.Mime;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Managers;
-
-
+using Rhovlyn.Engine.Graphics;
 #endregion
 namespace Rhovlyn.Engine.Maps
 {
@@ -123,8 +120,10 @@ namespace Rhovlyn.Engine.Maps
 
 								Background = new Color( r , g , b );
 							}
-
-						} else{
+						} else if ( line.StartsWith("<") && line.EndsWith(">") )
+						{
+							continue;
+						} else {
 							//Load a Map object
 							// Example x,y,Texture Name[,Texture Index]
 							// Eg. 0,0,wood
@@ -148,29 +147,10 @@ namespace Rhovlyn.Engine.Maps
 							{
 								mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] ) );
 							} 
-
-							var new_obj = mapobjects[new Point(x , y)];
-							if (new_obj.Area.Top < MapArea.Top)
-							{
-								mapArea.Y = new_obj.Area.Y;
-							}
-							if (new_obj.Area.Bottom > MapArea.Bottom)
-							{
-								mapArea.Height = new_obj.Area.Bottom - mapArea.Y;
-							}
-							if (new_obj.Area.Left < MapArea.Left)
-							{
-								mapArea.X = new_obj.Area.X;
-							}
-							if (new_obj.Area.Right > MapArea.Right)
-							{
-								mapArea.Width = new_obj.Area.Right - mapArea.X ;
-							}
-
 						}
 
 					}
-				} catch (Exception ex) {
+				} catch (IOException ex) {
 					Console.WriteLine(ex);
 					return false;
 				}
@@ -211,7 +191,6 @@ namespace Rhovlyn.Engine.Maps
 			{
 				obj.Draw(gameTime, spriteBatch, camera);
 			}
-
 		}
 
 		/// <summary>
