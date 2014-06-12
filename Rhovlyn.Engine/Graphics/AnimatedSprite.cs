@@ -110,7 +110,6 @@ namespace Rhovlyn.Engine.Graphics
 					current_delta = animations[CurrentAnimation].Times[index];
 					animations[CurrentAnimation].OnFrameChanged(this , index);
 				}
-
 			}
 		}
 

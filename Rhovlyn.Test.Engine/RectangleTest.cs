@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework;
 namespace Rhovlyn.Test.Engine
 {
 	[TestFixture()]
-    public class RectangleTest
-    {
-        public RectangleTest()
-        {
-        }
+	public class RectangleTest
+	{
+		public RectangleTest()
+		{
+		}
 
 		[Test()]
 		public void Contains ()
@@ -69,6 +69,6 @@ namespace Rhovlyn.Test.Engine
 		}
 
 
-    }
+	}
 }
 
