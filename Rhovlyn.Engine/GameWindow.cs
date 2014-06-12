@@ -65,12 +65,15 @@ namespace Rhovlyn.Engine
 			draw_time.Lines.Add(new Line(32, Color.Orange));
 			draw_time.Lines.Add(new Line(16, Color.Green));
 			draw_time.Lines.Add(new Line(8, Color.CornflowerBlue));
-			draw_time.Lines.Add(new Line(1, Color.Purple));
+			draw_time.Lines.Add(new Line(1, Color.DarkViolet));
 
-			update_time.Lines.Add(new Line(16, Color.Red));
-			update_time.Lines.Add(new Line(8, Color.Orange));
-			update_time.Lines.Add(new Line(1, Color.Green));
-
+			update_time.Lines.Add(new Line(64, Color.Red));
+			update_time.Lines.Add(new Line(32, Color.Orange));
+			update_time.Lines.Add(new Line(16, Color.Green));
+			update_time.Lines.Add(new Line(8, Color.CornflowerBlue));
+			update_time.Lines.Add(new Line(1, Color.DarkViolet));
+			update_time.Lines.Add(new Line(0.5, Color.Purple));
+			update_time.Lines.Add(new Line(0.01, Color.White));
 
 			content.Camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
 			content.Init(graphics.GraphicsDevice);

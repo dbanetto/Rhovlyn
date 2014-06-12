@@ -7,15 +7,15 @@ namespace Rhovlyn.Engine.Maps
 {
 	public static class MapGenerator
 	{
-		public static void GenerateDungeonMap (string outPath , int seed)
+		public static void GenerateDungeonMap (string outPath , int seed , Rectangle area )
 		{
 			using (var writer = new StreamWriter(new FileStream(outPath , FileMode.Create)))
 			{
-				GenerateDungeonMap( writer, seed);
+				GenerateDungeonMap( writer, seed, area );
 			}
 		}
 
-		public static void GenerateDungeonMap( StreamWriter writer , int seed )
+		public static void GenerateDungeonMap( StreamWriter writer , int seed , Rectangle area )
 		{
 			var rnd = new Random(seed);
 			var tiles = new Dictionary<Point, int>();
@@ -37,7 +37,7 @@ namespace Rhovlyn.Engine.Maps
 				}
 			}
 
-			while (nodes.Count != 0 && tiles.Count < 1000) {
+			while (nodes.Count != 0) {
 				var node = nodes[0];
 				nodes.RemoveAt(0);
 
@@ -111,7 +111,7 @@ namespace Rhovlyn.Engine.Maps
 				outX += (int)node.X;
 				outY += (int)node.Y;
 
-				if (!tiles.ContainsKey(new Point(outX, outY))) 
+				if (!tiles.ContainsKey(new Point(outX, outY)) && area.Contains(new Point(outX * Map.TILE_WIDTH, outY * Map.TILE_HEIGHT))) 
 				{
 					tiles.Add(new Point(outX, outY), type);
 					nodes.Add(new Point(outX, outY));

@@ -32,6 +32,7 @@ namespace Rhovlyn.Engine.Managers
 		{
 			if (!Exists(name))
 			{
+				spritemap.Texture.Name = name;
 				this.textures.Add( name , spritemap );
 				return true;
 			}
@@ -43,7 +44,7 @@ namespace Rhovlyn.Engine.Managers
 
 			if (!Exists(name))
 			{
-				this.textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream)  , frames ) );
+				this.textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream) , name  , frames ) );
 				return true;
 			}
 			return false;
@@ -53,7 +54,7 @@ namespace Rhovlyn.Engine.Managers
 		{
 			if (!Exists(name))
 			{
-				this.textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream) ) );
+				this.textures.Add( name , new SpriteMap( Texture2D.FromStream( this.graphics , stream) , name ) );
 				return true;
 			}
 			return false;
@@ -139,7 +140,7 @@ namespace Rhovlyn.Engine.Managers
 
 										rects.Add(new Rectangle( x, y, w, h ));
 									}
-									this.Add( tname , new SpriteMap( tex , rects ) );
+									this.Add( tname , new SpriteMap( tex , tname , rects  ) );
 								} 
 								// Semi-Implicit Bounds 
 								// rows*colms
@@ -153,7 +154,7 @@ namespace Rhovlyn.Engine.Managers
 									int row = int.Parse(parms[0]);
 									int col = int.Parse(parms[1]);
 
-									this.Add( tname , new SpriteMap( tex , row , col ) );
+									this.Add( tname , new SpriteMap( tex , tname , row , col ) );
 								}
 							} else {
 								this.Add( tname , Engine.IO.Path.ResolvePath(tpath) );

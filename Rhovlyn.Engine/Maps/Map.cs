@@ -18,7 +18,7 @@ namespace Rhovlyn.Engine.Maps
 		private Dictionary< Point , MapObject > mapobjects;
 		public ContentManager Content { get; private set; }
 		public static readonly int TILE_WIDTH = 64;
-		public static readonly int TILE_HIGHT = 64;
+		public static readonly int TILE_HEIGHT = 64;
 		public Color Background { get; set; }
 
 		public Rectangle MapArea {get { return mapArea; }}
@@ -28,6 +28,7 @@ namespace Rhovlyn.Engine.Maps
 		private MapObject[] last_tiles;
 		private Rectangle last_camera= Rectangle.Empty;
 
+		private bool ReqestAreaMapUpdate = false;
 
 		#region Constructor
 		public Map( string path , ContentManager content )
@@ -137,15 +138,15 @@ namespace Rhovlyn.Engine.Maps
 							//Check if Texture index is defined
 							if ( args.Length > 3  )
 							{
-								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] );
+								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HEIGHT ) , Content.Textures[tex] );
 
 								int index = int.Parse(args[3]);
 								obj.Frameindex = index;
 
-								mapobjects.Add( new Point(x , y) , obj );
+								this.Add( new Point(x , y) , obj );
 							} else
 							{
-								mapobjects.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HIGHT ) , Content.Textures[tex] ) );
+								this.Add( new Point(x , y) , new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HEIGHT ) , Content.Textures[tex] ) );
 							} 
 						}
 
@@ -156,7 +157,74 @@ namespace Rhovlyn.Engine.Maps
 				}
 			}
 
-			UpdateAreaMap();
+			this.UpdateAreaMap(false);
+			return true;
+		}
+
+		public bool Save( string filepath , int blocksize = 16 )
+		{
+			List<string> required = new List<string>();
+
+			this.UpdateAreaMap(true);
+			int rect_width = blocksize * TILE_WIDTH;
+			int rect_height = blocksize * TILE_HEIGHT;
+
+			int counter = 0;
+			using (StreamWriter writer = new StreamWriter(new FileStream(filepath , FileMode.Create)))
+			{
+				writer.WriteLine(String.Format("@background:{0},{1},{2}",
+					new Object[] {this.Background.R , this.Background.G , this.Background.B }));
+
+				for (int x = this.MapArea.Left; x < this.MapArea.Right; x += rect_width)
+				{
+					for (int y = this.MapArea.Top; y < this.MapArea.Bottom; y += rect_height)
+					{
+
+						var area = new Rectangle(x, y , rect_width , rect_height);
+						var objs = this.areamap.Get(area);
+
+						if (objs.Length == 0)
+							continue;
+
+						writer.WriteLine(String.Format("<{0},{1},{2},{3}>" ,
+							new Object[] { area.X / TILE_WIDTH, area.Y /TILE_HEIGHT , blocksize , blocksize }));
+						foreach ( var obj in  objs )
+						{
+							// x,y,Texture Name[,Texture Index]
+							writer.WriteLine(String.Format("{0},{1},{2},{3}" ,
+								new Object[] { obj.Position.X / TILE_WIDTH , obj.Position.Y / TILE_HEIGHT , obj.SpriteMap.Texture.Name , obj.Frameindex  }));
+
+							counter++;
+
+							if (!required.Contains(obj.TextureName))
+								required.Add(obj.TextureName);
+						}
+					}
+				}
+				writer.Flush();
+			}
+			Console.WriteLine("Wrote " + counter + " out of " + this.mapobjects.Count);
+			return true;
+		}
+
+		/// <summary>
+		/// Add the given Map Object to the map
+		/// </summary>
+		/// <param name="pt">Point.</param>
+		/// <param name="obj">Object.</param>
+		public bool Add (Point pt , MapObject obj)
+		{
+			if (mapobjects.ContainsKey(pt))
+				return false;
+
+			this.mapobjects.Add(pt, obj);
+
+			if (!this.MapArea.Contains(obj.Area))
+			{
+				ReqestAreaMapUpdate = true;
+			}
+
+			areamap.Add(obj);
 			return true;
 		}
 
@@ -182,14 +250,35 @@ namespace Rhovlyn.Engine.Maps
 			{
 				this.mapobjects.Remove(t);
 			}
-			UpdateAreaMap();
+			ReqestAreaMapUpdate = true;
 		}
 
+		/// <summary>
+		/// Draw the Map
+		/// </summary>
+		/// <param name="gameTime">Game time</param>
+		/// <param name="spriteBatch">Sprite batch to draw to</param>
+		/// <param name="camera">Camera of the map</param>
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
 			foreach (var obj in last_tiles)
 			{
 				obj.Draw(gameTime, spriteBatch, camera);
+			}
+			#if DEBUG
+			areamap.Draw(spriteBatch, camera);
+			#endif	
+		}
+
+		/// <summary>
+		/// Updates the bounds of the map
+		/// </summary>
+		public void UpdateAreaOfMap()
+		{
+			mapArea = Rectangle.Empty;
+			foreach (var obj in mapobjects.Values)
+			{
+				mapArea = Rectangle.Union(MapArea, obj.Area);
 			}
 		}
 
@@ -197,14 +286,24 @@ namespace Rhovlyn.Engine.Maps
 		/// Updates the Area Map object.
 		/// </summary>
 		/// <remark>
-		/// Should be used when editting the Map objects
+		/// Should be used after editting the Map objects
 		/// </remark>
-		public void UpdateAreaMap()
+		public void UpdateAreaMap(bool UpdateAreaOfMap = true)
 		{
-			areamap = new AreaMap<MapObject>(MapArea);
-			foreach (var c in mapobjects)
+			if (UpdateAreaOfMap)
+				this.UpdateAreaOfMap();
+
+			areamap = new AreaMap<MapObject>(this.MapArea);
+			foreach (var obj in mapobjects.Values)
 			{
-				areamap.Add(c.Value);
+				if (!areamap.Add(obj))
+				{
+					throw new Exception("Didn't add object");
+				}
+			}
+			if (this.areamap.Count != mapobjects.Count)
+			{
+				throw new Exception("Not all Map Objects are contained in AreaMap and MapObjects");
 			}
 		}
 
@@ -221,6 +320,11 @@ namespace Rhovlyn.Engine.Maps
 				obj.Update(gameTime);
 			}
 
+			if (ReqestAreaMapUpdate)
+			{
+				this.UpdateAreaMap(true);
+				ReqestAreaMapUpdate = false;
+			}
 		}
 
 		/// <summary>
@@ -268,9 +372,9 @@ namespace Rhovlyn.Engine.Maps
 			List<Point> output = new List<Point>();
 			//Get the X,Y,W,H in terms of Map Objects
 			double ax = (double)area.X / (double)TILE_WIDTH;
-			double ay = (double)area.Y / (double)TILE_HIGHT;
+			double ay = (double)area.Y / (double)TILE_HEIGHT;
 			double aw = ((double)area.Width / (double)TILE_WIDTH) + ax;
-			double ah = ((double)area.Height / (double)TILE_HIGHT) + ay;
+			double ah = ((double)area.Height / (double)TILE_HEIGHT) + ay;
 
 			for (double x = ax; x < aw; x++ )
 			{
@@ -293,14 +397,6 @@ namespace Rhovlyn.Engine.Maps
 			}
 			return output.ToArray();
 		}
-
-		public static int NumPointsUnderArea (Rectangle area)
-		{
-			return (int)((double)area.Width / (double)TILE_WIDTH *
-						 (double)area.Height / (double)TILE_HIGHT);
-
-		}
-
 		#endregion
 	}
 }

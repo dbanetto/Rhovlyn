@@ -29,12 +29,16 @@ namespace Rhovlyn.Engine.States
 		{
 			this.content = content;
 
-			MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() );
+			//MapGenerator.GenerateDungeonMap( "gen-map.map" , DateTime.Now.GetHashCode() , new Rectangle(-5000,-5000,10000,10000) );
 
 			this.content.Audio.Add("sfx", "Content/sfx.wav");
 
 			content.Textures.Load("Content/textures.txt");
-			content.Maps.Add( "test" ,  "gen-map.map" );
+			//content.Maps.Add( "test" ,  "gen-map.map" );
+			//this.content.CurrnetMap.Save("sdkljhgskl.map");
+			content.Maps.Add( "loadSaved" ,  "sdkljhgskl.map" );
+			//content.Maps.Current = "loadSaved";
+
 			content.Sprites.Add( "player" , new AnimatedSprite(Vector2.Zero , content.Textures["male"] ));
 
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
@@ -70,6 +74,7 @@ namespace Rhovlyn.Engine.States
 
 		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
 		{
+			cameracontroll.Update(new GameTime());
 			content.CurrnetMap.Draw(gameTime , spriteBatch , camera);
 			content.Sprites.Draw(gameTime , spriteBatch , camera);
 		}

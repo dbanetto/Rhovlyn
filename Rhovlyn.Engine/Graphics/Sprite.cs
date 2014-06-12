@@ -103,6 +103,10 @@ namespace Rhovlyn.Engine.Graphics
 			set { this.rotation = value % MathHelper.TwoPi; }
 		}
 
+		public string TextureName {
+			get { return this.SpriteMap.TextureName; }
+		}
+
 		#endregion 
 	}
 }
