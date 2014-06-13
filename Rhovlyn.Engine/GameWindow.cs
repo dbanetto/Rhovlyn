@@ -40,7 +40,7 @@ namespace Rhovlyn.Engine
 			Content.RootDirectory = "Content";
 
 			content = new ContentManager("Content/settings.ini");
-
+			ApplySettings();
 		}
 
 		/// <summary>
@@ -51,7 +51,7 @@ namespace Rhovlyn.Engine
 		/// </summary>
 		protected override void Initialize()
 		{
-			ApplySettings();
+
 			IsMouseVisible = true;
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
@@ -196,10 +196,10 @@ namespace Rhovlyn.Engine
 			content.Settings.GetBool("window", "fullscreen", ref fullscreen);
 			graphics.IsFullScreen = fullscreen;
 
-			//Does not work on Linux
 			bool vsync = true;
-			content.Settings.GetBool("window", "vsync", ref fullscreen);
+			content.Settings.GetBool("window", "vsync", ref vsync);
 			graphics.SynchronizeWithVerticalRetrace = vsync;
+			this.IsFixedTimeStep = vsync;
 		}
 	}
 }

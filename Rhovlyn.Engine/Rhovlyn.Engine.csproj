@@ -70,6 +70,7 @@
     <Compile Include="Util\Graph.cs" />
     <Compile Include="IO\PartialFile.cs" />
     <Compile Include="Maps\PartialMap.cs" />
+    <Compile Include="Util\Collision.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
