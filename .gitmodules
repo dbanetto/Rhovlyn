@@ -1,3 +1,6 @@
 [submodule "xna-primitives"]
 	path = xna-primitives
 	url = ssh://git@bitbucket.org/zyphrus/xna-primitives
+[submodule "monogame-sdl2"]
+	path = monogame-sdl2
+	url = https://github.com/flibitijibibo/MonoGame.git

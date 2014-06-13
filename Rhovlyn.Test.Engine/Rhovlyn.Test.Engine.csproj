@@ -33,9 +33,6 @@
     <Reference Include="nunit.framework">
       <Private>False</Private>
     </Reference>
-    <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO\Path.cs" />
@@ -59,6 +56,10 @@
     <ProjectReference Include="..\Rhovlyn.Engine\Rhovlyn.Engine.csproj">
       <Project>{7F0330DE-7136-4C6A-AECF-1DD47612135C}</Project>
       <Name>Rhovlyn.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\monogame-sdl2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
+      <Project>{35253CE1-C864-4CD3-8249-4D1319748E8F}</Project>
+      <Name>MonoGame.Framework.SDL2</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>

@@ -15,7 +15,7 @@ namespace Rhovlyn.Launcher
 		[STAThread]
 		static void Main()
 		{
-			var gm = new GameWindow();
+			var gm = new Rhovlyn.Engine.GameWindow();
 			gm.Run();
 		}
 	}
