@@ -94,6 +94,7 @@ namespace Rhovlyn.Engine
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			content.GameStates.Add("world" , new WorldState() );
+			ApplyGraphicsSettings();
 		}
 
 		/// <summary>
@@ -107,7 +108,6 @@ namespace Rhovlyn.Engine
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit();
 			}
-
 			content.CurrentState.Update(gameTime);
 			content.Audio.Update();
 
@@ -182,11 +182,9 @@ namespace Rhovlyn.Engine
 			int cachetimeout = IO.Path.WebResoucesCacheTimeOut;
 			content.Settings.GetInt("Textures" , "CacheTimeout" , ref cachetimeout);
 			IO.Path.WebResoucesCacheTimeOut = cachetimeout;
-
-			LoadGraphicsSettings();
 		}
 
-		public void LoadGraphicsSettings()
+		public void ApplyGraphicsSettings()
 		{
 			bool resizable = false;
 			content.Settings.GetBool("window", "resizable", ref resizable);
@@ -196,10 +194,26 @@ namespace Rhovlyn.Engine
 			content.Settings.GetBool("window", "fullscreen", ref fullscreen);
 			graphics.IsFullScreen = fullscreen;
 
+			bool borderless = false;
+			content.Settings.GetBool("window", "borderless", ref fullscreen);
+			Window.IsBorderless = borderless;
+
 			bool vsync = true;
 			content.Settings.GetBool("window", "vsync", ref vsync);
 			graphics.SynchronizeWithVerticalRetrace = vsync;
 			this.IsFixedTimeStep = vsync;
+
+			int width = 800;
+			content.Settings.GetInt("window", "width", ref width);
+
+			int height = 600;
+			content.Settings.GetInt("window", "height", ref height);
+
+			this.graphics.PreferredBackBufferWidth = width;
+			this.graphics.PreferredBackBufferHeight = height;
+
+			this.graphics.ApplyChanges();
+			this.content.Camera.UpdateBounds(new Rectangle(0, 0, this.graphics.PreferredBackBufferWidth, this.graphics.PreferredBackBufferHeight));
 		}
 	}
 }

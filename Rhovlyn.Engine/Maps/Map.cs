@@ -29,6 +29,7 @@ namespace Rhovlyn.Engine.Maps
 		protected Rectangle last_camera= Rectangle.Empty;
 
 		private bool ReqestAreaMapUpdate = false;
+		private bool ReqestDrawMapUpdate = false;
 
 		#region Constructor
 		public Map( string path , ContentManager content )
@@ -269,9 +270,31 @@ namespace Rhovlyn.Engine.Maps
 			{
 				obj.Draw(gameTime, spriteBatch, camera);
 			}
-			#if DEBUG
+
+			#if RENDER_AREAMAP
 			areamap.Draw(spriteBatch, camera);
 			#endif	
+		}
+
+		public virtual void Update (GameTime gameTime)
+		{
+			if (last_camera != Content.Camera.Bounds || this.ReqestDrawMapUpdate)
+			{
+				last_tiles = areamap.Get(Content.Camera.Bounds);
+				last_camera = Content.Camera.Bounds;
+				this.ReqestDrawMapUpdate = false;
+			}
+
+			foreach (var obj in last_tiles)
+			{
+				obj.Update(gameTime);
+			}
+
+			if (ReqestAreaMapUpdate)
+			{
+				this.UpdateAreaMap(true);
+				ReqestAreaMapUpdate = false;
+			}
 		}
 
 		/// <summary>
@@ -305,32 +328,8 @@ namespace Rhovlyn.Engine.Maps
 					throw new Exception("Didn't add object");
 				}
 			}
-			if (this.areamap.Count != mapobjects.Count)
-			{
-				throw new Exception("Not all Map Objects are contained in AreaMap and MapObjects");
-			}
+			this.ReqestDrawMapUpdate = true;
 		}
-
-		public virtual void Update (GameTime gameTime)
-		{
-			if (last_camera != Content.Camera.Bounds)
-			{
-				last_tiles = areamap.Get(Content.Camera.Bounds);
-				last_camera = Content.Camera.Bounds;
-			}
-
-			foreach (var obj in last_tiles)
-			{
-				obj.Update(gameTime);
-			}
-
-			if (ReqestAreaMapUpdate)
-			{
-				this.UpdateAreaMap(true);
-				ReqestAreaMapUpdate = false;
-			}
-		}
-
 		/// <summary>
 		/// Get all Map Objects in the Area
 		/// </summary>

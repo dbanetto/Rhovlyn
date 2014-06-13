@@ -10,9 +10,9 @@ namespace Rhovlyn.Engine.Util
 	public class AreaMap<T>  where T : Graphics.IDrawable
 	{
 		//Node Count to split on
-		public const int NodesToSplit = 10;
+		public const int NodesToSplit = 8;
 		//Maximum Depth
-		public const int DepthLimit = 10;
+		public const int DepthLimit = 16;
 		//Minimum area of a Child
 		public static readonly Rectangle MinimumArea = new Rectangle(0,0,64,64);
 
@@ -162,10 +162,18 @@ namespace Rhovlyn.Engine.Util
 			} 
 		}
 
-		#if DEBUG
-		public void Draw (SpriteBatch spritebatch , Camera camera)
+		/// <summary>
+		/// Draw the Area Map
+		/// </summary>
+		/// <remark>
+		/// This is mainly for visual debugging
+		/// </remark>
+		/// <param name="spritebatch">Spritebatch.</param>
+		/// <param name="camera">Camera.</param>
+		/// <param name="DrawChildren">If set to <c>true</c> draw children.</param>
+		public void Draw (SpriteBatch spritebatch , Camera camera , bool DrawChildren = true)
 		{
-			if (HasChildren)
+			if (HasChildren && DrawChildren)
 			{
 				foreach (var child in this.Children)
 				{
@@ -176,10 +184,9 @@ namespace Rhovlyn.Engine.Util
 			{
 				Primitives2D.DrawRectangle(spritebatch, 
 					new Rectangle(this.Area.X - (int)camera.Position.X, this.Area.Y - (int)camera.Position.Y, this.Area.Width, this.Area.Height)
-				, Color.Green);
+					, Color.Green);
 			}
 		}
-		#endif
 	}
 }
 

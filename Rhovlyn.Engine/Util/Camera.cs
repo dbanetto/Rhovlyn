@@ -9,7 +9,6 @@ namespace Rhovlyn.Engine.Util
 {
 	public class Camera
 	{
-
 		private Rectangle bounds;
 		private Vector2 position;
 
@@ -23,6 +22,8 @@ namespace Rhovlyn.Engine.Util
 		public void UpdateBounds (Rectangle bounds)
 		{
 			this.bounds = bounds;
+			this.bounds.X = (int)position.X;
+			this.bounds.Y = (int)position.Y;
 		}
 
 		public Rectangle Bounds
