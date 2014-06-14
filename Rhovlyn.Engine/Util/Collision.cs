@@ -40,7 +40,7 @@ namespace Rhovlyn.Engine.Util
 
 			var tex_region = new Rectangle(A.SpriteMap.Frames[A.Frameindex].X, A.SpriteMap.Frames[A.Frameindex].Y, intercept.Width, intercept.Height);
 			var A_data = new Color[tex_region.Width * tex_region.Height];
-			A.SpriteMap.Texture.GetData<Color>(0, tex_region , A_data, 0, A_data.Length);
+			A.SpriteMap.Texture.GetData<Color>(0, tex_region, A_data, 0, A_data.Length);
 
 			tex_region = new Rectangle(B.SpriteMap.Frames[B.Frameindex].X, B.SpriteMap.Frames[B.Frameindex].Y, intercept.Width, intercept.Height);
 			var B_data = new Color[tex_region.Width * tex_region.Height];
@@ -56,4 +56,3 @@ namespace Rhovlyn.Engine.Util
 
 	}
 }
-

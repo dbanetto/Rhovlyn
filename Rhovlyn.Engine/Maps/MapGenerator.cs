@@ -7,15 +7,15 @@ namespace Rhovlyn.Engine.Maps
 {
 	public static class MapGenerator
 	{
-		public static void GenerateDungeonMap (string outPath , int seed , Rectangle area )
+		public static void GenerateDungeonMap(string outPath, int seed, Rectangle area)
 		{
-			using (var writer = new StreamWriter(new FileStream(outPath , FileMode.Create)))
+			using (var writer = new StreamWriter(new FileStream(outPath, FileMode.Create)))
 			{
-				GenerateDungeonMap( writer, seed, area );
+				GenerateDungeonMap(writer, seed, area);
 			}
 		}
 
-		public static void GenerateDungeonMap( StreamWriter writer , int seed , Rectangle area )
+		public static void GenerateDungeonMap(StreamWriter writer, int seed, Rectangle area)
 		{
 			var rnd = new Random(seed);
 			var tiles = new Dictionary<Point, int>();
@@ -25,28 +25,34 @@ namespace Rhovlyn.Engine.Maps
 
 			// HACK : Temp 'fixed' types
 			//Tile names to varry between
-			var tile_names = new List<string>() { "cobble,0" , "cobble,1" , "cobble,2" , "cobble,3"};
+			var tile_names = new List<string>() { "cobble,0", "cobble,1", "cobble,2", "cobble,3" };
 
 			//Initial room
-			for (int x = -1; x <= 1; x++) {
-				for (int y = -1; y <= 1; y++) {
-					if (!tiles.ContainsKey(new Point(x, y))) {
+			for (int x = -1; x <= 1; x++)
+			{
+				for (int y = -1; y <= 1; y++)
+				{
+					if (!tiles.ContainsKey(new Point(x, y)))
+					{
 						tiles.Add(new Point(x, y), 2);
 						nodes.Add(new Point(x, y));
 					}
 				}
 			}
 
-			while (nodes.Count != 0) {
+			while (nodes.Count != 0)
+			{
 				var node = nodes[0];
 				nodes.RemoveAt(0);
 
 				//Random "sub"-texture of stone
-				int type = rnd.Next( 0,tile_names.Count - 1);
+				int type = rnd.Next(0, tile_names.Count - 1);
 
 				double sumX = 0, sumY = 0, sumN = 0;
-				for (int x = (int)node.X - 1; x <= (int)node.X + 1; x++) {
-					for (int y = (int)node.Y - 1; y <= (int)node.Y + 1; y++) {
+				for (int x = (int)node.X - 1; x <= (int)node.X + 1; x++)
+				{
+					for (int y = (int)node.Y - 1; y <= (int)node.Y + 1; y++)
+					{
 						if (y == (int)node.Y && x == (int)node.X)
 							continue;
 
@@ -54,11 +60,13 @@ namespace Rhovlyn.Engine.Maps
 							continue;
 
 						//RNG gods may want to change directions
-						if (rnd.NextDouble() < 0.2) {
+						if (rnd.NextDouble() < 0.2)
+						{
 							sumX += y - node.X;
 							sumY += x - node.Y;
 						}
-						else {
+						else
+						{
 							sumX += x - node.X;
 							sumY += y - node.Y;
 						}
@@ -78,19 +86,24 @@ namespace Rhovlyn.Engine.Maps
 
 
 				//Make a room
-				if (rnd.NextDouble() < 0.05) {
+				if (rnd.NextDouble() < 0.05)
+				{
 					//Make a room with the dimensions (size*2 -1) by (size*2 -1)
 
 					//Tends towards 3 by 3 rooms but can go up to 9 by 9
 					int size = (int)Math.Max(rnd.NextDouble() * 4.0 - 1.0, 1);
 
-					for (int x = (int)node.X - size; x <= (int)node.X + size; x++) {
-						for (int y = (int)node.Y - size; y <= (int)node.Y + size; y++) {
-							if (!tiles.ContainsKey(new Point(x, y))) {
+					for (int x = (int)node.X - size; x <= (int)node.X + size; x++)
+					{
+						for (int y = (int)node.Y - size; y <= (int)node.Y + size; y++)
+						{
+							if (!tiles.ContainsKey(new Point(x, y)))
+							{
 								tiles.Add(new Point(x, y), 2);
 								//Only Edge nodes need to be checked
 								if (x == (int)node.X - size || x == (int)node.X + size ||
-									y == (int)node.Y - size || y == (int)node.Y + size) {
+								    y == (int)node.Y - size || y == (int)node.Y + size)
+								{
 									nodes.Add(new Point(x, y));
 								}
 							}
@@ -99,11 +112,14 @@ namespace Rhovlyn.Engine.Maps
 				}
 
 				//Helps to make all tiles are touching another tile
-				if (outX != 0 && outY != 0) {
-					if (rnd.NextDouble() > 0.5) {
+				if (outX != 0 && outY != 0)
+				{
+					if (rnd.NextDouble() > 0.5)
+					{
 						outX = 0;
 					}
-					else {
+					else
+					{
 						outY = 0;
 					}
 				}
@@ -111,7 +127,7 @@ namespace Rhovlyn.Engine.Maps
 				outX += (int)node.X;
 				outY += (int)node.Y;
 
-				if (!tiles.ContainsKey(new Point(outX, outY)) && area.Contains(new Point(outX * Map.TILE_WIDTH, outY * Map.TILE_HEIGHT))) 
+				if (!tiles.ContainsKey(new Point(outX, outY)) && area.Contains(new Point(outX * Map.TILE_WIDTH, outY * Map.TILE_HEIGHT)))
 				{
 					tiles.Add(new Point(outX, outY), type);
 					nodes.Add(new Point(outX, outY));
@@ -121,12 +137,11 @@ namespace Rhovlyn.Engine.Maps
 			writer.WriteLine("#Generated with seed " + seed);
 			writer.WriteLine("@background:36,36,36");
 			//Write out all the tiles to file
-			foreach (var t in tiles) 
+			foreach (var t in tiles)
 			{
 				writer.WriteLine((int)t.Key.X + "," + (int)t.Key.Y + "," + tile_names[t.Value]);
 			}
-		} 
-
+		}
 	}
 }
 

@@ -10,7 +10,7 @@ namespace Rhovlyn.Engine.Managers
 {
 	public class ContentManager
 	{
-		public ContentManager (string settingsPath)
+		public ContentManager(string settingsPath)
 		{
 			Settings = new Settings(settingsPath);
 			string path = "";
@@ -25,7 +25,7 @@ namespace Rhovlyn.Engine.Managers
 
 		}
 
-		public void Init (GraphicsDevice device)
+		public void Init(GraphicsDevice device)
 		{
 			Textures = new TextureMananger(device);
 			GameStates = new GameStateManager(this);
@@ -35,18 +35,25 @@ namespace Rhovlyn.Engine.Managers
 
 		}
 
-		public Map CurrnetMap {get { return Maps.CurrentMap; } }
-		public IGameState CurrentState { get { return GameStates.CurrnetState; }} 
+		public Map CurrnetMap { get { return Maps.CurrentMap; } }
+
+		public IGameState CurrentState { get { return GameStates.CurrnetState; } }
+
 		public Camera Camera { get; set; }
 
 		public AudioManager Audio { get; private set; }
-		public SpriteManager Sprites { get; private set; }
-		public Settings Settings { get; private set; }
-		public TextureMananger Textures { get; private set; }
-		public MapManager Maps { get; private set; }
-		public GameStateManager GameStates { get; private set; }
-		public InputManager Input { get; private set; }
 
+		public SpriteManager Sprites { get; private set; }
+
+		public Settings Settings { get; private set; }
+
+		public TextureMananger Textures { get; private set; }
+
+		public MapManager Maps { get; private set; }
+
+		public GameStateManager GameStates { get; private set; }
+
+		public InputManager Input { get; private set; }
 	}
 }
 

@@ -8,18 +8,18 @@ namespace Rhovlyn.Engine.Managers
 	{
 		Dictionary< string , IInputProvider > inputs;
 
-
-
-		public InputManager(string settingsPath )
+		public InputManager(string settingsPath)
 		{
 			inputs = new Dictionary< string , IInputProvider >();
 		}
 
 		#region Management
-		public bool this[string name]
+
+		public bool this [string name]
 		{
-			get {
-				foreach (var pro in inputs.Values )
+			get
+			{
+				foreach (var pro in inputs.Values)
 				{
 					if (pro.GetState(name))
 					{
@@ -30,7 +30,7 @@ namespace Rhovlyn.Engine.Managers
 			}
 		}
 
-		public bool Add (string name , IInputProvider state )
+		public bool Add(string name, IInputProvider state)
 		{
 			if (!Exists(name))
 			{
@@ -40,11 +40,13 @@ namespace Rhovlyn.Engine.Managers
 			return false;
 		}
 
-		public bool Exists ( string name)
+		public bool Exists(string name)
 		{
 			return this.inputs.ContainsKey(name);
 		}
+
 		#endregion
+
 	}
 }
 

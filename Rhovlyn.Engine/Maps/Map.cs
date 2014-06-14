@@ -10,29 +10,35 @@ using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Managers;
 using Rhovlyn.Engine.Graphics;
+
 #endregion
 namespace Rhovlyn.Engine.Maps
 {
-	public class Map 
+	public class Map
 	{
 		private Dictionary< Point , MapObject > mapobjects;
+
 		public ContentManager Content { get; private set; }
+
 		public static readonly int TILE_WIDTH = 64;
 		public static readonly int TILE_HEIGHT = 64;
+
 		public Color Background { get; set; }
 
-		public Rectangle MapArea {get { return mapArea; }}
+		public Rectangle MapArea { get { return mapArea; } }
+
 		private Rectangle mapArea;
 
 		protected  AreaMap<MapObject> areamap;
 		protected  MapObject[] last_tiles;
-		protected Rectangle last_camera= Rectangle.Empty;
+		protected Rectangle last_camera = Rectangle.Empty;
 
 		private bool ReqestAreaMapUpdate = false;
 		private bool ReqestDrawMapUpdate = false;
 
 		#region Constructor
-		public Map( string path , ContentManager content )
+
+		public Map(string path, ContentManager content)
 		{
 			areamap = new AreaMap<MapObject>();
 			mapobjects = new Dictionary<Point, MapObject>();
@@ -41,7 +47,7 @@ namespace Rhovlyn.Engine.Maps
 			this.Load(path);
 		}
 
-		public Map( ContentManager content ) 
+		public Map(ContentManager content)
 		{
 			Content = content;
 			areamap = new AreaMap<MapObject>();
@@ -53,24 +59,27 @@ namespace Rhovlyn.Engine.Maps
 		{
 			this.mapobjects.Clear();
 		}
+
 		#endregion
 
 		#region Methods
+
 		/// <summary>
 		/// Load map from a stream, does not override current Map
 		/// </summary>
 		/// <param name="stream">Stream.</param>
-		public bool Load( Stream stream )
+		public bool Load(Stream stream)
 		{
 			mapArea = Rectangle.Empty;
-			using ( var reader =  new StreamReader( stream ) )
+			using (var reader = new StreamReader(stream))
 			{
-				try {
+				try
+				{
 					while (!reader.EndOfStream)
 					{
 						var line = reader.ReadLine();
 						if (line.IndexOf("#") != -1)
-							line = line.Substring(0, line.IndexOf("#") );
+							line = line.Substring(0, line.IndexOf("#"));
 						line.Trim();
 						if (string.IsNullOrEmpty(line))
 							continue;
@@ -83,13 +92,13 @@ namespace Rhovlyn.Engine.Maps
 							if (line.StartsWith("include:"))
 							{
 								var obj = line.Substring("include:".Length);
-								Content.Textures.Load( IO.Path.ResolvePath( obj ) );
+								Content.Textures.Load(IO.Path.ResolvePath(obj));
 							}
 							// Load a sprite list
 							if (line.StartsWith("sprites:"))
 							{
 								var obj = line.Substring("sprites:".Length);
-								Content.Sprites.Load( IO.Path.ResolvePath( obj ) , Content.Textures );
+								Content.Sprites.Load(IO.Path.ResolvePath(obj), Content.Textures);
 							}
 
 							//Hard check for a texture
@@ -98,7 +107,7 @@ namespace Rhovlyn.Engine.Maps
 								var obj = line.Substring("require:".Length);
 								foreach (var tex in obj.Split(','))
 								{
-									if (!Content.Textures.Exists(tex) )
+									if (!Content.Textures.Exists(tex))
 									{
 										//TODO : Make a exception class for this
 										throw new Exception("Failed to meet the require texture " + tex);
@@ -114,18 +123,21 @@ namespace Rhovlyn.Engine.Maps
 								var rgb = obj.Split(',');
 
 								//Parse a RGB comma sperated string
-								if ( rgb.Length != 3)
+								if (rgb.Length != 3)
 									throw new InvalidDataException("Expected a comma sperated RGB value");
-								r = byte.Parse( rgb[0] );
-								g = byte.Parse( rgb[1] );
-								b = byte.Parse( rgb[2] );
+								r = byte.Parse(rgb[0]);
+								g = byte.Parse(rgb[1]);
+								b = byte.Parse(rgb[2]);
 
-								Background = new Color( r , g , b );
+								Background = new Color(r, g, b);
 							}
-						} else if ( line.StartsWith("<") && line.EndsWith(">") )
+						}
+						else if (line.StartsWith("<") && line.EndsWith(">"))
 						{
 							continue;
-						} else {
+						}
+						else
+						{
 							//Load a Map object
 							// Example x,y,Texture Name[,Texture Index]
 							// Eg. 0,0,wood
@@ -140,25 +152,28 @@ namespace Rhovlyn.Engine.Maps
 							var tex = args[2];
 
 							//Check if Texture index is defined
-							if ( args.Length > 3  )
+							if (args.Length > 3)
 							{
-								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HEIGHT ) , Content.Textures[tex] );
+								var obj = new MapObject(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), Content.Textures[tex]);
 
 								int index = int.Parse(args[3]);
 								obj.Frameindex = index;
 
-								this.Add( new Point(x , y) , obj );
+								this.Add(new Point(x, y), obj);
 								this.areamap.Add(obj);
-							} else
+							}
+							else
 							{
-								var obj = new MapObject( new Vector2( x*TILE_WIDTH , y*TILE_HEIGHT ) , Content.Textures[tex] );
-								this.Add( new Point(x , y) , obj );
+								var obj = new MapObject(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), Content.Textures[tex]);
+								this.Add(new Point(x, y), obj);
 								this.areamap.Add(obj);
 							} 
 						}
 
 					}
-				} catch (IOException ex) {
+				}
+				catch (IOException ex)
+				{
 					Console.WriteLine(ex);
 					return false;
 				}
@@ -166,7 +181,7 @@ namespace Rhovlyn.Engine.Maps
 			return true;
 		}
 
-		public bool Save( string filepath , int blocksize = 8 )
+		public bool Save(string filepath, int blocksize = 8)
 		{
 			List<string> required = new List<string>();
 
@@ -175,29 +190,29 @@ namespace Rhovlyn.Engine.Maps
 			int rect_height = blocksize * TILE_HEIGHT;
 
 			int counter = 0;
-			using (StreamWriter writer = new StreamWriter(new FileStream(filepath , FileMode.Create)))
+			using (StreamWriter writer = new StreamWriter(new FileStream(filepath, FileMode.Create)))
 			{
 				writer.WriteLine(String.Format("@background:{0},{1},{2}",
-					new Object[] {this.Background.R , this.Background.G , this.Background.B }));
+					new Object[] { this.Background.R, this.Background.G, this.Background.B }));
 
 				for (int x = this.MapArea.Left; x < this.MapArea.Right; x += rect_width)
 				{
 					for (int y = this.MapArea.Top; y < this.MapArea.Bottom; y += rect_height)
 					{
 
-						var area = new Rectangle(x, y , rect_width , rect_height);
+						var area = new Rectangle(x, y, rect_width, rect_height);
 						var objs = this.areamap.Get(area);
 
 						if (objs.Length == 0)
 							continue;
 
-						writer.WriteLine(String.Format("<{0},{1},{2},{3}>" ,
-							new Object[] { area.X, area.Y , area.Width, area.Height }));
-						foreach ( var obj in  objs )
+						writer.WriteLine(String.Format("<{0},{1},{2},{3}>",
+							new Object[] { area.X, area.Y, area.Width, area.Height }));
+						foreach (var obj in  objs)
 						{
 							// x,y,Texture Name[,Texture Index]
-							writer.WriteLine(String.Format("{0},{1},{2},{3}" ,
-								new Object[] { obj.Position.X / TILE_WIDTH , obj.Position.Y / TILE_HEIGHT , obj.SpriteMap.Texture.Name , obj.Frameindex  }));
+							writer.WriteLine(String.Format("{0},{1},{2},{3}",
+								new Object[] { obj.Position.X / TILE_WIDTH, obj.Position.Y / TILE_HEIGHT, obj.SpriteMap.Texture.Name, obj.Frameindex  }));
 
 							counter++;
 
@@ -217,7 +232,7 @@ namespace Rhovlyn.Engine.Maps
 		/// </summary>
 		/// <param name="pt">Point.</param>
 		/// <param name="obj">Object.</param>
-		public bool Add (Point pt , MapObject obj)
+		public bool Add(Point pt, MapObject obj)
 		{
 			if (mapobjects.ContainsKey(pt))
 				return false;
@@ -240,9 +255,9 @@ namespace Rhovlyn.Engine.Maps
 		/// Does clear current map.
 		/// </remark>
 		/// <param name="path">Path.</param>
-		public bool Load (string path )
+		public bool Load(string path)
 		{
-			return this.Load( IO.Path.ResolvePath(path));
+			return this.Load(IO.Path.ResolvePath(path));
 		}
 
 		/// <summary>
@@ -264,7 +279,7 @@ namespace Rhovlyn.Engine.Maps
 		/// <param name="gameTime">Game time</param>
 		/// <param name="spriteBatch">Sprite batch to draw to</param>
 		/// <param name="camera">Camera of the map</param>
-		public virtual void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
+		public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
 		{
 			foreach (var obj in last_tiles)
 			{
@@ -276,7 +291,7 @@ namespace Rhovlyn.Engine.Maps
 			#endif	
 		}
 
-		public virtual void Update (GameTime gameTime)
+		public virtual void Update(GameTime gameTime)
 		{
 			if (last_camera != Content.Camera.Bounds || this.ReqestDrawMapUpdate)
 			{
@@ -330,12 +345,13 @@ namespace Rhovlyn.Engine.Maps
 			}
 			this.ReqestDrawMapUpdate = true;
 		}
+
 		/// <summary>
 		/// Get all Map Objects in the Area
 		/// </summary>
 		/// <returns>The Map Objects in the area</returns>
 		/// <param name="area">Area</param>
-		public MapObject[] TilesInArea (Rectangle area)
+		public MapObject[] TilesInArea(Rectangle area)
 		{
 			List<MapObject> output = new List<MapObject>();
 			foreach (var pt in PointsUnderArea(area))
@@ -353,7 +369,7 @@ namespace Rhovlyn.Engine.Maps
 		/// </summary>
 		/// <returns><c>true</c> if area give is completely on the map ; otherwise, <c>false</c>.</returns>
 		/// <param name="area">Area to check</param>
-		public bool IsOnMap( Rectangle area )
+		public bool IsOnMap(Rectangle area)
 		{
 			foreach (var pt in PointsUnderArea(area))
 			{
@@ -379,19 +395,21 @@ namespace Rhovlyn.Engine.Maps
 			double aw = ((double)area.Width / (double)TILE_WIDTH) + ax;
 			double ah = ((double)area.Height / (double)TILE_HEIGHT) + ay;
 
-			for (double x = ax; x < aw; x++ )
+			for (double x = ax; x < aw; x++)
 			{
-				for (double y = ay; y < ah; y++ )
+				for (double y = ay; y < ah; y++)
 				{
 					//Check both rounded and floored values
 					//Both are check because of a bug occurs when only 1 is checked
-					var p_xs = new int[] { (int)Math.Round(x) , (int)Math.Floor(x) };
+					var p_xs = new int[] { (int)Math.Round(x), (int)Math.Floor(x) };
 					var p_ys = new int[] { (int)Math.Round(y), (int)Math.Floor(y) };
 
 					//Check all the values for a fail
-					foreach (var p_x in p_xs){
-						foreach (var p_y in p_ys){
-							var pt = new Point( p_x , p_y );
+					foreach (var p_x in p_xs)
+					{
+						foreach (var p_y in p_ys)
+						{
+							var pt = new Point(p_x, p_y);
 							if (!output.Contains(pt))
 								output.Add(pt);
 						}
@@ -400,6 +418,7 @@ namespace Rhovlyn.Engine.Maps
 			}
 			return output.ToArray();
 		}
+
 		#endregion
 	}
 }

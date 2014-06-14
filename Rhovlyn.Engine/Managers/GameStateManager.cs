@@ -9,6 +9,7 @@ namespace Rhovlyn.Engine.Managers
 		Dictionary< string , IGameState > states;
 		string currnet;
 		ContentManager content;
+
 		public GameStateManager(ContentManager content)
 		{
 			states = new Dictionary<string, IGameState>();
@@ -16,13 +17,17 @@ namespace Rhovlyn.Engine.Managers
 		}
 
 		#region Management
+
 		public IGameState CurrnetState { get { return this.states[Current]; } }
-		public string Current 
+
+		public string Current
 		{
-			get {
+			get
+			{
 				return this.currnet;
 			}
-			set {
+			set
+			{
 				if (currnet != null)
 					states[currnet].UnLoadContent(content);
 				this.currnet = value;
@@ -30,7 +35,7 @@ namespace Rhovlyn.Engine.Managers
 			}
 		}
 
-		public bool Add (string name , IGameState state )
+		public bool Add(string name, IGameState state)
 		{
 			if (!Exists(name))
 			{
@@ -43,11 +48,13 @@ namespace Rhovlyn.Engine.Managers
 			return false;
 		}
 
-		public bool Exists ( string name)
+		public bool Exists(string name)
 		{
 			return this.states.ContainsKey(name);
 		}
+
 		#endregion
+
 	}
 }
 

@@ -7,7 +7,8 @@ namespace Rhovlyn.Engine.Managers
 	public class MapManager
 	{
 		Dictionary< string , Map > maps;
-		public ContentManager Content { get; private set;}
+
+		public ContentManager Content { get; private set; }
 
 		public MapManager(ContentManager content)
 		{
@@ -16,8 +17,10 @@ namespace Rhovlyn.Engine.Managers
 		}
 
 		#region Management
+
 		public string Current { get; set; }
-		public Map CurrentMap { get {return maps[Current]; } }
+
+		public Map CurrentMap { get { return maps[Current]; } }
 
 		public Map Get(string name)
 		{
@@ -26,13 +29,13 @@ namespace Rhovlyn.Engine.Managers
 				return maps[name];
 			}
 			return null;
-		} 
+		}
 
-		public bool Add (string name , string path )
+		public bool Add(string name, string path)
 		{
 			if (!Exists(name))
 			{
-				maps.Add(name, new PartialMap( path , Content ) );
+				maps.Add(name, new PartialMap(path, Content));
 				if (maps.Count == 1)
 					Current = name;
 				return true;
@@ -40,7 +43,7 @@ namespace Rhovlyn.Engine.Managers
 			return false;
 		}
 
-		public bool Add (string name , Map Map )
+		public bool Add(string name, Map Map)
 		{
 			if (!Exists(name))
 			{
@@ -52,7 +55,7 @@ namespace Rhovlyn.Engine.Managers
 			return false;
 		}
 
-		public void Remove (string name)
+		public void Remove(string name)
 		{
 			if (Exists(name))
 			{
@@ -60,16 +63,18 @@ namespace Rhovlyn.Engine.Managers
 			}
 		}
 
-		public Map this[string name]
+		public Map this [string name]
 		{
-			get {return Get(name);}
+			get { return Get(name); }
 		}
 
-		public bool Exists ( string name)
+		public bool Exists(string name)
 		{
 			return this.maps.ContainsKey(name);
 		}
+
 		#endregion
+
 	}
 }
 

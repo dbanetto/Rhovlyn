@@ -12,6 +12,7 @@ namespace Rhovlyn.Engine.Managers
 	public class SpriteManager
 	{
 		private Dictionary< string , Sprite > sprites;
+
 		public ContentManager Content { get; private set; }
 
 		public SpriteManager(ContentManager content)
@@ -20,29 +21,31 @@ namespace Rhovlyn.Engine.Managers
 			Content = content;
 		}
 
-		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
+		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
 		{
 			foreach (Sprite sp in sprites.Values)
 				sp.Draw(gameTime, spriteBatch, camera);
 		}
 
-		public void Update (GameTime gameTime)
+		public void Update(GameTime gameTime)
 		{
 			foreach (Sprite sp in sprites.Values)
 				sp.Update(gameTime);
 		}
 
 		#region Management
-		public bool Load(Stream stream , TextureMananger textures)
+
+		public bool Load(Stream stream, TextureMananger textures)
 		{
-			using ( var reader =  new StreamReader( stream ) )
+			using (var reader = new StreamReader(stream))
 			{
-				try {
+				try
+				{
 					while (!reader.EndOfStream)
 					{
 						var line = reader.ReadLine();
 						if (line.IndexOf("#") != -1)
-							line = line.Substring(0, line.IndexOf("#") );
+							line = line.Substring(0, line.IndexOf("#"));
 						line = line.Trim();
 						if (string.IsNullOrEmpty(line))
 							continue;
@@ -55,7 +58,7 @@ namespace Rhovlyn.Engine.Managers
 							if (line.StartsWith("include:"))
 							{
 								var obj = line.Substring("include:".Length);
-								Content.Textures.Load( IO.Path.ResolvePath( obj ) );
+								Content.Textures.Load(IO.Path.ResolvePath(obj));
 							}
 
 							//Hard check for a texture
@@ -64,14 +67,16 @@ namespace Rhovlyn.Engine.Managers
 								var obj = line.Substring("require:".Length);
 								foreach (var tex in obj.Split(','))
 								{
-									if (!Content.Textures.Exists(tex) )
+									if (!Content.Textures.Exists(tex))
 									{
 										//TODO : Make a exception class for this
 										throw new Exception("Failed to meet the require texture " + tex);
 									}
 								}
 							}
-						} else{
+						}
+						else
+						{
 							// Sprite Example
 							// x,y,name,Texture[,TextureIndex]
 							//TODO : Load different Sprite types
@@ -82,22 +87,25 @@ namespace Rhovlyn.Engine.Managers
 							var name = args[2];
 							var tex = args[3];
 
-							if ( args.Length > 3  )
+							if (args.Length > 3)
 							{
-								var obj = new Sprite( new Vector2( x , y) , textures[tex] );
-							  	int index = int.Parse(args[4]);
+								var obj = new Sprite(new Vector2(x, y), textures[tex]);
+								int index = int.Parse(args[4]);
 								obj.Frameindex = index;
 
-								sprites.Add(  name , obj );
-							} else
+								sprites.Add(name, obj);
+							}
+							else
 							{
-								sprites.Add( name , new Sprite( new Vector2( x , y) , textures[tex] ) );
+								sprites.Add(name, new Sprite(new Vector2(x, y), textures[tex]));
 							} 
 
 						}
 
 					}
-				} catch (Exception ex) {
+				}
+				catch (Exception ex)
+				{
 					Console.WriteLine(ex);
 					return false;
 				}
@@ -107,7 +115,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Load(string path)
 		{
-			return this.Load(new FileStream(path , FileMode.Open), this.Content.Textures);
+			return this.Load(new FileStream(path, FileMode.Open), this.Content.Textures);
 		}
 
 		public Sprite Get(string name)
@@ -117,9 +125,9 @@ namespace Rhovlyn.Engine.Managers
 				return sprites[name];
 			}
 			return null;
-		} 
+		}
 
-		public bool Add (string name , Sprite sprite )
+		public bool Add(string name, Sprite sprite)
 		{
 			if (!Exists(name))
 			{
@@ -129,15 +137,17 @@ namespace Rhovlyn.Engine.Managers
 			return false;
 		}
 
-		public Sprite this[string name]
+		public Sprite this [string name]
 		{
-			get {return Get(name);}
+			get { return Get(name); }
 		}
 
-		public bool Exists ( string name)
+		public bool Exists(string name)
 		{
 			return this.sprites.ContainsKey(name);
 		}
+
 		#endregion
+
 	}
 }

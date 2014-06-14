@@ -22,13 +22,10 @@ namespace Rhovlyn.Engine
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 		ContentManager content;
-
 		Graph draw_time;
 		Graph update_time;
-
 		int frames_past = 0;
 		double frames_timer = 0;
-
 		double draw_graph_timer = 0;
 		double update_graph_timer = 0;
 
@@ -56,8 +53,8 @@ namespace Rhovlyn.Engine
 			//HACK : Borderless Window cannot be set on Linux
 			//Window.IsBorderless = false;
 
-			draw_time = new Graph(new Vector2(10, 10), 200, 50, true , 100, MaxType.Auto , Color.LightGray);
-			update_time = new Graph(new Vector2(220,10), 200, 50 , true , 100 , MaxType.Auto , Color.LightGray);
+			draw_time = new Graph(new Vector2(10, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
+			update_time = new Graph(new Vector2(220, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
 
 			//Danger Lines
 			draw_time.Lines.Add(new Line(128, Color.DarkRed));
@@ -75,13 +72,16 @@ namespace Rhovlyn.Engine
 			update_time.Lines.Add(new Line(0.5, Color.Purple));
 			update_time.Lines.Add(new Line(0.01, Color.White));
 
-			content.Camera = new Camera(Vector2.Zero , this.Window.ClientBounds);
+			content.Camera = new Camera(Vector2.Zero, this.Window.ClientBounds);
 			content.Init(graphics.GraphicsDevice);
 
 			this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
 			//Keep the camera up to date with the Client Size
-			this.Window.ClientSizeChanged += (object sender, EventArgs e) => { content.Camera.UpdateBounds(this.Window.ClientBounds); };
+			this.Window.ClientSizeChanged += (object sender, EventArgs e) =>
+			{
+				content.Camera.UpdateBounds(this.Window.ClientBounds);
+			};
 			base.Initialize();
 		}
 
@@ -93,7 +93,7 @@ namespace Rhovlyn.Engine
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			content.GameStates.Add("world" , new WorldState() );
+			content.GameStates.Add("world", new WorldState());
 			ApplyGraphicsSettings();
 		}
 
@@ -105,13 +105,14 @@ namespace Rhovlyn.Engine
 		protected override void Update(GameTime gameTime)
 		{
 			var then = DateTime.Now;
-			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+			{
 				Exit();
 			}
 			content.CurrentState.Update(gameTime);
 			content.Audio.Update();
 
-			this.Window.Title = "FPS:" + (int)FPS +  " " + this.content.Camera.Bounds.ToString();
+			this.Window.Title = "FPS:" + (int)FPS + " " + this.content.Camera.Bounds.ToString();
 
 			frames_timer += gameTime.ElapsedGameTime.TotalSeconds;
 			if (frames_timer > 1)
@@ -148,9 +149,9 @@ namespace Rhovlyn.Engine
 				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
-				this.content.CurrentState.Draw(gameTime, spriteBatch , content.Camera);
-				draw_time.Draw(gameTime, spriteBatch, content.Camera);
-				update_time.Draw(gameTime, spriteBatch, content.Camera);
+			this.content.CurrentState.Draw(gameTime, spriteBatch, content.Camera);
+			draw_time.Draw(gameTime, spriteBatch, content.Camera);
+			update_time.Draw(gameTime, spriteBatch, content.Camera);
 			spriteBatch.End();
 
 			frames_past++;
@@ -168,19 +169,19 @@ namespace Rhovlyn.Engine
 		{
 			//Texture & Web Resourses
 			bool webresource = false;
-			content.Settings.GetBool("Textures" , "AllowWebResources" , ref webresource);
+			content.Settings.GetBool("Textures", "AllowWebResources", ref webresource);
 			IO.Path.AllowWebResouces = webresource;
 
 			bool webcache = webresource;
-			content.Settings.GetBool("Textures" , "AllowWebResourcesCache" , ref webcache);
+			content.Settings.GetBool("Textures", "AllowWebResourcesCache", ref webcache);
 			IO.Path.AllowWebResoucesCaching = webcache;
 
 			string cachepath = IO.Path.WebResoucesCachePath;
-			content.Settings.Get("Textures" , "CachePath" , ref cachepath);
+			content.Settings.Get("Textures", "CachePath", ref cachepath);
 			IO.Path.WebResoucesCachePath = cachepath;
 
 			int cachetimeout = IO.Path.WebResoucesCacheTimeOut;
-			content.Settings.GetInt("Textures" , "CacheTimeout" , ref cachetimeout);
+			content.Settings.GetInt("Textures", "CacheTimeout", ref cachetimeout);
 			IO.Path.WebResoucesCacheTimeOut = cachetimeout;
 		}
 
@@ -195,7 +196,7 @@ namespace Rhovlyn.Engine
 			graphics.IsFullScreen = fullscreen;
 
 			bool borderless = false;
-			content.Settings.GetBool("window", "borderless", ref fullscreen);
+			content.Settings.GetBool("window", "borderless", ref borderless);
 			Window.IsBorderless = borderless;
 
 			bool vsync = true;

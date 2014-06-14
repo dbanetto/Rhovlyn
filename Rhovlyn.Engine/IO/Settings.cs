@@ -11,6 +11,7 @@ namespace Rhovlyn.Engine.IO
 	{
 		// < Header , Contents >
 		private Dictionary<string , Dictionary< string , string >  > settings;
+
 		public bool isLoaded { get; private set; }
 
 		public Settings(string path)
@@ -18,7 +19,7 @@ namespace Rhovlyn.Engine.IO
 			isLoaded = this.Load(path);
 		}
 
-		public Settings() 
+		public Settings()
 		{
 			isLoaded = false;
 		}
@@ -27,9 +28,9 @@ namespace Rhovlyn.Engine.IO
 		/// Load the specified path.
 		/// </summary>
 		/// <param name="path">Local path</param>
-		public bool Load (string path)
+		public bool Load(string path)
 		{
-			using (var f = new FileStream( path  , FileMode.Open ))
+			using (var f = new FileStream(path, FileMode.Open))
 			{
 				return Load(f);
 			}
@@ -39,11 +40,11 @@ namespace Rhovlyn.Engine.IO
 		/// Load a stream of Data assuming it is in the INI Format
 		/// </summary>
 		/// <param name="stream">Stream.</param>
-		public bool Load (Stream stream)
+		public bool Load(Stream stream)
 		{
 			isLoaded = false;
 			settings = new Dictionary<string, Dictionary< string , string > >();
-			settings.Add( "" , new Dictionary< string , string >() );
+			settings.Add("", new Dictionary< string , string >());
 			using (var reader = new StreamReader(stream))
 			{
 				var current = settings[""];
@@ -92,14 +93,15 @@ namespace Rhovlyn.Engine.IO
 			return true;
 		}
 
-		public bool Exists (string header)
+		public bool Exists(string header)
 		{
 			if (!isLoaded)
 				return false;
 
 			return this.settings.ContainsKey(header.ToLower());
 		}
-		public bool Exists (string header , string key)
+
+		public bool Exists(string header, string key)
 		{
 			if (!isLoaded)
 				return false;
@@ -110,12 +112,13 @@ namespace Rhovlyn.Engine.IO
 			}
 			return false;
 		}
+
 		/// <summary>
 		/// Gets the <see cref="Rhovlyn.Engine.IO.Settings"/> with the specified header.
 		/// </summary>
 		/// <remark>Can throw expecptions</remark>
 		/// <param name="header">Header.</param>
-		public Dictionary< string , string > this[string header]
+		public Dictionary< string , string > this [string header]
 		{
 			get { return this.settings[header.ToLower()]; }
 		}
@@ -134,7 +137,7 @@ namespace Rhovlyn.Engine.IO
 		/// <param name="header">Header of the section</param>
 		/// <param name="key">Key name</param>
 		/// <param name="result">Result</param>
-		public bool Get (string header , string key , ref string result)
+		public bool Get(string header, string key, ref string result)
 		{
 			if (!isLoaded)
 				return false;
@@ -146,30 +149,31 @@ namespace Rhovlyn.Engine.IO
 			}
 			return false;
 		}
+
 		/// <seealso cref="Get"></seealso>
-		public bool GetBool (string header , string key , ref bool result)
+		public bool GetBool(string header, string key, ref bool result)
 		{
 			if (!isLoaded)
 				return false;
 
 			string val = "";
-			if (Get(header, key , ref val))
+			if (Get(header, key, ref val))
 			{
-				return bool.TryParse( val , out result );
+				return bool.TryParse(val, out result);
 			}
 			return false;
 		}
 
 		/// <seealso cref="Get"></seealso>
-		public bool GetInt (string header , string key , ref int result)
+		public bool GetInt(string header, string key, ref int result)
 		{
 			if (!isLoaded)
 				return false;
 
 			string val = "";
-			if (Get(header, key , ref val))
+			if (Get(header, key, ref val))
 			{
-				return int.TryParse( val , out result );
+				return int.TryParse(val, out result);
 			}
 			return false;
 		}

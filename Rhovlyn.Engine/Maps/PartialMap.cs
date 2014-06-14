@@ -14,39 +14,42 @@ namespace Rhovlyn.Engine.Maps
 			this.Area = area;
 		}
 
-		public void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera)
+		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
 		{
 			throw new NotImplementedException();
 		}
-		public void Update (GameTime gameTime)
+
+		public void Update(GameTime gameTime)
 		{
 			throw new NotImplementedException();
 		}
 
 		public override string ToString()
 		{
-			return string.Format(String.Format("{0},{1},{2},{3}", this.Area.X , this.Area.Y , this.Area.Width , this.Area.Height ));
+			return string.Format(String.Format("{0},{1},{2},{3}", this.Area.X, this.Area.Y, this.Area.Width, this.Area.Height));
 		}
 
 		public Vector2 Position { get; set; }
+
 		public Rectangle Area { get; set; }
+
 		public bool Loaded { get; set; }
 	}
 
 	public class PartialMap : Map
-    {
+	{
 		private PartialFile mapfile;
 		private AreaMap<MapSection> sections = new AreaMap<MapSection>();
 
-		public PartialMap( string path , ContentManager content )
-			: base( content )
-        {
+		public PartialMap(string path, ContentManager content)
+			: base(content)
+		{
 			this.mapfile = new PartialFile(path);
 			base.Load(mapfile.LoadBlock());
 			ParseBlocks();
-        }
+		}
 
-		private void ParseBlocks ()
+		private void ParseBlocks()
 		{
 			foreach (var str in this.mapfile.BlockNames)
 			{
@@ -63,12 +66,15 @@ namespace Rhovlyn.Engine.Maps
 			}
 		}
 
-		public bool LoadBlock (string name)
+		public bool LoadBlock(string name)
 		{
+			var then = DateTime.Now;
 			var mem = mapfile.LoadBlock(name);
 			if (mem == null)
 				return false;
-			return base.Load(mem);
+			var loaded = base.Load(mem);
+			Console.WriteLine("Loaded Block " + name + " in " + (DateTime.Now - then).TotalMilliseconds + "ms");
+			return loaded;
 		}
 
 		public override void Update(GameTime gameTime)
@@ -84,7 +90,6 @@ namespace Rhovlyn.Engine.Maps
 
 			base.Update(gameTime);
 		}
-
-    }
+	}
 }
 
