@@ -8,6 +8,7 @@ namespace Rhovlyn.Engine.Controller
 	public class LocalController : IController
 	{
 		public AnimatedSprite Target { get; private set; }
+
 		private ContentManager content;
 		private string last_dir = "";
 
@@ -32,7 +33,7 @@ namespace Rhovlyn.Engine.Controller
 
 		}
 
-		public void Update (GameTime gameTime)
+		public void Update(GameTime gameTime)
 		{
 			int speed = 128;
 			var delta = Target.Position;
@@ -67,10 +68,10 @@ namespace Rhovlyn.Engine.Controller
 				last_dir = "up";
 
 			if (delta != Target.Position && content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
-				Target.Area.Width, Target.Area.Height)))
+				    Target.Area.Width, Target.Area.Height)))
 			{
-				Target.SetAnimation("move_" + last_dir);
 				Target.Position = delta;
+				Target.SetAnimation("move_" + last_dir);
 			}
 			else
 			{

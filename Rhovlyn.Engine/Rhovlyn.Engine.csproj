@@ -3,10 +3,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7F0330DE-7136-4C6A-AECF-1DD47612135C}</ProjectGuid>
-    <ProjectTypeGuids>{9B831FEF-F496-498F-9FE8-180DA5CB4258};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>Rhovlyn.Engine</RootNamespace>
     <MonoGamePlatform>Linux</MonoGamePlatform>
@@ -71,6 +70,8 @@
     <Compile Include="IO\PartialFile.cs" />
     <Compile Include="Maps\PartialMap.cs" />
     <Compile Include="Util\Collision.cs" />
+    <Compile Include="Util\MapRenderer.cs" />
+    <Compile Include="Util\TextureUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -23,9 +23,7 @@ namespace Rhovlyn.Engine.Controller
 		/// <param name="content">Content.</param>
 		void UnLoadContent(ContentManager content);
 
-
-		void Update (GameTime gameTime);
-
+		void Update(GameTime gameTime);
 	}
 }
 

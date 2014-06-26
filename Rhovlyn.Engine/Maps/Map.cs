@@ -389,31 +389,22 @@ namespace Rhovlyn.Engine.Maps
 		public static Point[] PointsUnderArea(Rectangle area)
 		{
 			List<Point> output = new List<Point>();
+
 			//Get the X,Y,W,H in terms of Map Objects
 			double ax = (double)area.X / (double)TILE_WIDTH;
 			double ay = (double)area.Y / (double)TILE_HEIGHT;
-			double aw = ((double)area.Width / (double)TILE_WIDTH) + ax;
-			double ah = ((double)area.Height / (double)TILE_HEIGHT) + ay;
+			double aw = Math.Ceiling((double)area.Width / (double)TILE_WIDTH + ax);
+			double ah = Math.Ceiling((double)area.Height / (double)TILE_HEIGHT + ay);
+			ax = Math.Floor(ax);
+			ay = Math.Floor(ay);
 
 			for (double x = ax; x < aw; x++)
 			{
 				for (double y = ay; y < ah; y++)
 				{
-					//Check both rounded and floored values
-					//Both are check because of a bug occurs when only 1 is checked
-					var p_xs = new int[] { (int)Math.Round(x), (int)Math.Floor(x) };
-					var p_ys = new int[] { (int)Math.Round(y), (int)Math.Floor(y) };
-
-					//Check all the values for a fail
-					foreach (var p_x in p_xs)
-					{
-						foreach (var p_y in p_ys)
-						{
-							var pt = new Point(p_x, p_y);
-							if (!output.Contains(pt))
-								output.Add(pt);
-						}
-					}
+					var pt = new Point((int)x, (int)y);
+					if (!output.Contains(pt))
+						output.Add(pt);
 				}
 			}
 			return output.ToArray();

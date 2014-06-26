@@ -5,13 +5,14 @@ using System.IO;
 
 namespace Rhovlyn.Engine.Graphics
 {
-	public delegate void AnimationFrameChangedHandler ( AnimatedSprite sprite , int index );
-	public delegate void AnimationEndedHandler ( AnimatedSprite sprite );
-	public delegate void AnimationStartedHandler ( AnimatedSprite sprite );
+	public delegate void AnimationFrameChangedHandler(AnimatedSprite sprite,int index);
+	public delegate void AnimationEndedHandler(AnimatedSprite sprite);
+	public delegate void AnimationStartedHandler(AnimatedSprite sprite);
 
 	public struct Animation
 	{
-		public Animation(List<int> frames = null , List<double> times = null , int loop = 1 ) { 
+		public Animation(List<int> frames = null, List<double> times = null, int loop = 1)
+		{ 
 			if (frames != null)
 				this.frames = frames;
 			else
@@ -30,33 +31,40 @@ namespace Rhovlyn.Engine.Graphics
 		}
 
 		List<int> frames;
-		public List<int> Frames { get { return frames; } }   // Frame to use for index of animation
+
+		public List<int> Frames { get { return frames; } }
+		// Frame to use for index of animation
 
 		List<double> times;
-		public List<double> Times { get { return  times; } } //Times for each frames
+
+		public List<double> Times { get { return  times; } }
+		//Times for each frames
 
 		int loop;
-		public int Loop { get{ return this.loop; } }
+
+		public int Loop { get { return this.loop; } }
 
 		//Events for Starting, Ending and changes in animation
 		public event AnimationStartedHandler AnimationStarted;
 		public event AnimationEndedHandler AnimationEnded;
 		public event AnimationFrameChangedHandler FrameChanged;
 
-		public void OnAnimationStarted (AnimatedSprite sprite)
+		public void OnAnimationStarted(AnimatedSprite sprite)
 		{
 			if (AnimationStarted != null)
 				AnimationStarted(sprite);
 		}
-		public void OnAnimationEnded (AnimatedSprite sprite)
+
+		public void OnAnimationEnded(AnimatedSprite sprite)
 		{
 			if (AnimationEnded != null)
 				AnimationEnded(sprite);
 		}
-		public void OnFrameChanged (AnimatedSprite sprite , int index)
+
+		public void OnFrameChanged(AnimatedSprite sprite, int index)
 		{
 			if (FrameChanged != null)
-				FrameChanged(sprite , index);
+				FrameChanged(sprite, index);
 		}
 
 	};
@@ -64,19 +72,22 @@ namespace Rhovlyn.Engine.Graphics
 	public class AnimatedSprite : Sprite
 	{
 		private Dictionary < string , Animation > animations;
+
 		public string CurrentAnimation { get; private set; }
+
 		private int index;
 		private double current_delta;
 		private int loop_count = 0;
-		public bool AnimationInProgress { get; private set;}
+
+		public bool AnimationInProgress { get; private set; }
 
 		public AnimatedSprite(Vector2 position, SpriteMap spritemap)
-			: base ( position , spritemap )
+			: base(position, spritemap)
 		{
 			animations = new Dictionary < string , Animation >();
 		}
 
-		public override void Update (GameTime gameTime )
+		public override void Update(GameTime gameTime)
 		{
 			base.Update(gameTime);
 
@@ -108,7 +119,7 @@ namespace Rhovlyn.Engine.Graphics
 					index++;
 					this.Frameindex = animations[CurrentAnimation].Frames[index];
 					current_delta = animations[CurrentAnimation].Times[index];
-					animations[CurrentAnimation].OnFrameChanged(this , index);
+					animations[CurrentAnimation].OnFrameChanged(this, index);
 				}
 			}
 		}
@@ -120,22 +131,24 @@ namespace Rhovlyn.Engine.Graphics
 
 		#region Animation Management
 
-		public bool AddAnimation (string name , Animation animation )
+		public bool AddAnimation(string name, Animation animation)
 		{
 			if (!ExistsAnimation(name))
 			{
 				animations.Add(name, animation);
+				if (this.animations.Count == 1)
+					this.CurrentAnimation = name;
 				return true;
 			}
 			return false;
 		}
 
-		public bool ExistsAnimation ( string name)
+		public bool ExistsAnimation(string name)
 		{
 			return this.animations.ContainsKey(name);
 		}
 
-		public bool SetAnimation ( string name )
+		public bool SetAnimation(string name)
 		{
 			if (ExistsAnimation(name))
 			{
@@ -154,14 +167,14 @@ namespace Rhovlyn.Engine.Graphics
 				this.Frameindex = animations[CurrentAnimation].Frames[index];
 				current_delta = animations[CurrentAnimation].Times[index];
 				animations[CurrentAnimation].OnAnimationStarted(this);
-				animations[CurrentAnimation].OnFrameChanged(this , index);
+				animations[CurrentAnimation].OnFrameChanged(this, index);
 				AnimationInProgress = true;
 				return true;
 			}
 			return false;
 		}
 
-		public static bool LoadAnimation (string raw , ref Animation ani)
+		public static bool LoadAnimation(string raw, ref Animation ani)
 		{
 			List<int> frames = new List<int>();
 			List<double> times = new List<double>();
@@ -179,8 +192,8 @@ namespace Rhovlyn.Engine.Graphics
 				}
 				else if (opt.Length == 2)
 				{
-					frames.Add( int.Parse(opt[0]));
-					times.Add( double.Parse(opt[1]));
+					frames.Add(int.Parse(opt[0]));
+					times.Add(double.Parse(opt[1]));
 				}
 				else
 				{
@@ -190,6 +203,7 @@ namespace Rhovlyn.Engine.Graphics
 			ani = new Animation(frames, times, loops);
 			return true;
 		}
+
 		#endregion
 
 	}

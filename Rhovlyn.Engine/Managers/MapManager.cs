@@ -14,13 +14,14 @@ namespace Rhovlyn.Engine.Managers
 		{
 			maps = new Dictionary<string, Map>();
 			Content = content;
+			Current = "";
 		}
 
 		#region Management
 
 		public string Current { get; set; }
 
-		public Map CurrentMap { get { return maps[Current]; } }
+		public Map CurrentMap { get { return (this.Exists(Current) ? this[Current] : null); } }
 
 		public Map Get(string name)
 		{

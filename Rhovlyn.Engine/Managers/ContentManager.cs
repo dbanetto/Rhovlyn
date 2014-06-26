@@ -22,11 +22,11 @@ namespace Rhovlyn.Engine.Managers
 			{
 				throw new IOException("Cannot find input settings");
 			}
-
 		}
 
 		public void Init(GraphicsDevice device)
 		{
+			GraphicsDevice = device;
 			Textures = new TextureMananger(device);
 			GameStates = new GameStateManager(this);
 			Sprites = new SpriteManager(this);
@@ -54,6 +54,8 @@ namespace Rhovlyn.Engine.Managers
 		public GameStateManager GameStates { get; private set; }
 
 		public InputManager Input { get; private set; }
+
+		public GraphicsDevice GraphicsDevice { get; private set; }
 	}
 }
 

@@ -4,6 +4,8 @@ using Rhovlyn.Engine.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Util;
+using System.Threading;
+using System.IO;
 
 namespace Rhovlyn.Engine.Maps
 {
@@ -66,15 +68,14 @@ namespace Rhovlyn.Engine.Maps
 			}
 		}
 
-		public bool LoadBlock(string name)
+		public void LoadBlock(string name)
 		{
 			var then = DateTime.Now;
 			var mem = mapfile.LoadBlock(name);
 			if (mem == null)
-				return false;
-			var loaded = base.Load(mem);
+				throw new IOException("Could not get Block Data");
+			Load(mem);
 			Console.WriteLine("Loaded Block " + name + " in " + (DateTime.Now - then).TotalMilliseconds + "ms");
-			return loaded;
 		}
 
 		public override void Update(GameTime gameTime)

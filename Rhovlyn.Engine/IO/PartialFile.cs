@@ -4,21 +4,24 @@ using System.Collections.Generic;
 
 namespace Rhovlyn.Engine.IO
 {
-    public class PartialFile
-    {
-		private class BlockInfo {
+	public class PartialFile
+	{
+		private class BlockInfo
+		{
 			public int Start { get; set; }
+
 			public int Length { get; set; }
 		}
 
 		private Dictionary<string , BlockInfo> blocks = new Dictionary<string , BlockInfo>();
+
 		private string FilePath { get; set; }
 
 		public PartialFile(string filepath)
-        {
+		{
 			FilePath = filepath;
 			LoadFile();
-        }
+		}
 
 		public bool LoadFile()
 		{
@@ -28,7 +31,7 @@ namespace Rhovlyn.Engine.IO
 				BlockInfo current = new BlockInfo();
 				blocks[""] = current;
 				current.Start = position;
-				while ( !reader.EndOfStream  )
+				while (!reader.EndOfStream)
 				{
 					var line = reader.ReadLine();
 					var len = line.Length;
@@ -54,24 +57,26 @@ namespace Rhovlyn.Engine.IO
 			return true;
 		}
 
-		public bool BlockExists ( string name )
+		public bool BlockExists(string name)
 		{
 			return this.blocks.ContainsKey(name);
 		}
 
-		public string[] BlockNames {
-			get {
+		public string[] BlockNames
+		{
+			get
+			{
 				var names = new string[this.blocks.Keys.Count];
 				this.blocks.Keys.CopyTo(names, 0);
 				return names;
 			}
 		}
 
-		public MemoryStream LoadBlock ( string name = "" )
+		public MemoryStream LoadBlock(string name = "")
 		{
 			if (!BlockExists(name))
 				return null;
-			using (var reader = new  StreamReader(new FileStream(FilePath, FileMode.Open)))
+			using (var reader = new StreamReader(new FileStream(FilePath, FileMode.Open)))
 			{
 
 				var info = this.blocks[name];
@@ -82,7 +87,6 @@ namespace Rhovlyn.Engine.IO
 				return new MemoryStream(buffer);
 			}
 		}
-
-    }
+	}
 }
 

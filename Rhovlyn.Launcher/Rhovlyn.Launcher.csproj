@@ -6,7 +6,6 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A2C6A2FB-2FF3-4595-AF45-149C43A4FFBE}</ProjectGuid>
-    <ProjectTypeGuids>{9B831FEF-F496-498F-9FE8-180DA5CB4258};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>Rhovlyn.Launcher</RootNamespace>
     <MonoGamePlatform>Linux</MonoGamePlatform>

@@ -9,11 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhovlyn.Test.Engine", "Rhov
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Primitives2D", "xna-primitives\Primitives2D.csproj", "{39AD1482-1881-4852-A05D-DC61B0D3446A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.SDL2", "monogame-sdl2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj", "{35253CE1-C864-4CD3-8249-4D1319748E8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network.SDL2", "monogame-sdl2\ThirdParty\Lidgren.Network\Lidgren.Network.SDL2.csproj", "{AE483C29-042E-4226-BA52-D247CE7676DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.Net.SDL2", "monogame-sdl2\MonoGame.Framework\MonoGame.Framework.Net.SDL2.csproj", "{77532C55-23B5-4270-9CE3-1C3D71CD165D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network.SDL2", "monogame-sdl2\ThirdParty\Lidgren.Network\Lidgren.Network.SDL2.csproj", "{AE483C29-042E-4226-BA52-D247CE7676DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.SDL2", "monogame-sdl2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj", "{35253CE1-C864-4CD3-8249-4D1319748E8F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL2-CS", "monogame-sdl2\ThirdParty\SDL2#\SDL2-CS.csproj", "{85480198-8711-4355-830E-72FD794AD3F6}"
 EndProject
