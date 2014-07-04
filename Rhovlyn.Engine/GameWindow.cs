@@ -48,21 +48,19 @@ namespace Rhovlyn.Engine
 		/// </summary>
 		protected override void Initialize()
 		{
-
 			IsMouseVisible = true;
-			//HACK : Borderless Window cannot be set on Linux
-			//Window.IsBorderless = false;
 
 			draw_time = new Graph(new Vector2(10, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
 			update_time = new Graph(new Vector2(220, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
 
 			//Danger Lines
-			draw_time.Lines.Add(new Line(128, Color.DarkRed));
 			draw_time.Lines.Add(new Line(64, Color.Red));
 			draw_time.Lines.Add(new Line(32, Color.Orange));
 			draw_time.Lines.Add(new Line(16, Color.Green));
 			draw_time.Lines.Add(new Line(8, Color.CornflowerBlue));
 			draw_time.Lines.Add(new Line(1, Color.DarkViolet));
+			draw_time.Lines.Add(new Line(0.5, Color.Purple));
+			draw_time.Lines.Add(new Line(0.01, Color.White));
 
 			update_time.Lines.Add(new Line(64, Color.Red));
 			update_time.Lines.Add(new Line(32, Color.Orange));
@@ -94,6 +92,7 @@ namespace Rhovlyn.Engine
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			content.GameStates.Add("world", new WorldState());
+
 			ApplyGraphicsSettings();
 		}
 
@@ -147,11 +146,13 @@ namespace Rhovlyn.Engine
 				graphics.GraphicsDevice.Clear(this.content.CurrnetMap.Background);
 			else
 				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
-
+				
 			spriteBatch.Begin();
+
 			this.content.CurrentState.Draw(gameTime, spriteBatch, content.Camera);
 			draw_time.Draw(gameTime, spriteBatch, content.Camera);
 			update_time.Draw(gameTime, spriteBatch, content.Camera);
+
 			spriteBatch.End();
 
 			frames_past++;
@@ -205,14 +206,29 @@ namespace Rhovlyn.Engine
 			this.IsFixedTimeStep = vsync;
 
 			int width = 800;
-			content.Settings.GetInt("window", "width", ref width);
+			if (!content.Settings.GetInt("window", "width", ref width))
+			{
+				var str = "";
+				content.Settings.Get("window", "width", ref str);
+				if (str == "auto")
+				{
+					width = GraphicsDevice.DisplayMode.Width;
+				}
+			}
 
 			int height = 600;
-			content.Settings.GetInt("window", "height", ref height);
+			if (!content.Settings.GetInt("window", "height", ref height))
+			{
+				var str = "";
+				content.Settings.Get("window", "height", ref str);
+				if (str == "auto")
+				{
+					height = GraphicsDevice.DisplayMode.Height;
+				}
+			}
 
 			this.graphics.PreferredBackBufferWidth = width;
 			this.graphics.PreferredBackBufferHeight = height;
-
 			this.graphics.ApplyChanges();
 			this.content.Camera.UpdateBounds(new Rectangle(0, 0, this.graphics.PreferredBackBufferWidth, this.graphics.PreferredBackBufferHeight));
 		}
