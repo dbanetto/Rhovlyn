@@ -9,7 +9,7 @@ namespace Rhovlyn.Engine.Graphics
 	public delegate void AnimationEndedHandler(AnimatedSprite sprite);
 	public delegate void AnimationStartedHandler(AnimatedSprite sprite);
 
-	public struct Animation
+	public class Animation
 	{
 		public Animation(List<int> frames = null, List<double> times = null, int loop = 1)
 		{ 
@@ -73,7 +73,7 @@ namespace Rhovlyn.Engine.Graphics
 	{
 		private Dictionary < string , Animation > animations;
 
-		public string CurrentAnimation { get; private set; }
+		public string CurrentAnimationName { get; private set; }
 
 		private int index;
 		private double current_delta;
@@ -91,35 +91,35 @@ namespace Rhovlyn.Engine.Graphics
 		{
 			base.Update(gameTime);
 
-			if (CurrentAnimation == null)
+			if (CurrentAnimationName == null)
 				return;
 
 			//Update Timer for the frame
 			current_delta -= gameTime.ElapsedGameTime.TotalSeconds;
 			if (current_delta < 0)
 			{
-				if (animations[CurrentAnimation].Frames.Count == index + 1)
+				if (animations[CurrentAnimationName].Frames.Count == index + 1)
 				{
 					loop_count++;
-					if (animations[CurrentAnimation].Loop > loop_count)
+					if (animations[CurrentAnimationName].Loop > loop_count)
 					{
 						index = 0;
-						this.Frameindex = animations[CurrentAnimation].Frames[index];
-						current_delta = animations[CurrentAnimation].Times[index];
-						animations[CurrentAnimation].OnFrameChanged(this, index);
+						this.Frameindex = animations[CurrentAnimationName].Frames[index];
+						current_delta = animations[CurrentAnimationName].Times[index];
+						animations[CurrentAnimationName].OnFrameChanged(this, index);
 					}
 					else
 					{
-						animations[CurrentAnimation].OnAnimationEnded(this);
+						animations[CurrentAnimationName].OnAnimationEnded(this);
 						AnimationInProgress = false;
 					}
 				}
 				else
 				{
 					index++;
-					this.Frameindex = animations[CurrentAnimation].Frames[index];
-					current_delta = animations[CurrentAnimation].Times[index];
-					animations[CurrentAnimation].OnFrameChanged(this, index);
+					this.Frameindex = animations[CurrentAnimationName].Frames[index];
+					current_delta = animations[CurrentAnimationName].Times[index];
+					animations[CurrentAnimationName].OnFrameChanged(this, index);
 				}
 			}
 		}
@@ -137,7 +137,7 @@ namespace Rhovlyn.Engine.Graphics
 			{
 				animations.Add(name, animation);
 				if (this.animations.Count == 1)
-					this.CurrentAnimation = name;
+					this.CurrentAnimationName = name;
 				return true;
 			}
 			return false;
@@ -148,26 +148,35 @@ namespace Rhovlyn.Engine.Graphics
 			return this.animations.ContainsKey(name);
 		}
 
+		public Animation GetAnimation(string name)
+		{
+			if (this.animations.ContainsKey(name))
+			{
+				return this.animations[name];
+			}
+			return null;
+		}
+
 		public bool SetAnimation(string name)
 		{
 			if (ExistsAnimation(name))
 			{
 				//End the last animation
-				if (AnimationInProgress && CurrentAnimation != null)
+				if (AnimationInProgress && CurrentAnimationName != null)
 				{
-					if (CurrentAnimation != name)
-						animations[CurrentAnimation].OnAnimationEnded(this);
+					if (CurrentAnimationName != name)
+						animations[CurrentAnimationName].OnAnimationEnded(this);
 					else
 						return true;
 				}
 				//Set up for the new animation
-				CurrentAnimation = name;
+				CurrentAnimationName = name;
 				this.index = 0;
 				this.loop_count = 0;
-				this.Frameindex = animations[CurrentAnimation].Frames[index];
-				current_delta = animations[CurrentAnimation].Times[index];
-				animations[CurrentAnimation].OnAnimationStarted(this);
-				animations[CurrentAnimation].OnFrameChanged(this, index);
+				this.Frameindex = animations[CurrentAnimationName].Frames[index];
+				current_delta = animations[CurrentAnimationName].Times[index];
+				animations[CurrentAnimationName].OnAnimationStarted(this);
+				animations[CurrentAnimationName].OnFrameChanged(this, index);
 				AnimationInProgress = true;
 				return true;
 			}

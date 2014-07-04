@@ -1,15 +1,11 @@
 #region Usings
 using System;
 using System.IO;
-using System.Threading;
 using System.Collections.Generic;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Managers;
-using Rhovlyn.Engine.Graphics;
 
 #endregion
 namespace Rhovlyn.Engine.Maps
@@ -293,22 +289,23 @@ namespace Rhovlyn.Engine.Maps
 
 		public virtual void Update(GameTime gameTime)
 		{
-			if (last_camera != Content.Camera.Bounds || this.ReqestDrawMapUpdate)
+			if (ReqestAreaMapUpdate)
+			{
+				this.UpdateAreaMap(true);
+				ReqestAreaMapUpdate = false;
+			}
+				
+			var norm_cam = NormaliseRect(Content.Camera.Bounds);
+			if (last_camera != norm_cam || this.ReqestDrawMapUpdate)
 			{
 				last_tiles = areamap.Get(Content.Camera.Bounds);
-				last_camera = Content.Camera.Bounds;
+				last_camera = norm_cam;
 				this.ReqestDrawMapUpdate = false;
 			}
 
 			foreach (var obj in last_tiles)
 			{
 				obj.Update(gameTime);
-			}
-
-			if (ReqestAreaMapUpdate)
-			{
-				this.UpdateAreaMap(true);
-				ReqestAreaMapUpdate = false;
 			}
 		}
 
@@ -379,6 +376,18 @@ namespace Rhovlyn.Engine.Maps
 				}
 			}
 			return true;
+		}
+
+		public static Rectangle NormaliseRect(Rectangle input)
+		{
+			var ax = (float)input.X / (float)TILE_WIDTH;
+			var ay = (float)input.Y / (float)TILE_HEIGHT;
+			var aw = Math.Ceiling((float)input.Width / (float)TILE_WIDTH + ax);
+			var ah = Math.Ceiling((float)input.Height / (float)TILE_HEIGHT + ay);
+			ax = (float)Math.Floor(ax);
+			ay = (float)Math.Floor(ay);
+
+			return new Rectangle((int)ax, (int)ay, (int)aw, (int)ah);
 		}
 
 		/// <summary>
