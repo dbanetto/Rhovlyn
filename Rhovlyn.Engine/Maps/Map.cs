@@ -23,6 +23,8 @@ namespace Rhovlyn.Engine.Maps
 
 		public Rectangle MapArea { get { return mapArea; } }
 
+		public AreaMap<MapObject> AreaMap { get { return this.areamap; } }
+
 		private Rectangle mapArea;
 
 		protected  AreaMap<MapObject> areamap;

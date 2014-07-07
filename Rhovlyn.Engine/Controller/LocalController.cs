@@ -2,6 +2,10 @@ using System;
 using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Managers;
 using Microsoft.Xna.Framework;
+using Rhovlyn.Engine.Maps;
+using Rhovlyn.Engine.Util;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace Rhovlyn.Engine.Controller
 {
@@ -67,17 +71,32 @@ namespace Rhovlyn.Engine.Controller
 			if (diff.Y > 0)
 				last_dir = "up";
 
-			if (delta != Target.Position && content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
+
+			var target = Target.Area;
+			var goods = new List<Rectangle>();
+			foreach (var p in content.CurrnetMap.TilesInArea(target))
+			{
+				goods.Add(p.Area);
+			}
+			RectangleUtil.PushBack(ref target, goods.ToArray());
+			var newpos = new Vector2(target.X, target.Y);
+			if (newpos != Target.Position)
+			{
+				Target.Position = newpos;
+			}
+			if (content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
 				    Target.Area.Width, Target.Area.Height)))
 			{
-				Target.Position = delta;
-				Target.SetAnimation("move_" + last_dir);
+				if (delta != Target.Position)
+				{
+					Target.Position = delta;
+					Target.SetAnimation("move_" + last_dir);
+				}
 			}
 			else
 			{
 				Target.SetAnimation("look_" + last_dir);
 			}
-
 		}
 	}
 }

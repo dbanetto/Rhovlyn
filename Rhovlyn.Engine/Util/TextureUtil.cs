@@ -1,9 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Xml;
-using System.Security.AccessControl;
-using OpenTK.Graphics.OpenGL;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -107,11 +104,8 @@ namespace Rhovlyn.Engine.Util
 				if (found)
 					break;
 			}
-
-			output = new Rectangle(output.X + left, output.Y + top, right - left + 1, bot - top + 1);
-			Console.WriteLine(output);
-
-			return output;
+			// +1's are to adjust the width/height to include the edges
+			return new Rectangle(output.X + left, output.Y + top, right - left + 1, bot - top + 1);
 		}
 
 

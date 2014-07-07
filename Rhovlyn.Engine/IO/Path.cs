@@ -9,38 +9,44 @@ namespace Rhovlyn.Engine.IO
 {
 	public static class Path
 	{
-		static string cache_path = "Content/cache/"; 
-		static int cache_timeout = 10; //Minutes
+		static string cachePath = "Content/cache/";
+		static int cacheTimeout = 10;
+		//Minutes
 
 		public static bool AllowWebResouces { get; set; }
+
 		public static bool AllowWebResoucesCaching { get; set; }
-		public static int WebResoucesCacheTimeOut { 
-			get { return cache_timeout; }
-			set {
-				cache_timeout = value;
+
+		public static int WebResoucesCacheTimeOut
+		{ 
+			get { return cacheTimeout; }
+			set
+			{
+				cacheTimeout = value;
 				CheckCacheTimeOutAll();
 			}
 		}
+
 		public static string WebResoucesCachePath
 		{
-			get { return cache_path; } 
+			get { return cachePath; } 
 			set
 			{
-				cache_path = value;
-				if (cache_path[cache_path.Length-1] != '/')
-					cache_path += '/';
+				cachePath = value;
+				if (cachePath[cachePath.Length - 1] != '/')
+					cachePath += '/';
 
-				if (!Directory.Exists(cache_path))
+				if (!Directory.Exists(cachePath))
 				{
-					Directory.CreateDirectory(cache_path);
+					Directory.CreateDirectory(cachePath);
 				}
 				CheckCacheTimeOutAll();
 			}
 		}
 
-		public static Stream ResolvePath ( string path )
+		public static Stream ResolvePath(string path)
 		{
-			if ( AllowWebResouces && (path.StartsWith("http://") || path.StartsWith("https://")) )
+			if (AllowWebResouces && (path.StartsWith("http://") || path.StartsWith("https://")))
 			{
 				if (AllowWebResoucesCaching)
 				{
@@ -57,7 +63,8 @@ namespace Rhovlyn.Engine.IO
 					}
 				}
 				return ((HttpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream();
-			} else if (AllowWebResouces && path.StartsWith("ftp://"))
+			}
+			else if (AllowWebResouces && path.StartsWith("ftp://"))
 			{
 				if (AllowWebResoucesCaching)
 				{
@@ -81,50 +88,53 @@ namespace Rhovlyn.Engine.IO
 			throw new IOException(path + " could not be resloved");
 		}
 
-		public static void CacheFile ( Stream data , string cachepath)
+		public static void CacheFile(Stream data, string cachepath)
 		{
-			using (var fs = new BinaryWriter( new FileStream(cachepath, FileMode.Create)))
+			using (var fs = new BinaryWriter(new FileStream(cachepath, FileMode.Create)))
 			{
 				using (var reader = new BinaryReader(data))
 				{
-					try {
-					while (reader.BaseStream.CanRead)
-						fs.Write( reader.ReadByte() );
-					} catch (EndOfStreamException ex ) { //Expected Error, everthing will be fine* 
+					try
+					{
+						while (reader.BaseStream.CanRead)
+							fs.Write(reader.ReadByte());
+					}
+					catch (EndOfStreamException ex)
+					{ //Expected Error, everthing will be fine* 
 					}
 					fs.Flush();
 				}
 			}
 		}
 
-		public static string GetCachePath (string url )
+		public static string GetCachePath(string url)
 		{
 			var name = System.IO.Path.GetFileName(url);
 			name = Hash.GetHashMD5Hex(Encoding.UTF8.GetBytes(url)) + "-" + name;
-			return  cache_path + name;
+			return  cachePath + name;
 		}
 
-		public static void CheckCacheTimeOutAll ()
+		public static void CheckCacheTimeOutAll()
 		{
 			foreach (var file in Directory.EnumerateFiles(WebResoucesCachePath))
 			{
-				CheckCacheTimeOut( file , WebResoucesCacheTimeOut);
+				CheckCacheTimeOut(file, WebResoucesCacheTimeOut);
 			}
 		}
 
-		public static void CheckCacheTimeOut (string file)
+		public static void CheckCacheTimeOut(string file)
 		{
 			CheckCacheTimeOut(file, WebResoucesCacheTimeOut);
 		}
 
-		public static void CheckCacheTimeOut (string file , long minutes)
+		public static void CheckCacheTimeOut(string file, long minutes)
 		{
 			if (!File.Exists(file))
 				return;
 
 			FileInfo info = new FileInfo(file);
 			var past = DateTime.Now.Subtract(info.LastWriteTime);
-			if ( past.TotalMinutes > minutes )
+			if (past.TotalMinutes > minutes)
 			{
 				File.Delete(file);
 			}
