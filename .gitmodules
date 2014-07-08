@@ -1,6 +1,9 @@
-[submodule "xna-primitives"]
-	path = xna-primitives
-	url = ssh://git@bitbucket.org/zyphrus/xna-primitives
-[submodule "monogame-sdl2"]
-	path = monogame-sdl2
+[submodule "ThirdParty/Newtonsoft.Json"]
+	path = ThirdParty/Newtonsoft.Json
+	url = https://github.com/JamesNK/Newtonsoft.Json.git
+[submodule "ThirdParty/MonoGame.SDL2"]
+	path = ThirdParty/MonoGame.SDL2
 	url = https://github.com/flibitijibibo/MonoGame.git
+[submodule "ThirdParty/XNA-Primitives"]
+	path = ThirdParty/XNA-Primitives
+	url = ssh://git@bitbucket.org/zyphrus/xna-primitives.git

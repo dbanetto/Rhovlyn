@@ -92,29 +92,33 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\xna-primitives\Primitives2D.csproj">
-      <Project>{39AD1482-1881-4852-A05D-DC61B0D3446A}</Project>
-      <Name>Primitives2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
       <Project>{35253CE1-C864-4CD3-8249-4D1319748E8F}</Project>
       <Name>MonoGame.Framework.SDL2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\MonoGame.Framework\MonoGame.Framework.Net.SDL2.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.Net.SDL2.csproj">
       <Project>{77532C55-23B5-4270-9CE3-1C3D71CD165D}</Project>
       <Name>MonoGame.Framework.Net.SDL2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\ThirdParty\Lidgren.Network\Lidgren.Network.SDL2.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\ThirdParty\Lidgren.Network\Lidgren.Network.SDL2.csproj">
       <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
       <Name>Lidgren.Network.SDL2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\ThirdParty\SDL2#\SDL2-CS.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\ThirdParty\SDL2#\SDL2-CS.csproj">
       <Project>{85480198-8711-4355-830E-72FD794AD3F6}</Project>
       <Name>SDL2-CS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\ThirdParty\TheoraPlay#\TheoraPlay-CS.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\ThirdParty\TheoraPlay#\TheoraPlay-CS.csproj">
       <Project>{47CF0C2E-3710-4188-BB11-30D248B2B5FB}</Project>
       <Name>TheoraPlay-CS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ThirdParty\XNA-Primitives\Primitives2D.csproj">
+      <Project>{39AD1482-1881-4852-A05D-DC61B0D3446A}</Project>
+      <Name>Primitives2D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ThirdParty\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.Net40.csproj">
+      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
+      <Name>Newtonsoft.Json.Net40</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

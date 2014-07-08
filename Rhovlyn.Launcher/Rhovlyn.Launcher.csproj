@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A2C6A2FB-2FF3-4595-AF45-149C43A4FFBE}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -83,7 +83,7 @@
       <Project>{7F0330DE-7136-4C6A-AECF-1DD47612135C}</Project>
       <Name>Rhovlyn.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
       <Project>{35253CE1-C864-4CD3-8249-4D1319748E8F}</Project>
       <Name>MonoGame.Framework.SDL2</Name>
     </ProjectReference>

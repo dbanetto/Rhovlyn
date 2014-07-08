@@ -36,7 +36,8 @@
     <Compile Include="IO\Path.cs" />
     <Compile Include="IO\Settings.cs" />
     <Compile Include="Input\KeyboardProvider.cs" />
-    <Compile Include="RectangleTest.cs" />
+    <Compile Include="Util\RectangleUtil.cs" />
+    <Compile Include="Util\RectangleTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -55,7 +56,7 @@
       <Project>{7F0330DE-7136-4C6A-AECF-1DD47612135C}</Project>
       <Name>Rhovlyn.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\monogame-sdl2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
+    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
       <Project>{35253CE1-C864-4CD3-8249-4D1319748E8F}</Project>
       <Name>MonoGame.Framework.SDL2</Name>
     </ProjectReference>
