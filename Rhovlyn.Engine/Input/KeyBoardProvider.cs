@@ -7,7 +7,7 @@ namespace Rhovlyn.Engine.Input
 {
 	public struct KeyCondition
 	{
-		public KeyCondition( List<Keys> keys = null )
+		public KeyCondition(List<Keys> keys = null)
 		{
 			if (keys != null)
 				this.keys = keys;
@@ -16,7 +16,8 @@ namespace Rhovlyn.Engine.Input
 		}
 
 		List<Keys> keys;
-		public List<Keys> Keys { get{ return keys; } set { keys = value; } }
+
+		public List<Keys> Keys { get { return keys; } set { keys = value; } }
 	}
 
 	public class KeyBoardProvider : IInputProvider
@@ -32,27 +33,31 @@ namespace Rhovlyn.Engine.Input
 			keys = new Dictionary<string ,  KeyCondition >();
 		}
 
-		public bool Load ( string path )
+		public bool Load(string path)
 		{
-			try {
-				settings = new IO.Settings( path );
-				ParseSettings ();
+			try
+			{
+				settings = new IO.Settings(path);
+				ParseSettings();
 				return true;
-			} catch {
+			}
+			catch
+			{
 				return false;
 			}
 		}
 
-		public void Unload ()
+		public void Unload()
 		{
 
 		}
-		public bool Exists( string name )
+
+		public bool Exists(string name)
 		{
 			return keys.ContainsKey(name);
 		}
 
-		public bool GetState ( string name )
+		public bool GetState(string name)
 		{
 			if (this.Exists(name))
 			{
@@ -67,7 +72,7 @@ namespace Rhovlyn.Engine.Input
 			return false;
 		}
 
-		public bool SetCondition<T> (string name , T condition ) 
+		public bool SetCondition<T>(string name, T condition)
 		{
 			if (typeof(T) != typeof(KeyCondition))
 				throw new InvalidDataException("Can only pass KeyCondition to KeyBoardProvider's set");
@@ -82,7 +87,7 @@ namespace Rhovlyn.Engine.Input
 			
 		}
 
-		public bool Add<T> (string name , T condition) 
+		public bool Add<T>(string name, T condition)
 		{
 			if (typeof(T) != typeof(KeyCondition))
 				throw new InvalidDataException("Can only pass KeyCondition to KeyBoardProvider's add");
@@ -96,13 +101,13 @@ namespace Rhovlyn.Engine.Input
 			return false;
 		}
 
-		public void ParseSettings ()
+		public void ParseSettings()
 		{
 			//Go through ALL of the headers
 			foreach (var header in settings.Headers)
 			{
 				//Check all thier values
-				foreach (var key in settings[header].Keys )
+				foreach (var key in settings[header].Keys)
 				{
 					//if they have THIS Providers SettingsPostfix then deal with it
 					if (key.EndsWith(SettingsPostfix))
@@ -133,7 +138,7 @@ namespace Rhovlyn.Engine.Input
 		/// refer to https://github.com/mono/MonoGame/blob/develop/MonoGame.Framework/Input/Keys.cs for scan-codes
 		/// </remark>
 		/// <param name="key">Key.</param>
-		public static bool ParseKeyBinding( string keystring , ref KeyCondition key )
+		public static bool ParseKeyBinding(string keystring, ref KeyCondition key)
 		{
 			var segs = keystring.Split('+');
 			if (key.Keys == null)
@@ -148,7 +153,7 @@ namespace Rhovlyn.Engine.Input
 					var bytes = System.Text.UTF8Encoding.UTF8.GetBytes(seg.ToUpper());
 					if (bytes.Length == 1)
 					{
-						if (bytes[0] >= 65 &&  bytes[0] <= 90)
+						if (bytes[0] >= 65 && bytes[0] <= 90)
 						{
 							key.Keys.Add((Keys)bytes[0]);
 							continue;

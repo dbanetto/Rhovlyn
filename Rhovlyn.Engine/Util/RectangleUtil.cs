@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -8,7 +9,7 @@ namespace Rhovlyn.Engine.Util
 		public static bool InBounds(Rectangle sprite, Rectangle[] bounds)
 		{
 			var inbounds = false;
-			var contained = bounds[0];
+			var intercepts = new List<Rectangle>();
 			for (int i = 0; i < bounds.Length; i++)
 			{
 				if (bounds[i].Contains(sprite))
@@ -16,9 +17,46 @@ namespace Rhovlyn.Engine.Util
 					inbounds = true;
 					break;
 				}
-				contained = Rectangle.Union(contained, Rectangle.Intersect(bounds[i], sprite));
+				var inter = Rectangle.Intersect(sprite, bounds[i]);
+				if (inter != Rectangle.Empty)
+					intercepts.Add(inter);
+
+				if (i > 0 && bounds[i].Height == bounds[i - 1].Height &&
+				    bounds[i].Width == bounds[i - 1].Width)
+				{
+					if (bounds[i].X == bounds[i - 1].X)
+					{
+						foreach (var y in new [] { bounds[i].Height, -bounds[i].Height })
+						{
+							if (bounds[i].Y + y == bounds[i - 1].Y)
+							{
+								bounds[i] = Rectangle.Union(bounds[i], bounds[i - 1]);
+								i--;
+								continue;
+							}
+						}
+					}
+					else if (bounds[i].Y == bounds[i - 1].Y)
+					{
+						foreach (var x in new [] { bounds[i].Width, -bounds[i].Width })
+						{
+							if (bounds[i].X + x == bounds[i - 1].X)
+							{
+								bounds[i] = Rectangle.Union(bounds[i], bounds[i - 1]);
+								i--;
+								continue;
+							}
+						}
+					}
+				}
 			}
-			return inbounds || contained == sprite;
+			if (inbounds)
+				return inbounds;
+			if (intercepts.Count > 0)
+				return CoversRect(sprite, intercepts.ToArray());
+			else
+				return false;
+			//throw new Exception("I dunno how to deal with this");
 		}
 
 		public static void PushBack(ref Rectangle sprite, Rectangle[] good)
@@ -31,7 +69,7 @@ namespace Rhovlyn.Engine.Util
 				blob = Rectangle.Union(blob, r);
 			}
 
-			while (!InBounds(sprite, good))
+			do
 			{
 				int minx = int.MaxValue;
 				int miny = int.MaxValue;
@@ -72,7 +110,30 @@ namespace Rhovlyn.Engine.Util
 					Console.WriteLine("Psuhed Y back " + miny);
 				}
 				Console.WriteLine(String.Format("Psuhed back {0},{1}", minx, miny));
+			} while (!InBounds(sprite, good))
+				;
+		}
+
+		public static bool CoversRect(Rectangle rect, Rectangle[] covers)
+		{
+			for (int x = rect.Left; x > rect.Right; x++)
+			{
+				for (int y = rect.Top; y > rect.Bottom; y++)
+				{
+					bool hasit = false;
+					foreach (var r in covers)
+					{
+						if (r.Contains(new Point(x, y)))
+						{
+							hasit = true;
+							break;
+						}
+					}
+					if (!hasit)
+						return false;
+				}
 			}
+			return true;
 		}
 	}
 }

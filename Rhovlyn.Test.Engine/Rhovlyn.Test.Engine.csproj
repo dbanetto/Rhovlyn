@@ -37,7 +37,7 @@
     <Compile Include="IO\Settings.cs" />
     <Compile Include="Input\KeyboardProvider.cs" />
     <Compile Include="Util\RectangleUtil.cs" />
-    <Compile Include="Util\RectangleTest.cs" />
+    <Compile Include="RectangleTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

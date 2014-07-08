@@ -39,6 +39,19 @@ namespace Rhovlyn.Engine.Controller
 
 		public void Update(GameTime gameTime)
 		{
+			var target = Target.Area;
+			var goods = new List<Rectangle>();
+			foreach (var p in content.CurrnetMap.TilesInArea(target))
+			{
+				goods.Add(p.Area);
+			}
+			RectangleUtil.PushBack(ref target, goods.ToArray());
+			var newpos = new Vector2(target.X, target.Y);
+			if (newpos != new Vector2((int)Target.Position.X, (int)Target.Position.Y))
+			{
+				Target.Position = newpos;
+			}
+
 			int speed = 128;
 			var delta = Target.Position;
 			if (content.Input["player.up"])
@@ -71,19 +84,6 @@ namespace Rhovlyn.Engine.Controller
 			if (diff.Y > 0)
 				last_dir = "up";
 
-
-			var target = Target.Area;
-			var goods = new List<Rectangle>();
-			foreach (var p in content.CurrnetMap.TilesInArea(target))
-			{
-				goods.Add(p.Area);
-			}
-			RectangleUtil.PushBack(ref target, goods.ToArray());
-			var newpos = new Vector2(target.X, target.Y);
-			if (newpos != Target.Position)
-			{
-				Target.Position = newpos;
-			}
 			if (content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
 				    Target.Area.Width, Target.Area.Height)))
 			{
@@ -91,6 +91,10 @@ namespace Rhovlyn.Engine.Controller
 				{
 					Target.Position = delta;
 					Target.SetAnimation("move_" + last_dir);
+				}
+				else
+				{
+					Target.SetAnimation("look_" + last_dir);
 				}
 			}
 			else
