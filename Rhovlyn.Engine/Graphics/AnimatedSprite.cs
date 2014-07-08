@@ -183,7 +183,7 @@ namespace Rhovlyn.Engine.Graphics
 			return false;
 		}
 
-		public static bool LoadAnimation(string raw, ref Animation ani)
+		public static object ParseAnimation(string text)
 		{
 			List<int> frames = new List<int>();
 			List<double> times = new List<double>();
@@ -192,7 +192,7 @@ namespace Rhovlyn.Engine.Graphics
 			// 1,2:0.1,3:1.0
 			// #loops,[FrameIndex:Time]...
 			// Read as : 1 loop , 1st index frame=2 for 0.1sec, 2nd index frame=3 for 1.0sec
-			foreach (var seg in raw.Split(','))
+			foreach (var seg in text.Split(','))
 			{
 				var opt = seg.Split(':');
 				if (opt.Length == 1)
@@ -209,8 +209,7 @@ namespace Rhovlyn.Engine.Graphics
 					throw new InvalidDataException("Invalid Animation segment : " + seg);
 				}
 			}
-			ani = new Animation(frames, times, loops);
-			return true;
+			return new Animation(frames, times, loops);
 		}
 
 		#endregion

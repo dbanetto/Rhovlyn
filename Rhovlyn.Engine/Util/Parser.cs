@@ -67,7 +67,7 @@ namespace Rhovlyn.Engine.Util
 			);
 		}
 
-		public static bool Parse<T>(string obj, ref T result)
+		public static bool TryParse<T>(string obj, ref T result)
 		{
 			if (parsers.ContainsKey(typeof(T)))
 			{
@@ -82,6 +82,14 @@ namespace Rhovlyn.Engine.Util
 			throw new NotImplementedException(String.Format("Cannot parse unknown type: {0}", typeof(T)));
 		}
 
+		public static T Parse<T>(string obj)
+		{
+			if (parsers.ContainsKey(typeof(T)))
+			{
+				return (T)(parsers[typeof(T)](obj));
+			}
+			throw new NotImplementedException(String.Format("Cannot parse unknown type: {0}", typeof(T)));
+		}
 
 		public static bool Add<T>(ObjectParser parser, bool overrides = false)
 		{

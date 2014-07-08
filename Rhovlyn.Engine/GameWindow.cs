@@ -10,6 +10,8 @@ using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.States;
 using Rhovlyn.Engine.Managers;
+using System.IO;
+using System.Globalization;
 
 #endregion
 namespace Rhovlyn.Engine
@@ -49,6 +51,8 @@ namespace Rhovlyn.Engine
 		/// </summary>
 		protected override void Initialize()
 		{
+			AddParsers();
+
 			IsMouseVisible = true;
 
 			draw_time = new Graph(new Vector2(10, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
@@ -233,6 +237,46 @@ namespace Rhovlyn.Engine
 			this.graphics.ApplyChanges();
 			this.content.Camera.UpdateBounds(new Rectangle(0, 0, this.graphics.PreferredBackBufferWidth, this.graphics.PreferredBackBufferHeight));
 		}
+
+		private void AddParsers()
+		{
+			Parser.Add<Color>(o =>
+			{
+				if (o.StartsWith("0x") && (o.Length == 8 || o.Length == 5))
+				{
+					o = o.Substring(2);
+					if (o.Length == 3)
+					{
+						var r = int.Parse(o.Substring(0, 1), NumberStyles.AllowHexSpecifier);
+						var g = int.Parse(o.Substring(1, 1), NumberStyles.AllowHexSpecifier);
+						var b = int.Parse(o.Substring(2, 1), NumberStyles.AllowHexSpecifier);
+						return new Color(r * 16, g * 16, b * 16);
+					}
+					else
+					{
+						var r = int.Parse(o.Substring(0, 2), NumberStyles.HexNumber);
+						var g = int.Parse(o.Substring(2, 2), NumberStyles.AllowHexSpecifier);
+						var b = int.Parse(o.Substring(4, 2), NumberStyles.AllowHexSpecifier);
+						return new Color(r, g, b);
+					}
+				}
+				else
+				{
+					int r = 0, g = 0, b = 0;
+					var rgb = o.Split(',');
+
+					//Parse a RGB comma sperated string
+					if (rgb.Length != 3)
+						throw new InvalidDataException("Expected a comma sperated RGB value");
+					r = byte.Parse(rgb[0]);
+					g = byte.Parse(rgb[1]);
+					b = byte.Parse(rgb[2]);
+
+					return new Color(r, g, b);
+				}
+			});
+		}
 	}
+
 }
 

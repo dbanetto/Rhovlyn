@@ -116,18 +116,7 @@ namespace Rhovlyn.Engine.Maps
 
 							if (line.StartsWith("background:"))
 							{
-								var obj = line.Substring("background:".Length);
-								int r = 0, g = 0, b = 0;
-								var rgb = obj.Split(',');
-
-								//Parse a RGB comma sperated string
-								if (rgb.Length != 3)
-									throw new InvalidDataException("Expected a comma sperated RGB value");
-								r = byte.Parse(rgb[0]);
-								g = byte.Parse(rgb[1]);
-								b = byte.Parse(rgb[2]);
-
-								Background = new Color(r, g, b);
+								Background = Parser.Parse<Color>(line.Substring("background:".Length));
 							}
 						}
 						else if (line.StartsWith("<") && line.EndsWith(">"))

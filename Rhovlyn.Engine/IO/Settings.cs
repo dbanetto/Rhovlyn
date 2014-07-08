@@ -141,7 +141,7 @@ namespace Rhovlyn.Engine.IO
 			if (Exists(header, key))
 			{
 				var val = this.settings[header.ToLower()][key.ToLower()];
-				return Parser.Parse<T>(val, ref result);
+				return Parser.TryParse<T>(val, ref result);
 
 			}
 			return false;

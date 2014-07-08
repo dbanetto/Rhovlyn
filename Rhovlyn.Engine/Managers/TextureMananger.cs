@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.IO;
 using Rhovlyn.Engine.Graphics;
 using Microsoft.Xna.Framework;
+using Rhovlyn.Engine.Util;
 
 namespace Rhovlyn.Engine.Managers
 {
 	public class TextureMananger
 	{
-		private GraphicsDevice graphics;
+		private static GraphicsDevice Graphics;
 		private Dictionary< string , SpriteMap > textures;
 
 		public TextureMananger(GraphicsDevice graphics)
 		{
-			this.graphics = graphics;
+			Graphics = graphics;
 			textures = new Dictionary<string, SpriteMap>();
+			if (!Parser.Exists<SpriteMap>())
+				Parser.Add<SpriteMap>(ParseTexture);
 		}
 
 		#region Management
@@ -26,6 +27,19 @@ namespace Rhovlyn.Engine.Managers
 		{
 			get { return textures[index]; }
 			set { textures[index] = value; }
+		}
+
+		public bool Add(SpriteMap spritemap)
+		{
+			if (String.IsNullOrEmpty(spritemap.Texture.Name))
+				throw new Exception("Cannot add a Texture with a empty name");
+
+			if (!Exists(spritemap.Texture.Name))
+			{
+				this.textures.Add(spritemap.Texture.Name, spritemap);
+				return true;
+			}
+			return false;
 		}
 
 		public bool Add(string name, SpriteMap spritemap)
@@ -44,7 +58,7 @@ namespace Rhovlyn.Engine.Managers
 
 			if (!Exists(name))
 			{
-				this.textures.Add(name, new SpriteMap(Texture2D.FromStream(this.graphics, stream), name, frames));
+				this.textures.Add(name, new SpriteMap(Texture2D.FromStream(Graphics, stream), name, frames));
 				return true;
 			}
 			return false;
@@ -54,7 +68,7 @@ namespace Rhovlyn.Engine.Managers
 		{
 			if (!Exists(name))
 			{
-				this.textures.Add(name, new SpriteMap(Texture2D.FromStream(this.graphics, stream), name));
+				this.textures.Add(name, new SpriteMap(Texture2D.FromStream(Graphics, stream), name));
 				return true;
 			}
 			return false;
@@ -114,56 +128,7 @@ namespace Rhovlyn.Engine.Managers
 						}
 						else
 						{
-							//Loads Local file
-							var args = line.Split(',');
-
-							var tname = args[0];
-							var tpath = args[1];
-
-							if (args.Length > 2)
-							{
-								var tex = Texture2D.FromStream(graphics, Engine.IO.Path.ResolvePath(tpath));
-								if (args[2].Contains("@"))
-								{								
-									List<Rectangle> rects = new List<Rectangle>();
-									// Explict Rectangle Declearations
-									// x:y:w:h@....
-									// 0:0:64:64@0:0:128:32
-									foreach (var rect in args[2].Split( '@'))
-									{
-										var parms = rect.Split(':');
-										if (parms.Length != 4)
-											continue;
-
-										int x = 0, y = 0, w = 0, h = 0; 
-										x = int.Parse(parms[0]);
-										y = int.Parse(parms[1]);
-										w = int.Parse(parms[2]);
-										h = int.Parse(parms[3]);
-
-										rects.Add(new Rectangle(x, y, w, h));
-									}
-									this.Add(tname, new SpriteMap(tex, tname, rects));
-								} 
-								// Semi-Implicit Bounds 
-								// rows*colms
-								// Divides up the texture into a set number of columns and rows
-								// 2*2
-								else if (args[2].Contains("*"))
-								{
-									var parms = args[2].Split('*');
-									if (parms.Length != 2)
-										continue;
-									int row = int.Parse(parms[0]);
-									int col = int.Parse(parms[1]);
-
-									this.Add(tname, new SpriteMap(tex, tname, row, col));
-								}
-							}
-							else
-							{
-								this.Add(tname, Engine.IO.Path.ResolvePath(tpath));
-							}
+							this.Add(Parser.Parse<SpriteMap>(line));
 						}
 					}
 				}
@@ -188,6 +153,57 @@ namespace Rhovlyn.Engine.Managers
 				textures.Remove(name);
 			}
 			return false;
+		}
+
+		public static object ParseTexture(string text)
+		{
+			//Loads Local file
+			var args = text.Split(',');
+
+			var tname = args[0];
+			var tpath = args[1];
+			var tex = Texture2D.FromStream(Graphics, Engine.IO.Path.ResolvePath(tpath));
+
+			if (args.Length > 2)
+			{
+				if (args[2].Contains("@"))
+				{
+					var rects = new List<Rectangle>();
+					// Explict Rectangle Declearations
+					// x:y:w:h@....
+					// 0:0:64:64@0:0:128:32
+					foreach (var rect in args[2].Split( '@'))
+					{
+						var parms = rect.Split(':');
+						if (parms.Length != 4)
+							continue;
+
+						int x = 0, y = 0, w = 0, h = 0; 
+						x = int.Parse(parms[0]);
+						y = int.Parse(parms[1]);
+						w = int.Parse(parms[2]);
+						h = int.Parse(parms[3]);
+
+						rects.Add(new Rectangle(x, y, w, h));
+					}
+					return new SpriteMap(tex, tname, rects);
+				} 
+				// Semi-Implicit Bounds 
+				// rows*colms
+				// Divides up the texture into a set number of columns and rows
+				// 2*2
+				else if (args[2].Contains("*"))
+				{
+					var parms = args[2].Split('*');
+					if (parms.Length != 2)
+						throw new InvalidDataException(String.Format("Sprite map semi-implicit bounds format error {0}", text));
+					int row = int.Parse(parms[0]);
+					int col = int.Parse(parms[1]);
+
+					return new SpriteMap(tex, tname, row, col);
+				}
+			}
+			return new SpriteMap(tex, tname);
 		}
 
 		#endregion
