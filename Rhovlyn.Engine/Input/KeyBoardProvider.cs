@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using Rhovlyn.Engine.Util;
 
 namespace Rhovlyn.Engine.Input
 {
@@ -113,7 +114,10 @@ namespace Rhovlyn.Engine.Input
 					if (key.EndsWith(SettingsPostfix))
 					{
 						KeyCondition result = new KeyCondition(null);
-						if (ParseKeyBinding(settings[header][key], ref result))
+						if (!Parser.Exists<KeyCondition>())
+							Parser.Add<KeyCondition>(ParseKeyBinding);
+
+						if (Parser.Parse<KeyCondition>(settings[header][key], ref result))
 						{
 							//Remove SettingsPostfix from the key
 							//On a unsuccessful Parse, stop
@@ -132,17 +136,17 @@ namespace Rhovlyn.Engine.Input
 		/// <summary>
 		/// Parses a Key binding
 		/// </summary>
-		/// <returns><c>true</c>, if setting was parsed, <c>false</c> otherwise error has occured.</returns>
+		/// <returns><c>non-null</c>, if setting was parsed, <c>null</c> otherwise error has occured.</returns>
 		/// <param name="keystring">Key string.</param>
 		/// <remarks>Key String is a + sperated list containing English letters or scan-codes
 		/// refer to https://github.com/mono/MonoGame/blob/develop/MonoGame.Framework/Input/Keys.cs for scan-codes
-		/// </remark>
-		/// <param name="key">Key.</param>
-		public static bool ParseKeyBinding(string keystring, ref KeyCondition key)
+		/// </remarks>
+		/// <note>This is to be a parser for Rhovlyn.Engine.Util.Parser and follows the delegate ObjectParser</note>
+		public static object ParseKeyBinding(string keystring)
 		{
+			var key = new KeyCondition();
+			key.Keys = new List<Keys>();
 			var segs = keystring.Split('+');
-			if (key.Keys == null)
-				key.Keys = new List<Keys>();
 
 			foreach (var seg in segs)
 			{
@@ -168,10 +172,10 @@ namespace Rhovlyn.Engine.Input
 				}
 				else
 				{
-					return false;
+					return null;
 				}
 			}
-			return true;
+			return key;
 		}
 
 	}

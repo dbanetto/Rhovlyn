@@ -89,6 +89,7 @@ namespace Rhovlyn.Engine.Util
 			{
 				if (overrides)
 				{
+					parsers[typeof(T)] = parser;
 					Console.WriteLine(String.Format("The Parser for {0} is overriden", typeof(T)));
 					return true;
 				}
