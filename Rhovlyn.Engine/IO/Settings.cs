@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using Rhovlyn.Engine.Util;
 
 namespace Rhovlyn.Engine.IO
 {
@@ -125,8 +126,6 @@ namespace Rhovlyn.Engine.IO
 
 		public List<string> Headers { get { return new List<string>(this.settings.Keys); } }
 
-		//TODO : Replace Get series with generic funcion
-
 		/// <summary>
 		/// Get the specified header, key and return the value.
 		/// </summary>
@@ -137,47 +136,16 @@ namespace Rhovlyn.Engine.IO
 		/// <param name="header">Header of the section</param>
 		/// <param name="key">Key name</param>
 		/// <param name="result">Result</param>
-		public bool Get(string header, string key, ref string result)
+		public bool Get<T>(string header, string key, ref T result)
 		{
-			if (!isLoaded)
-				return false;
-
 			if (Exists(header, key))
 			{
-				result = this.settings[header.ToLower()][key.ToLower()];
-				return true;
+				var val = this.settings[header.ToLower()][key.ToLower()];
+				return Parser.Parse<T>(val, ref result);
+
 			}
 			return false;
 		}
-
-		/// <seealso cref="Get"></seealso>
-		public bool GetBool(string header, string key, ref bool result)
-		{
-			if (!isLoaded)
-				return false;
-
-			string val = "";
-			if (Get(header, key, ref val))
-			{
-				return bool.TryParse(val, out result);
-			}
-			return false;
-		}
-
-		/// <seealso cref="Get"></seealso>
-		public bool GetInt(string header, string key, ref int result)
-		{
-			if (!isLoaded)
-				return false;
-
-			string val = "";
-			if (Get(header, key, ref val))
-			{
-				return int.TryParse(val, out result);
-			}
-			return false;
-		}
-
 	}
 }
 

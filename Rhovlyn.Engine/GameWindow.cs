@@ -37,6 +37,7 @@ namespace Rhovlyn.Engine
 			Content.RootDirectory = "Content";
 
 			content = new ContentManager("Content/settings.ini");
+
 			ApplySettings();
 		}
 
@@ -170,11 +171,11 @@ namespace Rhovlyn.Engine
 		{
 			//Texture & Web Resourses
 			bool webresource = false;
-			content.Settings.GetBool("Textures", "AllowWebResources", ref webresource);
+			content.Settings.Get<bool>("Textures", "AllowWebResources", ref webresource);
 			IO.Path.AllowWebResouces = webresource;
 
 			bool webcache = webresource;
-			content.Settings.GetBool("Textures", "AllowWebResourcesCache", ref webcache);
+			content.Settings.Get<bool>("Textures", "AllowWebResourcesCache", ref webcache);
 			IO.Path.AllowWebResoucesCaching = webcache;
 
 			string cachepath = IO.Path.WebResoucesCachePath;
@@ -182,34 +183,34 @@ namespace Rhovlyn.Engine
 			IO.Path.WebResoucesCachePath = cachepath;
 
 			int cachetimeout = IO.Path.WebResoucesCacheTimeOut;
-			content.Settings.GetInt("Textures", "CacheTimeout", ref cachetimeout);
+			content.Settings.Get<int>("Textures", "CacheTimeout", ref cachetimeout);
 			IO.Path.WebResoucesCacheTimeOut = cachetimeout;
 		}
 
 		public void ApplyGraphicsSettings()
 		{
 			bool resizable = false;
-			content.Settings.GetBool("window", "resizable", ref resizable);
+			content.Settings.Get<bool>("window", "resizable", ref resizable);
 			Window.AllowUserResizing = resizable;
 
 			bool fullscreen = false;
-			content.Settings.GetBool("window", "fullscreen", ref fullscreen);
+			content.Settings.Get<bool>("window", "fullscreen", ref fullscreen);
 			graphics.IsFullScreen = fullscreen;
 
 			bool borderless = false;
-			content.Settings.GetBool("window", "borderless", ref borderless);
+			content.Settings.Get<bool>("window", "borderless", ref borderless);
 			Window.IsBorderless = borderless;
 
 			bool vsync = true;
-			content.Settings.GetBool("window", "vsync", ref vsync);
+			content.Settings.Get<bool>("window", "vsync", ref vsync);
 			graphics.SynchronizeWithVerticalRetrace = vsync;
 			this.IsFixedTimeStep = vsync;
 
 			int width = 800;
-			if (!content.Settings.GetInt("window", "width", ref width))
+			if (!content.Settings.Get<int>("window", "width", ref width))
 			{
 				var str = "";
-				content.Settings.Get("window", "width", ref str);
+				content.Settings.Get<String>("window", "width", ref str);
 				if (str == "auto")
 				{
 					width = GraphicsDevice.DisplayMode.Width;
@@ -217,10 +218,10 @@ namespace Rhovlyn.Engine
 			}
 
 			int height = 600;
-			if (!content.Settings.GetInt("window", "height", ref height))
+			if (!content.Settings.Get<int>("window", "height", ref height))
 			{
 				var str = "";
-				content.Settings.Get("window", "height", ref str);
+				content.Settings.Get<String>("window", "height", ref str);
 				if (str == "auto")
 				{
 					height = GraphicsDevice.DisplayMode.Height;

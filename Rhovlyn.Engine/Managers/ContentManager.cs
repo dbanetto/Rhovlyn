@@ -12,9 +12,10 @@ namespace Rhovlyn.Engine.Managers
 	{
 		public ContentManager(string settingsPath)
 		{
+			Parser.init();
 			Settings = new Settings(settingsPath);
 			string path = "";
-			if (Settings.Get("core", "input.settings", ref path))
+			if (Settings.Get<String>("core", "input.settings", ref path))
 			{
 				Input = new InputManager(path);
 			}
