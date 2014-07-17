@@ -135,6 +135,44 @@ namespace Rhovlyn.Engine.Util
 			}
 			return true;
 		}
+
+		/// <summary>
+		/// Subtracts the given area, toRemove, from the rectangle baseArea
+		/// </summary>
+		/// <returns>
+		/// An array of rectangles with the combined area of Area, but with out toRemove.
+		/// If toRemove completely overlaps baseArea an empty area is returned.
+		/// </returns>
+		/// <param name="baseArea">Base area</param>
+		/// <param name="toRemove">Area to remove.</param>
+		/// <remarks></remarks>
+		public static Rectangle[] SubtractArea(Rectangle baseArea, Rectangle toRemove)
+		{
+			if (toRemove.Contains(baseArea))
+				return new Rectangle[0];
+
+			var overlap = Rectangle.Intersect(baseArea, toRemove);
+
+			//Does not subtract any area from baseArea
+			if (overlap.IsEmpty)
+				return new Rectangle[1] { baseArea };
+
+			var area = new List<Rectangle>();
+
+			if (overlap.Top != baseArea.Top)
+				area.Add(new Rectangle(baseArea.X, baseArea.Y, baseArea.Width, overlap.Y - baseArea.Y));
+
+			if (overlap.Bottom != baseArea.Bottom)
+				area.Add(new Rectangle(baseArea.Left, overlap.Bottom, baseArea.Width, baseArea.Bottom - overlap.Bottom));
+
+			if (overlap.Left != baseArea.Left)
+				area.Add(new Rectangle(baseArea.Left, overlap.Top, overlap.Left - baseArea.Left, overlap.Height));
+
+			if (overlap.Right != baseArea.Right)
+				area.Add(new Rectangle(overlap.Right, overlap.Top, baseArea.Right - overlap.Right, overlap.Height));
+
+			return area.ToArray();
+		}
 	}
 }
 
