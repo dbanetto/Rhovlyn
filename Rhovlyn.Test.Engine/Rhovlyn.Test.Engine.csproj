@@ -38,6 +38,7 @@
     <Compile Include="Input\KeyboardProvider.cs" />
     <Compile Include="Util\RectangleUtil.cs" />
     <Compile Include="RectangleTest.cs" />
+    <Compile Include="Util\Parser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using Rhovlyn.Engine.IO;
 using System.IO;
+using Rhovlyn.Engine.Util;
 
 namespace Rhovlyn.Test.Engine.IO
 {
@@ -10,7 +11,7 @@ namespace Rhovlyn.Test.Engine.IO
 	{
 		[Test]
 		[Category("Settings")]
-		public void SettingsLoad ()
+		public void SettingsLoad()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
 			if (s.Load("Content/settings.ini") == false)
@@ -21,7 +22,7 @@ namespace Rhovlyn.Test.Engine.IO
 
 		[Test]
 		[Category("Settings")]
-		public void SettingsGetString ()
+		public void SettingsGetString()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
 			if (s.Load("Content/settings.ini") == false)
@@ -57,15 +58,16 @@ namespace Rhovlyn.Test.Engine.IO
 
 		[Test]
 		[Category("Settings")]
-		public void SettingsGetValues ()
+		public void SettingsGetValues()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
+			Parser.Init();
 			if (s.Load("Content/settings.ini") == false)
 			{
 				throw new IOException("Settings file could not be loaded");
 			}
 			var bout = false;
-			if (s.GetBool("test", "bool", ref bout))
+			if (s.Get<bool>("test", "bool", ref bout))
 			{
 				if (!bout.Equals(true))
 				{
@@ -78,7 +80,7 @@ namespace Rhovlyn.Test.Engine.IO
 			}
 
 			int iout = 0;
-			if (s.GetInt("test", "int", ref iout))
+			if (s.Get<int>("test", "int", ref iout))
 			{
 				if (!iout.Equals(1))
 				{
@@ -90,7 +92,7 @@ namespace Rhovlyn.Test.Engine.IO
 				throw new  IOException("Settings could not read the test:int node");
 			}
 
-			if (s.GetInt("test", "neg", ref iout))
+			if (s.Get<int>("test", "neg", ref iout))
 			{
 				if (!iout.Equals(-1))
 				{
@@ -105,22 +107,22 @@ namespace Rhovlyn.Test.Engine.IO
 
 		[Test]
 		[Category("Settings")]
-		public void SettingsGetBadValues ()
+		public void SettingsGetBadValues()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
-			if (s.Load("Content/settings.ini") == false)
+			if (!s.Load("Content/settings.ini"))
 			{
 				throw new IOException("Settings file could not be loaded");
 			}
 
 			var bout = false;
-			if (s.GetBool("test", "badbool", ref bout))
+			if (s.Get<bool>("test", "badbool", ref bout))
 			{
 				throw new  IOException("Settings failed to report a bad get for test:badbool");
 			}
 
 			int iout = 0;
-			if (s.GetInt("test", "badint", ref iout))
+			if (s.Get<int>("test", "badint", ref iout))
 			{
 				throw new  IOException("Settings failed to report a bad get for test:badint");
 			}

@@ -32,6 +32,8 @@ namespace Rhovlyn.Engine.Input
 		{
 			SettingsPostfix = "keys";
 			keys = new Dictionary<string ,  KeyCondition >();
+			if (!Parser.Exists<KeyCondition>())
+				Parser.Add<KeyCondition>(ParseKeyBinding);
 		}
 
 		public bool Load(string path)
@@ -65,7 +67,7 @@ namespace Rhovlyn.Engine.Input
 				var state = Keyboard.GetState();
 				foreach (var k in keys[name].Keys)
 				{
-					if (state.IsKeyDown(k) == false)
+					if (!state.IsKeyDown(k))
 						return false;
 				}
 				return true;
@@ -95,8 +97,7 @@ namespace Rhovlyn.Engine.Input
 
 			if (!Exists(name))
 			{
-				object key = condition;
-				this.keys[name] = (KeyCondition)(key);
+				this.keys[name] = (KeyCondition)(object)(condition);
 				return true;
 			} 
 			return false;
@@ -114,10 +115,7 @@ namespace Rhovlyn.Engine.Input
 					if (key.EndsWith(SettingsPostfix))
 					{
 						KeyCondition result = new KeyCondition(null);
-						if (!Parser.Exists<KeyCondition>())
-							Parser.Add<KeyCondition>(ParseKeyBinding);
-
-						if (Parser.Parse<KeyCondition>(settings[header][key], ref result))
+						if (Parser.TryParse<KeyCondition>(settings[header][key], ref result))
 						{
 							//Remove SettingsPostfix from the key
 							//On a unsuccessful Parse, stop

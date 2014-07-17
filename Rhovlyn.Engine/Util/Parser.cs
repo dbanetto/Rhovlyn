@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTK.Graphics.ES10;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -12,8 +13,13 @@ namespace Rhovlyn.Engine.Util
 	{
 		private static Dictionary< Type , ObjectParser > parsers = new Dictionary<Type, ObjectParser>();
 
-		public static void init()
+		public static bool Inited { get; private set; }
+
+		public static void Init()
 		{
+			if (Inited)
+				return;
+
 			parsers.Add(typeof(String), (i) => i);
 			parsers.Add(typeof(int), (i) =>
 			{ 
@@ -65,13 +71,25 @@ namespace Rhovlyn.Engine.Util
 				return null;
 			}
 			);
+			Inited = true;
 		}
 
 		public static bool TryParse<T>(string obj, ref T result)
 		{
+			if (!Inited)
+				Init();
+
 			if (parsers.ContainsKey(typeof(T)))
 			{
-				var parsed = parsers[typeof(T)](obj);
+				object parsed = null;
+				try
+				{
+					parsed = parsers[typeof(T)](obj);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(String.Format("Error while parsing {0} : {1}", typeof(T), ex));
+				}
 				if (parsed != null)
 				{
 					result = (T)(parsed);
@@ -84,6 +102,9 @@ namespace Rhovlyn.Engine.Util
 
 		public static T Parse<T>(string obj)
 		{
+			if (!Inited)
+				Init();
+
 			if (parsers.ContainsKey(typeof(T)))
 			{
 				return (T)(parsers[typeof(T)](obj));
@@ -93,6 +114,9 @@ namespace Rhovlyn.Engine.Util
 
 		public static bool Add<T>(ObjectParser parser, bool overrides = false)
 		{
+			if (!Inited)
+				Init();
+
 			if (parsers.ContainsKey(typeof(T)))
 			{
 				if (overrides)
