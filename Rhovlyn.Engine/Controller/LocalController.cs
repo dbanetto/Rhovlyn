@@ -14,7 +14,7 @@ namespace Rhovlyn.Engine.Controller
 		public AnimatedSprite Target { get; private set; }
 
 		private ContentManager content;
-		private string last_dir = "";
+		private string lastDir = "";
 
 		public LocalController(AnimatedSprite target)
 		{
@@ -76,13 +76,13 @@ namespace Rhovlyn.Engine.Controller
 
 			var diff = Target.Position - delta;
 			if (diff.X < 0)
-				last_dir = "right";
+				lastDir = "right";
 			if (diff.X > 0)
-				last_dir = "left";
+				lastDir = "left";
 			if (diff.Y < 0)
-				last_dir = "down";
+				lastDir = "down";
 			if (diff.Y > 0)
-				last_dir = "up";
+				lastDir = "up";
 
 			if (content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
 				    Target.Area.Width, Target.Area.Height)))
@@ -90,16 +90,16 @@ namespace Rhovlyn.Engine.Controller
 				if (delta != Target.Position)
 				{
 					Target.Position = delta;
-					Target.SetAnimation("move_" + last_dir);
+					Target.SetAnimation("move_" + lastDir);
 				}
 				else
 				{
-					Target.SetAnimation("look_" + last_dir);
+					Target.SetAnimation("look_" + lastDir);
 				}
 			}
 			else
 			{
-				Target.SetAnimation("look_" + last_dir);
+				Target.SetAnimation("look_" + lastDir);
 			}
 		}
 	}

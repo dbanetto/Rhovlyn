@@ -286,17 +286,22 @@ namespace Rhovlyn.Engine.Maps
 				ReqestAreaMapUpdate = false;
 			}
 				
-			var norm_cam = NormaliseRect(Content.Camera.Bounds);
+			UpdateCamera(Content.Camera);
+
+			foreach (var obj in last_tiles)
+			{
+				obj.Update(gameTime);
+			}
+		}
+
+		public void UpdateCamera(Camera camera)
+		{
+			var norm_cam = NormaliseRect(camera.Bounds);
 			if (last_camera != norm_cam || this.ReqestDrawMapUpdate)
 			{
 				last_tiles = areamap.Get(Content.Camera.Bounds);
 				last_camera = norm_cam;
 				this.ReqestDrawMapUpdate = false;
-			}
-
-			foreach (var obj in last_tiles)
-			{
-				obj.Update(gameTime);
 			}
 		}
 

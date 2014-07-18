@@ -147,21 +147,25 @@ namespace Rhovlyn.Engine
 		{
 			var then = DateTime.Now;
 
-			if (this.content.CurrnetMap != null)
-				graphics.GraphicsDevice.Clear(this.content.CurrnetMap.Background);
-			else
-				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
-				
-			spriteBatch.Begin();
+			this.Render(gameTime, spriteBatch, content.Camera);
 
-			this.content.CurrentState.Draw(gameTime, spriteBatch, content.Camera);
-			draw_time.Draw(gameTime, spriteBatch, content.Camera);
-			update_time.Draw(gameTime, spriteBatch, content.Camera);
+			if (content.Input["core.screenshot"])
+			{
+				var backup = GraphicsDevice.GetRenderTargets();
+				var target = new RenderTarget2D(GraphicsDevice, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
+				GraphicsDevice.SetRenderTarget(target);
 
-			spriteBatch.End();
+				this.Render(gameTime, spriteBatch, content.Camera);
+
+				using (var file = new FileStream(String.Format("screenshot_{0}.png", DateTime.Now.ToString("%h-%m_%dd-%mm-%yy")), FileMode.Create))
+				{
+					target.SaveAsPng(file, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
+				}
+				target.Dispose();
+				GraphicsDevice.SetRenderTargets(backup);
+			}
 
 			frames_past++;
-
 			draw_graph_timer += gameTime.ElapsedGameTime.TotalSeconds;
 			if (draw_graph_timer > 0.1)
 			{
@@ -169,6 +173,22 @@ namespace Rhovlyn.Engine
 				draw_graph_timer = 0;
 			}
 			base.Draw(gameTime);
+		}
+
+		public void Render(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
+		{
+			if (this.content.CurrnetMap != null)
+				graphics.GraphicsDevice.Clear(this.content.CurrnetMap.Background);
+			else
+				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
+
+			spriteBatch.Begin();
+
+			this.content.CurrentState.Draw(gameTime, spriteBatch, camera);
+			draw_time.Draw(gameTime, spriteBatch, camera);
+			update_time.Draw(gameTime, spriteBatch, camera);
+
+			spriteBatch.End();
 		}
 
 		public void ApplySettings()

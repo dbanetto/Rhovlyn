@@ -70,7 +70,6 @@
     <Compile Include="IO\PartialFile.cs" />
     <Compile Include="Maps\PartialMap.cs" />
     <Compile Include="Util\Collision.cs" />
-    <Compile Include="Util\MapRenderer.cs" />
     <Compile Include="Util\TextureUtil.cs" />
     <Compile Include="Util\RectangleUtil.cs" />
     <Compile Include="Util\Parser.cs" />
