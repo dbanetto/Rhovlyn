@@ -6,133 +6,69 @@ namespace Rhovlyn.Engine.Util
 {
 	public static class RectangleUtil
 	{
-		public static bool InBounds(Rectangle sprite, Rectangle[] bounds)
+		public static bool CoversRect(Rectangle rect, Rectangle[] covers)
 		{
-			var inbounds = false;
-			var intercepts = new List<Rectangle>();
-			for (int i = 0; i < bounds.Length; i++)
-			{
-				if (bounds[i].Contains(sprite))
-				{
-					inbounds = true;
-					break;
-				}
-				var inter = Rectangle.Intersect(sprite, bounds[i]);
-				if (inter != Rectangle.Empty)
-					intercepts.Add(inter);
-
-				if (i > 0 && bounds[i].Height == bounds[i - 1].Height &&
-				    bounds[i].Width == bounds[i - 1].Width)
-				{
-					if (bounds[i].X == bounds[i - 1].X)
-					{
-						foreach (var y in new [] { bounds[i].Height, -bounds[i].Height })
-						{
-							if (bounds[i].Y + y == bounds[i - 1].Y)
-							{
-								bounds[i] = Rectangle.Union(bounds[i], bounds[i - 1]);
-								i--;
-								continue;
-							}
-						}
-					}
-					else if (bounds[i].Y == bounds[i - 1].Y)
-					{
-						foreach (var x in new [] { bounds[i].Width, -bounds[i].Width })
-						{
-							if (bounds[i].X + x == bounds[i - 1].X)
-							{
-								bounds[i] = Rectangle.Union(bounds[i], bounds[i - 1]);
-								i--;
-								continue;
-							}
-						}
-					}
-				}
-			}
-			if (inbounds)
-				return inbounds;
-			if (intercepts.Count > 0)
-				return CoversRect(sprite, intercepts.ToArray());
-			else
-				return false;
-			//throw new Exception("I dunno how to deal with this");
+			return SubtractArea(rect, covers).Length == 0;
 		}
 
 		public static void PushBack(ref Rectangle sprite, Rectangle[] good)
 		{
-			//This is not the BEST way to knock back into bounds
-			//It assumes all the good space is a regular shape and the sprite is not caught in a nock
-			var blob = good[0];
+			//Find the Total area we are working in
+			var totalArea = sprite;
 			foreach (var r in good)
 			{
-				blob = Rectangle.Union(blob, r);
+				totalArea = Rectangle.Union(totalArea, r);
 			}
 
-			do
+			//Get all the "bad" area
+			var negitive = SubtractArea(totalArea, good);
+
+			int minx = int.MaxValue;
+			int miny = int.MaxValue;
+			foreach (var neg in negitive)
 			{
-				int minx = int.MaxValue;
-				int miny = int.MaxValue;
+				var inter = Rectangle.Intersect(sprite, neg);
+				if (inter.IsEmpty)
+					continue;
 
-				var inter = Rectangle.Intersect(sprite, blob);
-				if (inter != Rectangle.Empty)
+				if (inter.Width < Math.Abs(minx) && inter.Width != sprite.Width && inter.Width != 0)
 				{
-					if (inter.Width < Math.Abs(minx) && inter.Width != sprite.Width && inter.Width != 0)
+					minx = inter.Width;
+					if (inter.X != sprite.X)
 					{
-						minx = sprite.Width - inter.Width + 1;
-						if (inter.X == sprite.X)
-						{
-							minx *= -1;
-						}
+						minx *= -1;
 					}
-
-					if (inter.Height < Math.Abs(miny) && inter.Height != sprite.Height && inter.Height != 0)
-					{
-						miny = sprite.Height - inter.Height + 1;
-						if (inter.Y == sprite.Y)
-						{
-							miny *= -1;
-						}
-					}
-
 				}
-				if (minx == int.MaxValue && miny == int.MaxValue)
-					break;
-
-				if (Math.Abs(minx) < Math.Abs(miny))
+				if (inter.Height < Math.Abs(miny) && inter.Height != sprite.Height && inter.Height != 0)
 				{
-					sprite.X += minx;
-					Console.WriteLine("Pushed X back " + minx);
+					miny = inter.Height;
+					if (inter.Y != sprite.Y)
+					{
+						miny *= -1;
+					}
 				}
-				else
+			}
+			if (minx == int.MaxValue && miny == int.MaxValue)
+				return;
+
+			//Apply the smallest
+			if (Math.Abs(minx) < Math.Abs(miny))
+			{
+				sprite.X += minx;
+				//If that is not enough apply the next smallest
+				if (!CoversRect(sprite, good))
 				{
 					sprite.Y += miny;
-					Console.WriteLine("Pushed Y back " + miny);
-				}
-				Console.WriteLine(String.Format("Psuhed back {0},{1}", minx, miny));
-			} while (!InBounds(sprite, good));
-		}
-
-		public static bool CoversRect(Rectangle rect, Rectangle[] covers)
-		{
-			for (int x = rect.Left; x > rect.Right; x++)
-			{
-				for (int y = rect.Top; y > rect.Bottom; y++)
-				{
-					bool hasit = false;
-					foreach (var r in covers)
-					{
-						if (r.Contains(new Point(x, y)))
-						{
-							hasit = true;
-							break;
-						}
-					}
-					if (!hasit)
-						return false;
 				}
 			}
-			return true;
+			else
+			{
+				sprite.Y += miny;
+				if (!CoversRect(sprite, good))
+				{
+					sprite.X += minx;
+				}
+			}
 		}
 
 		/// <summary>
@@ -187,6 +123,8 @@ namespace Rhovlyn.Engine.Util
 						tmpQ.Enqueue(r);
 				}
 				areaQueue = tmpQ;
+				if (areaQueue.Count == 0)
+					break;
 			}
 			return areaQueue.ToArray();
 		}
