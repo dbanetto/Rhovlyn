@@ -39,9 +39,11 @@ namespace Rhovlyn.Engine.Controller
 
 		public void Update(GameTime gameTime)
 		{
+			var searchArea = Target.Area;
 			var target = Target.Area;
+			searchArea.Inflate(target.Width, target.Height);
 			var goods = new List<Rectangle>();
-			foreach (var p in content.CurrnetMap.TilesInArea(target))
+			foreach (var p in content.CurrnetMap.TilesInArea(searchArea))
 			{
 				goods.Add(p.Area);
 			}
@@ -54,6 +56,16 @@ namespace Rhovlyn.Engine.Controller
 
 			int speed = 128;
 			var delta = Target.Position;
+			if (content.Input["player.sprint"])
+			{
+				speed *= 5;
+				Target.AnimationSpeed = 2.0;
+			}
+			else
+			{
+				Target.AnimationSpeed = 1.0;
+			}
+
 			if (content.Input["player.up"])
 			{
 				delta.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;

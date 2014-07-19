@@ -75,9 +75,11 @@ namespace Rhovlyn.Engine.Graphics
 
 		public string CurrentAnimationName { get; private set; }
 
+		public double AnimationSpeed { get; set; }
+
 		private int index;
-		private double current_delta;
-		private int loop_count = 0;
+		private double currentDelta;
+		private int loopCount = 0;
 
 		public bool AnimationInProgress { get; private set; }
 
@@ -85,6 +87,7 @@ namespace Rhovlyn.Engine.Graphics
 			: base(position, spritemap)
 		{
 			animations = new Dictionary < string , Animation >();
+			AnimationSpeed = 1.0;
 		}
 
 		public override void Update(GameTime gameTime)
@@ -95,17 +98,17 @@ namespace Rhovlyn.Engine.Graphics
 				return;
 
 			//Update Timer for the frame
-			current_delta -= gameTime.ElapsedGameTime.TotalSeconds;
-			if (current_delta < 0)
+			currentDelta -= gameTime.ElapsedGameTime.TotalSeconds * AnimationSpeed;
+			if (currentDelta < 0)
 			{
 				if (animations[CurrentAnimationName].Frames.Count == index + 1)
 				{
-					loop_count++;
-					if (animations[CurrentAnimationName].Loop > loop_count)
+					loopCount++;
+					if (animations[CurrentAnimationName].Loop > loopCount)
 					{
 						index = 0;
 						this.Frameindex = animations[CurrentAnimationName].Frames[index];
-						current_delta = animations[CurrentAnimationName].Times[index];
+						currentDelta = animations[CurrentAnimationName].Times[index];
 						animations[CurrentAnimationName].OnFrameChanged(this, index);
 					}
 					else
@@ -118,7 +121,7 @@ namespace Rhovlyn.Engine.Graphics
 				{
 					index++;
 					this.Frameindex = animations[CurrentAnimationName].Frames[index];
-					current_delta = animations[CurrentAnimationName].Times[index];
+					currentDelta = animations[CurrentAnimationName].Times[index];
 					animations[CurrentAnimationName].OnFrameChanged(this, index);
 				}
 			}
@@ -172,9 +175,9 @@ namespace Rhovlyn.Engine.Graphics
 				//Set up for the new animation
 				CurrentAnimationName = name;
 				this.index = 0;
-				this.loop_count = 0;
+				this.loopCount = 0;
 				this.Frameindex = animations[CurrentAnimationName].Frames[index];
-				current_delta = animations[CurrentAnimationName].Times[index];
+				currentDelta = animations[CurrentAnimationName].Times[index];
 				animations[CurrentAnimationName].OnAnimationStarted(this);
 				animations[CurrentAnimationName].OnFrameChanged(this, index);
 				AnimationInProgress = true;
