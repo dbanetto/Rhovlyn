@@ -102,16 +102,15 @@ namespace Rhovlyn.Engine.Util
 				if (Math.Abs(minx) < Math.Abs(miny))
 				{
 					sprite.X += minx;
-					Console.WriteLine("Psuhed X back " + minx);
+					Console.WriteLine("Pushed X back " + minx);
 				}
 				else
 				{
 					sprite.Y += miny;
-					Console.WriteLine("Psuhed Y back " + miny);
+					Console.WriteLine("Pushed Y back " + miny);
 				}
 				Console.WriteLine(String.Format("Psuhed back {0},{1}", minx, miny));
-			} while (!InBounds(sprite, good))
-				;
+			} while (!InBounds(sprite, good));
 		}
 
 		public static bool CoversRect(Rectangle rect, Rectangle[] covers)
@@ -172,6 +171,24 @@ namespace Rhovlyn.Engine.Util
 				area.Add(new Rectangle(overlap.Right, overlap.Top, baseArea.Right - overlap.Right, overlap.Height));
 
 			return area.ToArray();
+		}
+
+		public static Rectangle[] SubtractArea(Rectangle baseArea, Rectangle[] toRemove)
+		{
+			Queue<Rectangle> areaQueue = new Queue<Rectangle>();
+			areaQueue.Enqueue(baseArea);
+			foreach (var rm in toRemove)
+			{
+				Queue<Rectangle> tmpQ = new Queue<Rectangle>();
+				while (areaQueue.Count != 0)
+				{
+					var rect = areaQueue.Dequeue();
+					foreach (var r in SubtractArea(rect, rm))
+						tmpQ.Enqueue(r);
+				}
+				areaQueue = tmpQ;
+			}
+			return areaQueue.ToArray();
 		}
 	}
 }

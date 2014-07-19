@@ -114,6 +114,36 @@ namespace Rhovlyn.Test.Engine.Util
 				throw new Exception("Invaild Area Subtraction, no overlap");
 		}
 
+		[Test()]
+		public void RectSubtractsTest()
+		{
+			var area = new Rectangle(0, 0, 100, 100);
+			var split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new [] { new Rectangle(25, 25, 25, 25), new Rectangle(25, 25, 25, 25) });
+			if (!ArraysEqual<Rectangle>(split, new []
+			{ 
+				new Rectangle(0, 0, 100, 25)
+				, new Rectangle(0, 50, 100, 50)
+				, new Rectangle(0, 25, 25, 25)
+				, new Rectangle(50, 25, 50, 25)
+			}))
+			{
+				throw new Exception("Invaild Multiple Area Subtractions, double center subtraction");
+			}
+
+			area = new Rectangle(0, 0, 100, 100);
+			split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new [] { new Rectangle(25, 25, 12, 25), new Rectangle(37, 25, 13, 25) });
+			if (!ArraysEqual<Rectangle>(split, new []
+			{ 
+				new Rectangle(0, 0, 100, 25)
+				, new Rectangle(0, 50, 100, 50)
+				, new Rectangle(0, 25, 25, 25)
+				, new Rectangle(50, 25, 50, 25)
+			}))
+			{
+				throw new Exception("Invaild Multiple Area Subtractions, two center subtraction");
+			}
+		}
+
 		private static bool ArraysEqual<T>(T[] a1, T[] a2)
 		{
 			if (ReferenceEquals(a1, a2))
