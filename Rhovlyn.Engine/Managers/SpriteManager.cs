@@ -13,12 +13,12 @@ namespace Rhovlyn.Engine.Managers
 	{
 		private Dictionary< string , Sprite > sprites;
 
-		public ContentManager Content { get; private set; }
+		public TextureManager Textures { get; private set; }
 
-		public SpriteManager(ContentManager content)
+		public SpriteManager(TextureManager textures)
 		{
 			sprites = new Dictionary< string , Sprite >();
-			Content = content;
+			Textures = textures;
 		}
 
 		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
@@ -35,7 +35,7 @@ namespace Rhovlyn.Engine.Managers
 
 		#region Management
 
-		public bool Load(Stream stream, TextureMananger textures)
+		public bool Load(Stream stream, TextureManager textures)
 		{
 			using (var reader = new StreamReader(stream))
 			{
@@ -58,7 +58,7 @@ namespace Rhovlyn.Engine.Managers
 							if (line.StartsWith("include:"))
 							{
 								var obj = line.Substring("include:".Length);
-								Content.Textures.Load(IO.Path.ResolvePath(obj));
+								Textures.Load(IO.Path.ResolvePath(obj));
 							}
 
 							//Hard check for a texture
@@ -67,7 +67,7 @@ namespace Rhovlyn.Engine.Managers
 								var obj = line.Substring("require:".Length);
 								foreach (var tex in obj.Split(','))
 								{
-									if (!Content.Textures.Exists(tex))
+									if (!Textures.Exists(tex))
 									{
 										//TODO : Make a exception class for this
 										throw new Exception("Failed to meet the require texture " + tex);
@@ -115,7 +115,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Load(string path)
 		{
-			return this.Load(new FileStream(path, FileMode.Open), this.Content.Textures);
+			return this.Load(new FileStream(path, FileMode.Open), Textures);
 		}
 
 		public Sprite Get(string name)

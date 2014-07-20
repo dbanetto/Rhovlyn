@@ -8,12 +8,15 @@ namespace Rhovlyn.Engine.Managers
 	{
 		Dictionary< string , Map > maps;
 
-		public ContentManager Content { get; private set; }
+		public TextureManager Textures { get; private set; }
 
-		public MapManager(ContentManager content)
+		public SpriteManager Sprites { get; private set; }
+
+		public MapManager(TextureManager textures, SpriteManager sprites)
 		{
 			maps = new Dictionary<string, Map>();
-			Content = content;
+			Textures = textures;
+			Sprites = sprites;
 			Current = "";
 		}
 
@@ -25,18 +28,14 @@ namespace Rhovlyn.Engine.Managers
 
 		public Map Get(string name)
 		{
-			if (Exists(name))
-			{
-				return maps[name];
-			}
-			return null;
+			return Exists(name) ? maps[name] : null;
 		}
 
 		public bool Add(string name, string path)
 		{
 			if (!Exists(name))
 			{
-				maps.Add(name, new PartialMap(path, Content));
+				maps.Add(name, new PartialMap(path, Textures));
 				if (maps.Count == 1)
 					Current = name;
 				return true;
@@ -44,11 +43,11 @@ namespace Rhovlyn.Engine.Managers
 			return false;
 		}
 
-		public bool Add(string name, Map Map)
+		public bool Add(string name, Map map)
 		{
 			if (!Exists(name))
 			{
-				maps.Add(name, Map);
+				maps.Add(name, map);
 				if (maps.Count == 1)
 					Current = name;
 				return true;

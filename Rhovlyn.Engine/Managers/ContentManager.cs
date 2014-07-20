@@ -28,12 +28,11 @@ namespace Rhovlyn.Engine.Managers
 		public void Init(GraphicsDevice device)
 		{
 			GraphicsDevice = device;
-			Textures = new TextureMananger(device);
+			Textures = new TextureManager(device);
 			GameStates = new GameStateManager(this);
-			Sprites = new SpriteManager(this);
-			Maps = new MapManager(this);
+			Sprites = new SpriteManager(Textures);
+			Maps = new MapManager(Textures, Sprites);
 			Audio = new AudioManager();
-
 		}
 
 		public Map CurrnetMap { get { return Maps.CurrentMap; } }
@@ -48,7 +47,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public Settings Settings { get; private set; }
 
-		public TextureMananger Textures { get; private set; }
+		public TextureManager Textures { get; private set; }
 
 		public MapManager Maps { get; private set; }
 

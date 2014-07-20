@@ -14,8 +14,6 @@ namespace Rhovlyn.Engine.Maps
 	{
 		private Dictionary< Point , MapObject > mapobjects;
 
-		public ContentManager Content { get; private set; }
-
 		public static readonly int TILE_WIDTH = 64;
 		public static readonly int TILE_HEIGHT = 64;
 
@@ -28,28 +26,28 @@ namespace Rhovlyn.Engine.Maps
 		private Rectangle mapArea;
 
 		protected  AreaMap<MapObject> areamap;
-		protected  MapObject[] last_tiles;
-		protected Rectangle last_camera = Rectangle.Empty;
+		protected  MapObject[] lastTiles;
+		protected Rectangle lastCamera = Rectangle.Empty;
 
-		private bool ReqestAreaMapUpdate = false;
-		private bool ReqestDrawMapUpdate = false;
+		private bool ReqestAreaMapUpdate { get; set; }
+
+		private bool ReqestDrawMapUpdate { get; set; }
 
 		#region Constructor
 
-		public Map(string path, ContentManager content)
+		public Map(string path, TextureManager textures)
 		{
 			areamap = new AreaMap<MapObject>();
 			mapobjects = new Dictionary<Point, MapObject>();
-			last_tiles = new MapObject[0];
-			Content = content;
-			this.Load(path);
+			lastTiles = new MapObject[0];
+			this.Load(path, textures);
 		}
 
-		public Map(ContentManager content)
+		public Map()
 		{
-			Content = content;
+
 			areamap = new AreaMap<MapObject>();
-			last_tiles = new MapObject[0];
+			lastTiles = new MapObject[0];
 			mapobjects = new Dictionary<Point, MapObject>();
 		}
 
@@ -66,7 +64,7 @@ namespace Rhovlyn.Engine.Maps
 		/// Load map from a stream, does not override current Map
 		/// </summary>
 		/// <param name="stream">Stream.</param>
-		public bool Load(Stream stream)
+		public bool Load(Stream stream, TextureManager textures)
 		{
 			mapArea = Rectangle.Empty;
 			using (var reader = new StreamReader(stream))
@@ -90,14 +88,17 @@ namespace Rhovlyn.Engine.Maps
 							if (line.StartsWith("include:"))
 							{
 								var obj = line.Substring("include:".Length);
-								Content.Textures.Load(IO.Path.ResolvePath(obj));
+								textures.Load(IO.Path.ResolvePath(obj));
 							}
+
+							/* TODO: Alternate Method to load a Sprite list for a Map
 							// Load a sprite list
 							if (line.StartsWith("sprites:"))
 							{
 								var obj = line.Substring("sprites:".Length);
-								Content.Sprites.Load(IO.Path.ResolvePath(obj), Content.Textures);
+								Sprites.Load(IO.Path.ResolvePath(obj), Textures);
 							}
+							*/
 
 							//Hard check for a texture
 							if (line.StartsWith("require:"))
@@ -105,7 +106,7 @@ namespace Rhovlyn.Engine.Maps
 								var obj = line.Substring("require:".Length);
 								foreach (var tex in obj.Split(','))
 								{
-									if (!Content.Textures.Exists(tex))
+									if (!textures.Exists(tex))
 									{
 										//TODO : Make a exception class for this
 										throw new Exception("Failed to meet the require texture " + tex);
@@ -141,7 +142,7 @@ namespace Rhovlyn.Engine.Maps
 							//Check if Texture index is defined
 							if (args.Length > 3)
 							{
-								var obj = new MapObject(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), Content.Textures[tex]);
+								var obj = new MapObject(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), textures[tex]);
 
 								int index = int.Parse(args[3]);
 								obj.Frameindex = index;
@@ -151,7 +152,7 @@ namespace Rhovlyn.Engine.Maps
 							}
 							else
 							{
-								var obj = new MapObject(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), Content.Textures[tex]);
+								var obj = new MapObject(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), textures[tex]);
 								this.Add(new Point(x, y), obj);
 								this.areamap.Add(obj);
 							} 
@@ -242,9 +243,9 @@ namespace Rhovlyn.Engine.Maps
 		/// Does clear current map.
 		/// </remark>
 		/// <param name="path">Path.</param>
-		public bool Load(string path)
+		public bool Load(string path, TextureManager textures)
 		{
-			return this.Load(IO.Path.ResolvePath(path));
+			return this.Load(IO.Path.ResolvePath(path), textures);
 		}
 
 		/// <summary>
@@ -268,7 +269,9 @@ namespace Rhovlyn.Engine.Maps
 		/// <param name="camera">Camera of the map</param>
 		public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
 		{
-			foreach (var obj in last_tiles)
+			UpdateCamera(camera);
+
+			foreach (var obj in lastTiles)
 			{
 				obj.Draw(gameTime, spriteBatch, camera);
 			}
@@ -286,9 +289,9 @@ namespace Rhovlyn.Engine.Maps
 				ReqestAreaMapUpdate = false;
 			}
 				
-			UpdateCamera(Content.Camera);
 
-			foreach (var obj in last_tiles)
+
+			foreach (var obj in lastTiles)
 			{
 				obj.Update(gameTime);
 			}
@@ -296,11 +299,10 @@ namespace Rhovlyn.Engine.Maps
 
 		public void UpdateCamera(Camera camera)
 		{
-			var norm_cam = NormaliseRect(camera.Bounds);
-			if (last_camera != norm_cam || this.ReqestDrawMapUpdate)
+			if (lastCamera != NormaliseRect(camera.Bounds) || this.ReqestDrawMapUpdate)
 			{
-				last_tiles = areamap.Get(Content.Camera.Bounds);
-				last_camera = norm_cam;
+				lastTiles = areamap.Get(camera.Bounds);
+				lastCamera = camera.Bounds;
 				this.ReqestDrawMapUpdate = false;
 			}
 		}

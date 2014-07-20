@@ -8,12 +8,12 @@ using Rhovlyn.Engine.Util;
 
 namespace Rhovlyn.Engine.Managers
 {
-	public class TextureMananger
+	public class TextureManager
 	{
 		private static GraphicsDevice Graphics;
 		private Dictionary< string , SpriteMap > textures;
 
-		public TextureMananger(GraphicsDevice graphics)
+		public TextureManager(GraphicsDevice graphics)
 		{
 			Graphics = graphics;
 			textures = new Dictionary<string, SpriteMap>();

@@ -43,11 +43,14 @@ namespace Rhovlyn.Engine.Maps
 		private PartialFile mapfile;
 		private AreaMap<MapSection> sections = new AreaMap<MapSection>();
 
-		public PartialMap(string path, ContentManager content)
-			: base(content)
+		private TextureManager textures;
+
+		public PartialMap(string path, TextureManager textures)
+			: base()
 		{
-			this.mapfile = new PartialFile(path);
-			base.Load(mapfile.LoadBlock());
+			this.textures = textures;
+			mapfile = new PartialFile(path);
+			Load(mapfile.LoadBlock(), textures);
 			ParseBlocks();
 		}
 
@@ -74,13 +77,13 @@ namespace Rhovlyn.Engine.Maps
 			var mem = mapfile.LoadBlock(name);
 			if (mem == null)
 				throw new IOException("Could not get Block Data");
-			Load(mem);
+			Load(mem, this.textures);
 			Console.WriteLine("Loaded Block " + name + " in " + (DateTime.Now - then).TotalMilliseconds + "ms");
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			foreach (var block in this.sections.Get(this.Content.Camera.Bounds))
+			foreach (var block in sections.Get(lastCamera))
 			{
 				if (!block.Loaded)
 				{

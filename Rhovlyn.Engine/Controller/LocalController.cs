@@ -4,7 +4,6 @@ using Rhovlyn.Engine.Managers;
 using Microsoft.Xna.Framework;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.Util;
-using System.ComponentModel;
 using System.Collections.Generic;
 
 namespace Rhovlyn.Engine.Controller
