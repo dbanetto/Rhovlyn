@@ -14,34 +14,22 @@ namespace Rhovlyn.Test.Engine.Util
 			var bounds = new [] { new Rectangle(0, 0, 50, 50) };
 			var sprite = new Rectangle(10, 10, 10, 10);
 
-			if (!Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds))
-			{
-				throw new Exception("Invaild in bounds check. Failed to check simple in bounds");
-			}
+			Assert.IsTrue(Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds), "Failure in bounds check. Failed to check simple in bounds");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50) };
 			sprite = new Rectangle(60, 60, 10, 10);
 
-			if (Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds))
-			{
-				throw new Exception("Invaild in bounds check. Failed to detect out of bounds");
-			}
+			Assert.IsFalse(Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds), "Failure in bounds check. Failed to detect out of bounds");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50), new Rectangle(50, 0, 50, 50) };
 			sprite = new Rectangle(45, 0, 10, 10);
 
-			if (!Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds))
-			{
-				throw new Exception("Invaild in bounds check. Failed to check overlapping");
-			}
+			Assert.IsTrue(Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds), "Failure in bounds check. Failed to check overlapping");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50), new Rectangle(50, 0, 50, 50) };
 			sprite = new Rectangle(45, 50, 10, 10);
 
-			if (Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds))
-			{
-				throw new Exception("Invaild in bounds check. Failed to check out of bounds overlapping");
-			}
+			Assert.IsFalse(Rhovlyn.Engine.Util.RectangleUtil.CoversRect(sprite, bounds), "Failure in bounds check. Failed to check out of bounds overlapping");
 		}
 
 		[Test()]
@@ -50,42 +38,27 @@ namespace Rhovlyn.Test.Engine.Util
 			var bounds = new [] { new Rectangle(0, 0, 50, 50) };
 			var sprite = new Rectangle(10, 10, 10, 10);
 			Rhovlyn.Engine.Util.RectangleUtil.PushBack(ref sprite, bounds);
-			if (sprite != new Rectangle(10, 10, 10, 10))
-			{
-				throw new Exception("Invaild in push back check. Failed to not push");
-			}
+			Assert.AreEqual(new Rectangle(10, 10, 10, 10), sprite, "Invalid in push back check. Failed to not push");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50) };
 			sprite = new Rectangle(10, 45, 10, 10);
 			Rhovlyn.Engine.Util.RectangleUtil.PushBack(ref sprite, bounds);
-			if (sprite != new Rectangle(10, 40, 10, 10))
-			{
-				throw new Exception("Invaild in push back check. Failed to push");
-			}
+			Assert.AreEqual(new Rectangle(10, 40, 10, 10), sprite, "Invalid in push back check. Failed to push");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50), new Rectangle(50, 0, 50, 50) };
 			sprite = new Rectangle(49, 45, 10, 10);
 			Rhovlyn.Engine.Util.RectangleUtil.PushBack(ref sprite, bounds);
-			if (sprite != new Rectangle(49, 40, 10, 10))
-			{
-				throw new Exception("Invaild in push back check. Failed to push on multi");
-			}
+			Assert.AreEqual(new Rectangle(49, 40, 10, 10), sprite, "Invalid in push back check. Failed to push on multi");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50) };
 			sprite = new Rectangle(46, 45, 10, 10);
 			Rhovlyn.Engine.Util.RectangleUtil.PushBack(ref sprite, bounds);
-			if (sprite != new Rectangle(40, 40, 10, 10))
-			{
-				throw new Exception("Invaild in push back check. Failed to push on double out");
-			}
+			Assert.AreEqual(new Rectangle(40, 40, 10, 10), sprite, "Invalid in push back check. Failed to push on double out");
 
 			bounds = new [] { new Rectangle(0, 0, 50, 50), new Rectangle(50, 50, 50, 50) };
 			sprite = new Rectangle(49, 49, 10, 10);
 			Rhovlyn.Engine.Util.RectangleUtil.PushBack(ref sprite, bounds);
-			if (sprite != new Rectangle(50, 50, 10, 10))
-			{
-				throw new Exception("Invaild in push back check. Failed to push on double out and diagonal");
-			}
+			Assert.AreEqual(new Rectangle(50, 50, 10, 10), sprite, "Invalid in push back check. Failed to push on double out and diagonal");
 		}
 
 		[Test()]
@@ -93,55 +66,48 @@ namespace Rhovlyn.Test.Engine.Util
 		{
 			var area = new Rectangle(0, 0, 100, 100);
 			var split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new Rectangle(25, 25, 25, 25));
-			if (!ArraysEqual<Rectangle>(split, new []
-			{ 
+
+			Assert.IsTrue(ArraysEqual<Rectangle>(split, new [] { 
 				new Rectangle(0, 0, 100, 25)
 				, new Rectangle(0, 50, 100, 50)
 				, new Rectangle(0, 25, 25, 25)
 				, new Rectangle(50, 25, 50, 25)
-			}))
-			{
-				throw new Exception("Invaild Area Subtraction, center subtraction");
-			}
+			}), "Invalid Area Subtraction, center subtraction");
 
 			area = new Rectangle(0, 0, 100, 100);
-			if (Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, area).Length != 0)
-				throw new Exception("Invaild Area Subtraction, complete overlap");
+			Assert.AreEqual(0, Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, area).Length, "Invalid Area Subtraction, complete overlap");
 
 
 			split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, Rectangle.Empty);
-			if (!ArraysEqual<Rectangle>(split, new []  { area }))
-				throw new Exception("Invaild Area Subtraction, no overlap");
+			Assert.IsTrue(ArraysEqual<Rectangle>(split, new []  { area }), "Invalid Area Subtraction, no overlap");
 		}
 
 		[Test()]
 		public void RectSubtractsTest()
 		{
 			var area = new Rectangle(0, 0, 100, 100);
-			var split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new [] { new Rectangle(25, 25, 25, 25), new Rectangle(25, 25, 25, 25) });
-			if (!ArraysEqual<Rectangle>(split, new []
-			{ 
+			var split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new [] {
+				new Rectangle(25, 25, 25, 25),
+				new Rectangle(25, 25, 25, 25)
+			});
+			Assert.IsTrue(ArraysEqual<Rectangle>(split, new [] { 
 				new Rectangle(0, 0, 100, 25)
 				, new Rectangle(0, 50, 100, 50)
 				, new Rectangle(0, 25, 25, 25)
 				, new Rectangle(50, 25, 50, 25)
-			}))
-			{
-				throw new Exception("Invaild Multiple Area Subtractions, double center subtraction");
-			}
+			}), "Invalid Multiple Area Subtractions, double center subtraction");
 
 			area = new Rectangle(0, 0, 100, 100);
-			split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new [] { new Rectangle(25, 25, 12, 25), new Rectangle(37, 25, 13, 25) });
-			if (!ArraysEqual<Rectangle>(split, new []
-			{ 
+			split = Rhovlyn.Engine.Util.RectangleUtil.SubtractArea(area, new [] {
+				new Rectangle(25, 25, 12, 25),
+				new Rectangle(37, 25, 13, 25)
+			});
+			Assert.IsTrue(ArraysEqual<Rectangle>(split, new [] { 
 				new Rectangle(0, 0, 100, 25)
 				, new Rectangle(0, 50, 100, 50)
 				, new Rectangle(0, 25, 25, 25)
 				, new Rectangle(50, 25, 50, 25)
-			}))
-			{
-				throw new Exception("Invaild Multiple Area Subtractions, two center subtraction");
-			}
+			}), "Invalid Multiple Area Subtractions, two center subtraction");
 		}
 
 		private static bool ArraysEqual<T>(T[] a1, T[] a2)
@@ -149,17 +115,13 @@ namespace Rhovlyn.Test.Engine.Util
 			if (ReferenceEquals(a1, a2))
 				return true;
 
-			if (a1 == null || a2 == null)
-				return false;
+			Assert.AreNotEqual(null, a1);
+			Assert.AreNotEqual(null, a2);
 
-			if (a1.Length != a2.Length)
-				return false;
+			Assert.AreEqual(a1.Length, a2.Length);
 
-			EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-			for (int i = 0; i < a1.Length; i++)
-			{
-				if (!comparer.Equals(a1[i], a2[i]))
-					return false;
+			for (int i = 0; i < a1.Length; i++) {
+				Assert.AreEqual(a1[i], a2[i]);
 			}
 			return true;
 		}

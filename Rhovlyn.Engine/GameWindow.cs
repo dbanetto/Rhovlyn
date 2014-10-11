@@ -8,6 +8,7 @@ using Rhovlyn.Engine.States;
 using Rhovlyn.Engine.Managers;
 using System.IO;
 using System.Globalization;
+using Microsoft.Xna.Framework;
 
 #endregion
 namespace Rhovlyn.Engine
@@ -81,8 +82,7 @@ namespace Rhovlyn.Engine
 			this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
 			//Keep the camera up to date with the Client Size
-			this.Window.ClientSizeChanged += (object sender, EventArgs e) =>
-			{
+			this.Window.ClientSizeChanged += (object sender, EventArgs e) => {
 				content.Camera.UpdateBounds(this.Window.ClientBounds);
 			};
 			base.Initialize();
@@ -109,8 +109,7 @@ namespace Rhovlyn.Engine
 		protected override void Update(GameTime gameTime)
 		{
 			var then = DateTime.Now;
-			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-			{
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit();
 			}
 			content.CurrentState.Update(gameTime);
@@ -119,36 +118,30 @@ namespace Rhovlyn.Engine
 			this.Window.Title = "FPS:" + (int)FPS + " " + this.content.Camera.Bounds.ToString();
 
 			framesTimer += gameTime.ElapsedGameTime.TotalSeconds;
-			if (framesTimer > 1)
-			{
+			if (framesTimer > 1) {
 				FPS = framesPast / framesTimer;
 				framesPast = 0;
 				framesTimer = 0;
 			}
 
-			if (RenderGraphs)
-			{
+			if (RenderGraphs) {
 				drawTime.Update(gameTime);
 				updateTime.Update(gameTime);
 
 				updateGraphTimer += gameTime.ElapsedGameTime.TotalSeconds;
-				if (updateGraphTimer > 0.1)
-				{
+				if (updateGraphTimer > 0.1) {
 					updateTime.Data.Add((DateTime.Now - then).TotalMilliseconds);
 					updateGraphTimer = 0;
 				}
 			}
 
-			if (content.Input["core.togglegraphs"] && !lockedGraphToggle)
-			{
+			if (content.Input["core.togglegraphs"] && !lockedGraphToggle) {
 				RenderGraphs = !RenderGraphs;
 				lockedGraphToggle = true;
 
 				drawTime.Clear();
 				updateTime.Clear();
-			}
-			else
-			{
+			} else {
 				lockedGraphToggle = content.Input["core.togglegraphs"];
 			}
 			base.Update(gameTime);
@@ -164,16 +157,14 @@ namespace Rhovlyn.Engine
 
 			this.Render(gameTime, spriteBatch, content.Camera);
 
-			if (content.Input["core.screenshot"])
-			{
+			if (content.Input["core.screenshot"]) {
 				var backup = GraphicsDevice.GetRenderTargets();
 				var target = new RenderTarget2D(GraphicsDevice, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
 				GraphicsDevice.SetRenderTarget(target);
 
 				this.Render(gameTime, spriteBatch, content.Camera);
 
-				using (var file = new FileStream(String.Format("screenshot_{0}.png", DateTime.Now.ToString("%h-%m_%dd-%mm-%yy")), FileMode.Create))
-				{
+				using (var file = new FileStream(String.Format("screenshot_{0}.png", DateTime.Now.ToString("%h-%m_%dd-%mm-%yy")), FileMode.Create)) {
 					target.SaveAsPng(file, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
 				}
 				target.Dispose();
@@ -181,11 +172,9 @@ namespace Rhovlyn.Engine
 			}
 
 			framesPast++;
-			if (RenderGraphs)
-			{
+			if (RenderGraphs) {
 				drawGraphTimer += gameTime.ElapsedGameTime.TotalSeconds;
-				if (drawGraphTimer > 0.1)
-				{
+				if (drawGraphTimer > 0.1) {
 					drawTime.Data.Add((DateTime.Now - then).TotalMilliseconds);
 					drawGraphTimer = 0;
 				}
@@ -203,8 +192,7 @@ namespace Rhovlyn.Engine
 			spriteBatch.Begin();
 
 			this.content.CurrentState.Draw(gameTime, spriteBatch, camera);
-			if (RenderGraphs)
-			{
+			if (RenderGraphs) {
 				drawTime.Draw(gameTime, spriteBatch, camera);
 				updateTime.Draw(gameTime, spriteBatch, camera);
 			}
@@ -245,9 +233,10 @@ namespace Rhovlyn.Engine
 			content.Settings.Get<bool>("window", "fullscreen", ref fullscreen);
 			graphics.IsFullScreen = fullscreen;
 
-			bool borderless = false;
-			content.Settings.Get<bool>("window", "borderless", ref borderless);
-			Window.IsBorderless = borderless;
+			// FIXME : IsBorderlessEXT is not a member of Window
+//			bool borderless = false;
+//			content.Settings.Get<bool>("window", "borderless", ref borderless);
+//			Window.IsBorderlessEXT = borderless;
 
 			bool vsync = true;
 			content.Settings.Get<bool>("window", "vsync", ref vsync);
@@ -255,23 +244,19 @@ namespace Rhovlyn.Engine
 			this.IsFixedTimeStep = vsync;
 
 			int width = 800;
-			if (!content.Settings.Get<int>("window", "width", ref width))
-			{
+			if (!content.Settings.Get<int>("window", "width", ref width)) {
 				var str = "";
 				content.Settings.Get<String>("window", "width", ref str);
-				if (str == "auto")
-				{
+				if (str == "auto") {
 					width = GraphicsDevice.DisplayMode.Width;
 				}
 			}
 
 			int height = 600;
-			if (!content.Settings.Get<int>("window", "height", ref height))
-			{
+			if (!content.Settings.Get<int>("window", "height", ref height)) {
 				var str = "";
 				content.Settings.Get<String>("window", "height", ref str);
-				if (str == "auto")
-				{
+				if (str == "auto") {
 					height = GraphicsDevice.DisplayMode.Height;
 				}
 			}
@@ -284,28 +269,21 @@ namespace Rhovlyn.Engine
 
 		private void AddParsers()
 		{
-			Parser.Add<Color>(o =>
-			{
-				if (o.StartsWith("0x") && (o.Length == 8 || o.Length == 5))
-				{
+			Parser.Add<Color>(o => {
+				if (o.StartsWith("0x") && (o.Length == 8 || o.Length == 5)) {
 					o = o.Substring(2);
-					if (o.Length == 3)
-					{
+					if (o.Length == 3) {
 						var r = int.Parse(o.Substring(0, 1), NumberStyles.AllowHexSpecifier);
 						var g = int.Parse(o.Substring(1, 1), NumberStyles.AllowHexSpecifier);
 						var b = int.Parse(o.Substring(2, 1), NumberStyles.AllowHexSpecifier);
 						return new Color(r * 16, g * 16, b * 16);
-					}
-					else
-					{
+					} else {
 						var r = int.Parse(o.Substring(0, 2), NumberStyles.HexNumber);
 						var g = int.Parse(o.Substring(2, 2), NumberStyles.AllowHexSpecifier);
 						var b = int.Parse(o.Substring(4, 2), NumberStyles.AllowHexSpecifier);
 						return new Color(r, g, b);
 					}
-				}
-				else
-				{
+				} else {
 					int r = 0, g = 0, b = 0;
 					var rgb = o.Split(',');
 

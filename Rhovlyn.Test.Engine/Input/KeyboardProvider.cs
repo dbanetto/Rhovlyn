@@ -3,6 +3,7 @@ using System;
 using Rhovlyn.Engine.Input;
 using Microsoft.Xna.Framework.Input;
 using Rhovlyn.Engine.Util;
+using System.Diagnostics;
 
 namespace Rhovlyn.Test.Engine.Input
 {
@@ -14,42 +15,22 @@ namespace Rhovlyn.Test.Engine.Input
 		{
 			if (!Parser.Exists<KeyCondition>())
 				Parser.Add<KeyCondition>(KeyBoardProvider.ParseKeyBinding);
-			KeyCondition cond = new KeyCondition();
-			if (Parser.TryParse<KeyCondition>("W", ref cond))
-			{
-				if (cond.Keys[0] != Keys.W)
-				{
-					throw new Exception("Invalid Key Parse for \'W\' test");
-				}
-			}
+			var cond = new KeyCondition();
+			Assert.IsTrue(Parser.TryParse<KeyCondition>("W", ref cond));
+			Assert.AreEqual(Keys.W, cond.Keys[0], "Invalid Key Parse for \'W\' test");
+
 
 			cond = new KeyCondition();
-			if (Parser.TryParse<KeyCondition>("W+Q", ref cond))
-			{
-				if (cond.Keys[0] != Keys.W || cond.Keys[1] != Keys.Q)
-				{
-					throw new Exception("Invalid Key Parse for \'W+Q\' test");
-				}
-			}
+			Assert.IsTrue(Parser.TryParse<KeyCondition>("W+Q", ref cond));
+			Assert.AreEqual(new []{ Keys.W, Keys.Q }, cond.Keys, "Invalid Key Parse for \'W+Q\' test");
 
 			cond = new KeyCondition();
-			if (Parser.TryParse<KeyCondition>("W+91", ref cond))
-			{
-				if (cond.Keys[0] != Keys.W || (int)cond.Keys[1] != 91)
-				{
-					throw new Exception("Invalid Key Parse for \'W+91\'");
-				}
-			}
+			Assert.IsTrue(Parser.TryParse<KeyCondition>("W+91", ref cond));
+			Assert.AreEqual(new []{ Keys.W, (Keys)(91) }, cond.Keys, "Invalid Key Parse for \'W+91\'");
 
-			if (Parser.TryParse<KeyCondition>("Waaa+91", ref cond))
-			{
-				throw new Exception("Invalid Key Parse for \'Waa+91\'");
-			}
+			Assert.IsFalse(Parser.TryParse<KeyCondition>("Waaa+91", ref cond), "Invalid Key Parse for \'Waa+91\'");
 
-			if (Parser.TryParse<KeyCondition>("W+13)&*%^", ref cond))
-			{
-				throw new Exception("Invalid Key Parse for \'Waa+91\'");
-			}
+			Assert.IsFalse(Parser.TryParse<KeyCondition>("W+13)&*%^", ref cond));
 		}
 	}
 }

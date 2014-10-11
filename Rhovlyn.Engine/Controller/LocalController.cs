@@ -42,46 +42,37 @@ namespace Rhovlyn.Engine.Controller
 			var target = Target.Area;
 			searchArea.Inflate(target.Width, target.Height);
 			var goods = new List<Rectangle>();
-			foreach (var p in content.CurrnetMap.TilesInArea(searchArea))
-			{
+			foreach (var p in content.CurrnetMap.TilesInArea(searchArea)) {
 				goods.Add(p.Area);
 			}
 			RectangleUtil.PushBack(ref target, goods.ToArray());
 			var newpos = new Vector2(target.X, target.Y);
-			if (newpos != new Vector2((int)Target.Position.X, (int)Target.Position.Y))
-			{
+			if (newpos != new Vector2((int)Target.Position.X, (int)Target.Position.Y)) {
 				Target.Position = newpos;
 			}
 
 			int speed = 128;
 			var delta = Target.Position;
-			if (content.Input["player.sprint"])
-			{
+			if (content.Input["player.sprint"]) {
 				speed *= 5;
 				Target.AnimationSpeed = 2.0;
-			}
-			else
-			{
+			} else {
 				Target.AnimationSpeed = 1.0;
 			}
 
-			if (content.Input["player.up"])
-			{
+			if (content.Input["player.up"]) {
 				delta.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
-			if (content.Input["player.down"])
-			{
+			if (content.Input["player.down"]) {
 				delta.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
-			if (content.Input["player.left"])
-			{
+			if (content.Input["player.left"]) {
 				delta.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
-			if (content.Input["player.right"])
-			{
+			if (content.Input["player.right"]) {
 				delta.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
@@ -96,20 +87,14 @@ namespace Rhovlyn.Engine.Controller
 				lastDir = "up";
 
 			if (content.CurrnetMap.IsOnMap(new Rectangle((int)delta.X, (int)delta.Y,
-				    Target.Area.Width, Target.Area.Height)))
-			{
-				if (delta != Target.Position)
-				{
+				    Target.Area.Width, Target.Area.Height))) {
+				if (delta != Target.Position) {
 					Target.Position = delta;
 					Target.SetAnimation("move_" + lastDir);
-				}
-				else
-				{
+				} else {
 					Target.SetAnimation("look_" + lastDir);
 				}
-			}
-			else
-			{
+			} else {
 				Target.SetAnimation("look_" + lastDir);
 			}
 		}

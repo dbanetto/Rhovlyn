@@ -14,10 +14,7 @@ namespace Rhovlyn.Test.Engine.IO
 		public void SettingsLoad()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
-			if (s.Load("Content/settings.ini") == false)
-			{
-				throw new IOException("Settings file could not be loaded");
-			}
+			Assert.IsTrue(s.Load("Content/settings.ini"));
 		}
 
 		[Test]
@@ -25,35 +22,14 @@ namespace Rhovlyn.Test.Engine.IO
 		public void SettingsGetString()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
-			if (s.Load("Content/settings.ini") == false)
-			{
-				throw new IOException("Settings file could not be loaded");
-			}
+			Assert.IsTrue(s.Load("Content/settings.ini"));
 
 			var result = "";
-			if (s.Get("", "root", ref result))
-			{
-				if (!result.Equals("node"))
-				{
-					throw new IOException("Settings could not read the root node's value properly");
-				}
-			}
-			else
-			{
-				throw new  IOException("Settings could not read the root node");
-			}
+			Assert.IsTrue(s.Get("", "root", ref result));
+			Assert.IsTrue(result.Equals("node"));
 
-			if (s.Get("test", "string", ref result))
-			{
-				if (!result.Equals("A string"))
-				{
-					throw new IOException("Settings could not read the test:string node's value properly");
-				}
-			}
-			else
-			{
-				throw new  IOException("Settings could not read the test:string node");
-			}
+			Assert.IsTrue(s.Get("test", "string", ref result));
+			Assert.IsTrue(result.Equals("A string"));
 		}
 
 		[Test]
@@ -62,47 +38,18 @@ namespace Rhovlyn.Test.Engine.IO
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
 			Parser.Init();
-			if (s.Load("Content/settings.ini") == false)
-			{
-				throw new IOException("Settings file could not be loaded");
-			}
+			Assert.IsTrue(s.Load("Content/settings.ini"));
+
 			var bout = false;
-			if (s.Get<bool>("test", "bool", ref bout))
-			{
-				if (!bout.Equals(true))
-				{
-					throw new IOException("Settings could not read the test:bool node's value properly");
-				}
-			}
-			else
-			{
-				throw new  IOException("Settings could not read the test:bool node");
-			}
+			Assert.IsTrue(s.Get<bool>("test", "bool", ref bout));
+			Assert.IsTrue(bout.Equals(true));
 
 			int iout = 0;
-			if (s.Get<int>("test", "int", ref iout))
-			{
-				if (!iout.Equals(1))
-				{
-					throw new IOException("Settings could not read the test:int node's value properly");
-				}
-			}
-			else
-			{
-				throw new  IOException("Settings could not read the test:int node");
-			}
+			Assert.IsTrue(s.Get<int>("test", "int", ref iout));
+			Assert.IsTrue(iout.Equals(1));
 
-			if (s.Get<int>("test", "neg", ref iout))
-			{
-				if (!iout.Equals(-1))
-				{
-					throw new IOException("Settings could not read the test:neg node's value properly");
-				}
-			}
-			else
-			{
-				throw new  IOException("Settings could not read the test:neg node");
-			}
+			Assert.IsTrue(s.Get<int>("test", "neg", ref iout));
+			Assert.IsTrue(iout.Equals(-1));
 		}
 
 		[Test]
@@ -110,22 +57,13 @@ namespace Rhovlyn.Test.Engine.IO
 		public void SettingsGetBadValues()
 		{
 			var s = new Rhovlyn.Engine.IO.Settings();
-			if (!s.Load("Content/settings.ini"))
-			{
-				throw new IOException("Settings file could not be loaded");
-			}
+			Assert.IsTrue(s.Load("Content/settings.ini"));
 
 			var bout = false;
-			if (s.Get<bool>("test", "badbool", ref bout))
-			{
-				throw new  IOException("Settings failed to report a bad get for test:badbool");
-			}
+			Assert.IsFalse(s.Get<bool>("test", "badbool", ref bout));
 
 			int iout = 0;
-			if (s.Get<int>("test", "badint", ref iout))
-			{
-				throw new  IOException("Settings failed to report a bad get for test:badint");
-			}
+			Assert.IsFalse(s.Get<int>("test", "badint", ref iout));
 		}
 	}
 }

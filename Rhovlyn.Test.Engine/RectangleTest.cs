@@ -9,63 +9,50 @@ namespace Rhovlyn.Test.Engine
 	[TestFixture()]
 	public class RectangleTest
 	{
-		public RectangleTest()
-		{
-		}
 
 		[Test()]
-		public void Contains ()
+		public void Contains()
 		{
-			Rectangle a = new Rectangle(0, 0, 100, 100);
-			Rectangle b = new Rectangle(0,0, 50, 50);
-			if (!a.Contains(b))
-				throw new Exception("Not expected behavior");
 
-			if (b.Contains(a))
-				throw new Exception("Not expected behavior");
+			var a = new Rectangle(0, 0, 100, 100);
+			var b = new Rectangle(0, 0, 50, 50);
+			Assert.IsTrue(a.Contains(b));
 
-			a = new Rectangle(0, 0, 100, 100);
-			b = new Rectangle(0 ,-25,  50,  50);
-			if (a.Contains(b))
-				throw new Exception("Not expected behavior");
+			Assert.IsFalse(b.Contains(a));
 
 			a = new Rectangle(0, 0, 100, 100);
-			b = new Rectangle(-50 ,-50,  1, 1);
-			if (a.Contains(b))
-				throw new Exception("Not expected behavior");
+			b = new Rectangle(0, -25, 50, 50);
+			Assert.IsFalse(a.Contains(b));
+
+			a = new Rectangle(0, 0, 100, 100);
+			b = new Rectangle(-50, -50, 1, 1);
+			Assert.IsFalse(a.Contains(b));
 		}
 
 		[Test()]
 		public void Intercepts()
 		{
-			Rectangle a = new Rectangle(0, 0, 100, 100);
-			Rectangle b = new Rectangle(0,0, 50, 50);
-			if (!a.Intersects(b))
-				throw new Exception("Not expected behavior");
+			var a = new Rectangle(0, 0, 100, 100);
+			var b = new Rectangle(0, 0, 50, 50);
+			Assert.IsTrue(a.Intersects(b));
 
-			if (!b.Intersects(a))
-				throw new Exception("Not expected behavior");
+			Assert.IsTrue(b.Intersects(a));
 
 			a = new Rectangle(0, 0, 100, 100);
-			b = new Rectangle(0 ,-25,  50,  50);
-			if (!a.Intersects(b))
-				throw new Exception("Not expected behavior");
+			b = new Rectangle(0, -25, 50, 50);
+			Assert.IsTrue(a.Intersects(b));
 
-			if (!b.Intersects(a))
-				throw new Exception("Not expected behavior");
+			Assert.IsTrue(b.Intersects(a));
 
 			a = new Rectangle(0, 0, 100, 100);
-			b = new Rectangle(-50 ,-50,  1, 1);
-			if (a.Intersects(b))
-				throw new Exception("Not expected behavior");
+			b = new Rectangle(-50, -50, 1, 1);
+			Assert.IsFalse(a.Intersects(b));
 
-			a = new Rectangle(int.MinValue,0, 100, 100);
-			b = new Rectangle(0,0, 50, 50);
-			if (a.Intersects(b))
-				throw new Exception("Not expected behavior");
+			a = new Rectangle(int.MinValue, 0, 100, 100);
+			b = new Rectangle(0, 0, 50, 50);
+			Assert.IsFalse(a.Intersects(b));
 
-			if (b.Intersects(a))
-				throw new Exception("Not expected behavior");
+			Assert.IsFalse(b.Intersects(a));
 		}
 
 

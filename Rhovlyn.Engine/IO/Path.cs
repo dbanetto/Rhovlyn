@@ -10,34 +10,30 @@ namespace Rhovlyn.Engine.IO
 	public static class Path
 	{
 		static string cachePath = "Content/cache/";
+		/** Measured in  minutes **/
 		static int cacheTimeout = 10;
-		//Minutes
+
 
 		public static bool AllowWebResouces { get; set; }
 
 		public static bool AllowWebResoucesCaching { get; set; }
 
-		public static int WebResoucesCacheTimeOut
-		{ 
+		public static int WebResoucesCacheTimeOut { 
 			get { return cacheTimeout; }
-			set
-			{
+			set {
 				cacheTimeout = value;
 				CheckCacheTimeOutAll();
 			}
 		}
 
-		public static string WebResoucesCachePath
-		{
+		public static string WebResoucesCachePath {
 			get { return cachePath; } 
-			set
-			{
+			set {
 				cachePath = value;
 				if (cachePath[cachePath.Length - 1] != '/')
 					cachePath += '/';
 
-				if (!Directory.Exists(cachePath))
-				{
+				if (!Directory.Exists(cachePath)) {
 					Directory.CreateDirectory(cachePath);
 				}
 				CheckCacheTimeOutAll();
@@ -46,43 +42,33 @@ namespace Rhovlyn.Engine.IO
 
 		public static Stream ResolvePath(string path)
 		{
-			if (AllowWebResouces && (path.StartsWith("http://") || path.StartsWith("https://")))
-			{
-				if (AllowWebResoucesCaching)
-				{
+			if (AllowWebResouces && (path.StartsWith("http://", StringComparison.Ordinal) || path.StartsWith("https://", StringComparison.Ordinal))) {
+				if (AllowWebResoucesCaching) {
 					var c_path = GetCachePath(path);
 					CheckCacheTimeOut(c_path);
-					if (File.Exists(c_path))
-					{
+					if (File.Exists(c_path)) {
 						return new FileStream(c_path, FileMode.Open);
 					}
-					else
-					{
-						CacheFile(((HttpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream(), c_path);
-						return new FileStream(c_path, FileMode.Open);
-					}
+					CacheFile(((HttpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream(), c_path);
+					return new FileStream(c_path, FileMode.Open);
+
 				}
 				return ((HttpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream();
 			}
-			else if (AllowWebResouces && path.StartsWith("ftp://"))
-			{
-				if (AllowWebResoucesCaching)
-				{
+
+			if (AllowWebResouces && path.StartsWith("ftp://", StringComparison.Ordinal)) {
+				if (AllowWebResoucesCaching) {
 					var c_path = GetCachePath(path);
-					if (File.Exists(c_path))
-					{
+					if (File.Exists(c_path)) {
 						return new FileStream(c_path, FileMode.Open);
 					}
-					else
-					{
-						CacheFile(((FtpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream(), c_path);
-						return new FileStream(c_path, FileMode.Open);
-					}
+					CacheFile(((FtpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream(), c_path);
+					return new FileStream(c_path, FileMode.Open);
 				}
 				return ((FtpWebRequest)WebRequest.Create(path)).GetResponse().GetResponseStream();
 			}
-			else if (File.Exists(path))
-			{
+
+			if (File.Exists(path)) {
 				return new FileStream(path, FileMode.Open);
 			}
 			throw new IOException(path + " could not be resloved");
@@ -90,17 +76,12 @@ namespace Rhovlyn.Engine.IO
 
 		public static void CacheFile(Stream data, string cachepath)
 		{
-			using (var fs = new BinaryWriter(new FileStream(cachepath, FileMode.Create)))
-			{
-				using (var reader = new BinaryReader(data))
-				{
-					try
-					{
+			using (var fs = new BinaryWriter(new FileStream(cachepath, FileMode.Create))) {
+				using (var reader = new BinaryReader(data)) {
+					try {
 						while (reader.BaseStream.CanRead)
 							fs.Write(reader.ReadByte());
-					}
-					catch (EndOfStreamException ex)
-					{ //Expected Error, everthing will be fine* 
+					} catch (EndOfStreamException) { //Expected Error, everthing will be fine* 
 					}
 					fs.Flush();
 				}
@@ -116,8 +97,7 @@ namespace Rhovlyn.Engine.IO
 
 		public static void CheckCacheTimeOutAll()
 		{
-			foreach (var file in Directory.EnumerateFiles(WebResoucesCachePath))
-			{
+			foreach (var file in Directory.EnumerateFiles(WebResoucesCachePath)) {
 				CheckCacheTimeOut(file, WebResoucesCacheTimeOut);
 			}
 		}
@@ -132,10 +112,9 @@ namespace Rhovlyn.Engine.IO
 			if (!File.Exists(file))
 				return;
 
-			FileInfo info = new FileInfo(file);
+			var info = new FileInfo(file);
 			var past = DateTime.Now.Subtract(info.LastWriteTime);
-			if (past.TotalMinutes > minutes)
-			{
+			if (past.TotalMinutes > minutes) {
 				File.Delete(file);
 			}
 		}

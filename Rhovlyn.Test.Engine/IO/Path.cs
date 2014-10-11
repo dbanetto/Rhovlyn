@@ -10,8 +10,8 @@ namespace Rhovlyn.Test.Engine.IO
 	public class Path
 	{
 		[Test]
-		[ExpectedException( typeof( IOException ) )]
-		public void PathWebResoucesDisabled( )
+		[ExpectedException(typeof(IOException))]
+		public void PathWebResoucesDisabled()
 		{
 			Rhovlyn.Engine.IO.Path.AllowWebResouces = false;
 			Rhovlyn.Engine.IO.Path.ResolvePath("http://i.imgur.com/Vf0An8J.png");
@@ -19,7 +19,7 @@ namespace Rhovlyn.Test.Engine.IO
 
 		[Test]
 		[Category("Web Content")]
-		public void PathCacheDisabled( )
+		public void PathCacheDisabled()
 		{
 			Rhovlyn.Engine.IO.Path.WebResoucesCachePath = "cache/";
 			Rhovlyn.Engine.IO.Path.AllowWebResouces = true;
@@ -28,15 +28,14 @@ namespace Rhovlyn.Test.Engine.IO
 			Rhovlyn.Engine.IO.Path.ResolvePath("http://i.imgur.com/Vf0An8J.png");
 
 			Console.WriteLine("Downloading file");
-			if (typeof(FileStream) == Rhovlyn.Engine.IO.Path.ResolvePath("http://i.imgur.com/Vf0An8J.png").GetType() )
-			{
-				throw new InvalidDataException( "A File Stream from cache should not be returned" );
-			}
+			Assert.IsNotInstanceOfType(typeof(FileStream),
+				Rhovlyn.Engine.IO.Path.ResolvePath("http://i.imgur.com/Vf0An8J.png"),
+				"A File Stream from cache should not be returned");
 		}
 
 		[Test]
 		[Category("Web Content")]
-		public void PathCacheClear ( )
+		public void PathCacheClear()
 		{
 			Rhovlyn.Engine.IO.Path.WebResoucesCachePath = "cache/";
 			Rhovlyn.Engine.IO.Path.WebResoucesCacheTimeOut = 10;
@@ -51,10 +50,9 @@ namespace Rhovlyn.Test.Engine.IO
 			Rhovlyn.Engine.IO.Path.WebResoucesCacheTimeOut = 0;
 
 			Console.WriteLine("Downloading file");
-			if (typeof(FileStream) != Rhovlyn.Engine.IO.Path.ResolvePath("http://i.imgur.com/Vf0An8J.png").GetType() )
-			{
-				throw new InvalidDataException( "A File Stream from cache should be returned" );
-			}
+			Assert.IsInstanceOfType(typeof(FileStream) 
+				, Rhovlyn.Engine.IO.Path.ResolvePath("http://i.imgur.com/Vf0An8J.png")
+				, "A File Stream from cache should be returned");
 		}
 
 	}
