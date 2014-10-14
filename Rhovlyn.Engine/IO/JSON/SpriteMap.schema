@@ -1,0 +1,39 @@
+{
+	"type":"object",
+	"required": true,
+	"properties": {
+		"map": {
+			"type":"array",
+			"required": true,
+			"items":
+			{
+				"type":["integer","array"],
+				"required": true
+			}
+			
+
+		},
+		"name": {
+			"type":"string",
+			"required": true
+		},
+		"path": {
+			"type":"string",
+			"required": true
+		},
+		"animations": {
+			"type":"object",
+			"required": false,
+			"items": 
+			{
+				"type":"array",
+				"required": true,
+				"items":
+				{
+					"type":"integer",
+					"required": true
+				}
+			}
+		}
+	}
+}

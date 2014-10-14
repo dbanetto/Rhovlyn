@@ -36,6 +36,9 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
+    <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral">
+      <Package>monogame</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +76,7 @@
     <Compile Include="Util\RectangleUtil.cs" />
     <Compile Include="Util\Parser.cs" />
     <Compile Include="Managers\TextureManager.cs" />
+    <Compile Include="IO\JSON\JParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -85,6 +89,8 @@
     <Folder Include="Managers\" />
     <Folder Include="Input\" />
     <Folder Include="Controller\" />
+    <Folder Include="IO\JSON\" />
+    <Folder Include="API\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StyleCop.Cache">
@@ -121,4 +127,27 @@
       <Name>Newtonsoft.Json.Net40</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="IO\JSON\SpriteMap.schema">
+      <LogicalName>SpriteMap.schema</LogicalName>
+      <DeployService-Deploy>True</DeployService-Deploy>
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\JSON\Rectangle.schema">
+      <LogicalName>Rectangle.schema</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\JSON\Animation.schema">
+      <LogicalName>Animation.schema</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy FileWidth="120" TabsToSpaces="False" EolMarker="Unix" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentSwitchBody="True" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" NewLineBeforeConstructorInitializerColon="NewLine" NewLineAfterConstructorInitializerColon="SameLine" BeforeDelegateDeclarationParentheses="False" NewParentheses="False" SpacesBeforeBrackets="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

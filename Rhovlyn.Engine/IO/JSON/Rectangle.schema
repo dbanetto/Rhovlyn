@@ -1,0 +1,26 @@
+﻿{
+	"type":"array",
+	"minitems": "4",
+	"maxitems": "4",
+	"required":true,
+	"properties":{
+		"0": {
+			"type":"integer",
+			"required":true
+		},
+		"1": {
+			"type":"integer",
+			"required":true
+		},
+		"2": {
+			"type":"integer",
+			"minimum": "0",
+			"required":true
+		},
+		"3": {
+			"type":"integer",
+			"minimum": "0",
+			"required":true
+		}
+	}
+}

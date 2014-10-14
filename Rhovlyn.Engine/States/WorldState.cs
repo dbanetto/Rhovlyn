@@ -6,8 +6,11 @@ using Rhovlyn.Engine.Managers;
 using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Input;
 using Rhovlyn.Engine.Controller;
-using System.Collections.Generic;
 using Rhovlyn.Engine.Maps;
+using Rhovlyn.Engine.IO.JSON;
+using System.IO;
+using Newtonsoft.Json.Linq;
+
 
 namespace Rhovlyn.Engine.States
 {
@@ -22,7 +25,6 @@ namespace Rhovlyn.Engine.States
 
 		public void Initialize()
 		{
-
 		}
 
 		public void LoadContent(ContentManager content)
@@ -33,25 +35,15 @@ namespace Rhovlyn.Engine.States
 
 			this.content.Audio.Add("sfx", "Content/sfx.wav");
 
-			content.Textures.Load("Content/textures.txt");
+			content.Textures.Load("Content/textures.json");
 			content.Maps.Add("test", "gen-map.map");
 			this.content.CurrnetMap.Save("sdkljhgskl.map");
 			content.Maps.Add("loadSaved", "sdkljhgskl.map");
 			content.Maps.Current = "loadSaved";
 
-			content.Sprites.Add("player", new AnimatedSprite(Vector2.Zero, content.Textures["male"]));
+			content.Sprites.Add("player", new AnimatedSprite(Vector2.Zero, content.Textures["player-male"]));
 
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
-			//Needs to be moved to an external file
-			playersprite.AddAnimation("move_up", new Animation(new List<int> { 0, 1, 2, 1 }, new List<double> { 0.1, 0.1, 0.1, 0.1 }));
-			playersprite.AddAnimation("move_down", new Animation(new List<int> { 6, 7, 8, 7 }, new List<double> { 0.1, 0.1, 0.1, 0.1 }));
-			playersprite.AddAnimation("move_right", new Animation(new List<int> { 3, 4, 5, 4 }, new List<double> { 0.1, 0.1, 0.1, 0.1 }));
-			playersprite.AddAnimation("move_left", new Animation(new List<int> { 9, 10, 11, 10 }, new List<double> { 0.1, 0.1, 0.1, 0.1 }));
-
-			playersprite.AddAnimation("look_up", new Animation(new List<int> { 1 }, new List<double> { 0 }));
-			playersprite.AddAnimation("look_down", new Animation(new List<int> { 7 }, new List<double> { 0 }));
-			playersprite.AddAnimation("look_right", new Animation(new List<int> { 4 }, new List<double> { 0 }));
-			playersprite.AddAnimation("look_left", new Animation(new List<int> { 10 }, new List<double> { 0 }));
 
 			this.content.Audio.ListenerObject = playersprite;
 			var player = new LocalController(playersprite);
@@ -66,8 +58,6 @@ namespace Rhovlyn.Engine.States
 			cameracontroll = new CameraController(content.Camera);
 			cameracontroll.FocusOn(content.Sprites["player"]);
 			cameracontroll.Update(new GameTime());
-
-
 		}
 
 		public void UnLoadContent(ContentManager content)
@@ -83,8 +73,8 @@ namespace Rhovlyn.Engine.States
 
 		public void Update(GameTime gameTime)
 		{
-			this.content.CurrnetMap.Update(gameTime);
-			this.content.Sprites.Update(gameTime);
+			content.CurrnetMap.Update(gameTime);
+			content.Sprites.Update(gameTime);
 			cameracontroll.Update(gameTime);
 		}
 	}
