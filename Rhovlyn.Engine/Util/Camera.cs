@@ -12,33 +12,29 @@ namespace Rhovlyn.Engine.Util
 		private Rectangle bounds;
 		private Vector2 position;
 
-		public Camera(Vector2 position, Rectangle bounds )
+		public Camera(Vector2 position, Rectangle bounds)
 		{
 			this.bounds = bounds;
-			this.Position = position;
+			Position = position;
 		}
 
-
-		public void UpdateBounds (Rectangle bounds)
+		public void UpdateBounds(Rectangle bounds)
 		{
 			this.bounds = bounds;
 			this.bounds.X = (int)position.X;
 			this.bounds.Y = (int)position.Y;
 		}
 
-		public Rectangle Bounds
-		{
-			get{ return this.bounds; }
+		public Rectangle Bounds {
+			get { return bounds; }
 		}
 
-		public Vector2 Position
-		{
-			get{ return this.position; }
-			set
-			{
-				this.position = value;
-				this.bounds.X = (int)value.X;
-				this.bounds.Y = (int)value.Y;
+		public Vector2 Position {
+			get { return position; }
+			set {
+				position = value;
+				bounds.X = (int)value.X;
+				bounds.Y = (int)value.Y;
 			}
 		}
 	}

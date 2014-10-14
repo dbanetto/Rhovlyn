@@ -28,8 +28,7 @@ namespace Rhovlyn.Engine.Managers
 				listener.Position = new Vector3(ListenerObject.Position, 0);
 
 			//Remove the dead instances
-			for (int i = 0; i < instances.Count; i++)
-			{
+			for (int i = 0; i < instances.Count; i++) {
 				if (instances[i].IsDisposed || instances[i].State == SoundState.Stopped)
 					instances.RemoveAt(i--);
 			}
@@ -37,8 +36,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Play(string name, bool loop = false)
 		{
-			if (this.Exists(name))
-			{
+			if (this.Exists(name)) {
 				var inst = this.sounds[name].CreateInstance();
 				instances.Add(inst);
 				inst.Play();
@@ -52,17 +50,12 @@ namespace Rhovlyn.Engine.Managers
 
 		public SoundEffect Get(string name)
 		{
-			if (Exists(name))
-			{
-				return this.sounds[name];
-			}
-			return null;
+			return Exists(name) ? sounds[name] : null;
 		}
 
 		public bool Add(string name, SoundEffect sound)
 		{
-			if (!Exists(name))
-			{
+			if (!Exists(name)) {
 				sounds.Add(name, sound);
 				return true;
 			}
@@ -71,10 +64,8 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Add(string name, string path)
 		{
-			if (!Exists(name))
-			{
-				using (var fs = new FileStream(path, FileMode.Open))
-				{
+			if (!Exists(name)) {
+				using (var fs = new FileStream(path, FileMode.Open)) {
 					sounds.Add(name, SoundEffect.FromStream(fs));
 					return true;
 				}
@@ -84,7 +75,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Exists(string name)
 		{
-			return this.sounds.ContainsKey(name);
+			return sounds.ContainsKey(name);
 		}
 
 		#endregion

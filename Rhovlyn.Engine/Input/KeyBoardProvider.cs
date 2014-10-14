@@ -10,10 +10,7 @@ namespace Rhovlyn.Engine.Input
 	{
 		public KeyCondition(List<Keys> keys = null)
 		{
-			if (keys != null)
-				this.keys = keys;
-			else
-				this.keys = new List<Keys>();
+			this.keys = keys ?? new List<Keys>();
 		}
 
 		List<Keys> keys;
@@ -38,14 +35,11 @@ namespace Rhovlyn.Engine.Input
 
 		public bool Load(string path)
 		{
-			try
-			{
+			try {
 				settings = new IO.Settings(path);
 				ParseSettings();
 				return true;
-			}
-			catch
-			{
+			} catch {
 				return false;
 			}
 		}
@@ -62,11 +56,9 @@ namespace Rhovlyn.Engine.Input
 
 		public bool GetState(string name)
 		{
-			if (this.Exists(name))
-			{
+			if (Exists(name)) {
 				var state = Keyboard.GetState();
-				foreach (var k in keys[name].Keys)
-				{
+				foreach (var k in keys[name].Keys) {
 					if (!state.IsKeyDown(k))
 						return false;
 				}
@@ -80,10 +72,9 @@ namespace Rhovlyn.Engine.Input
 			if (typeof(T) != typeof(KeyCondition))
 				throw new InvalidDataException("Can only pass KeyCondition to KeyBoardProvider's set");
 
-			if (Exists(name))
-			{
+			if (Exists(name)) {
 				object key = condition;
-				this.keys[name] = (KeyCondition)(key);
+				keys[name] = (KeyCondition)(key);
 				return true;
 			}
 			return false;
@@ -95,9 +86,8 @@ namespace Rhovlyn.Engine.Input
 			if (typeof(T) != typeof(KeyCondition))
 				throw new InvalidDataException("Can only pass KeyCondition to KeyBoardProvider's add");
 
-			if (!Exists(name))
-			{
-				this.keys[name] = (KeyCondition)(object)(condition);
+			if (!Exists(name)) {
+				keys[name] = (KeyCondition)(object)(condition);
 				return true;
 			} 
 			return false;
@@ -106,24 +96,18 @@ namespace Rhovlyn.Engine.Input
 		public void ParseSettings()
 		{
 			//Go through ALL of the headers
-			foreach (var header in settings.Headers)
-			{
+			foreach (var header in settings.Headers) {
 				//Check all thier values
-				foreach (var key in settings[header].Keys)
-				{
+				foreach (var key in settings[header].Keys) {
 					//if they have THIS Providers SettingsPostfix then deal with it
-					if (key.EndsWith(SettingsPostfix))
-					{
-						KeyCondition result = new KeyCondition(null);
-						if (Parser.TryParse<KeyCondition>(settings[header][key], ref result))
-						{
+					if (key.EndsWith(SettingsPostfix)) {
+						var result = new KeyCondition(null);
+						if (Parser.TryParse<KeyCondition>(settings[header][key], ref result)) {
 							//Remove SettingsPostfix from the key
 							//On a unsuccessful Parse, stop
-							this.Add(header + "." + key.Substring(0, key.Length - SettingsPostfix.Length - 1),
+							Add(header + "." + key.Substring(0, key.Length - SettingsPostfix.Length - 1),
 								result);
-						}
-						else
-						{
+						} else {
 							throw new InvalidDataException("Input Settings failed to load");
 						}
 					}
@@ -146,17 +130,13 @@ namespace Rhovlyn.Engine.Input
 			key.Keys = new List<Keys>();
 			var segs = keystring.Split('+');
 
-			foreach (var seg in segs)
-			{
+			foreach (var seg in segs) {
 				//Convert a singel letter to scancode
-				if (seg.Length == 1)
-				{
+				if (seg.Length == 1) {
 					//XNA Scan codes for letters are mapped to UTF-8's upper case english letters
-					var bytes = System.Text.UTF8Encoding.UTF8.GetBytes(seg.ToUpper());
-					if (bytes.Length == 1)
-					{
-						if (bytes[0] >= 65 && bytes[0] <= 90)
-						{
+					var bytes = System.Text.Encoding.UTF8.GetBytes(seg.ToUpper());
+					if (bytes.Length == 1) {
+						if (bytes[0] >= 65 && bytes[0] <= 90) {
 							key.Keys.Add((Keys)bytes[0]);
 							continue;
 						}
@@ -164,12 +144,9 @@ namespace Rhovlyn.Engine.Input
 				}
 				//Read in as Scancodes
 				int code;
-				if (int.TryParse(seg, out code))
-				{
+				if (int.TryParse(seg, out code)) {
 					key.Keys.Add((Keys)code);
-				}
-				else
-				{
+				} else {
 					return null;
 				}
 			}

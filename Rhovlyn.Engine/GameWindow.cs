@@ -1,6 +1,5 @@
 #region Using Statements
 using System;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rhovlyn.Engine.Util;
@@ -76,14 +75,14 @@ namespace Rhovlyn.Engine
 			updateTime.Lines.Add(new Line(0.5, Color.Purple));
 			updateTime.Lines.Add(new Line(0.01, Color.White));
 
-			content.Camera = new Camera(Vector2.Zero, this.Window.ClientBounds);
+			content.Camera = new Camera(Vector2.Zero, Window.ClientBounds);
 			content.Init(graphics.GraphicsDevice);
 
-			this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+			graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
 			//Keep the camera up to date with the Client Size
-			this.Window.ClientSizeChanged += (object sender, EventArgs e) => {
-				content.Camera.UpdateBounds(this.Window.ClientBounds);
+			Window.ClientSizeChanged += (sender, e) => {
+				content.Camera.UpdateBounds(Window.ClientBounds);
 			};
 			base.Initialize();
 		}
@@ -115,7 +114,7 @@ namespace Rhovlyn.Engine
 			content.CurrentState.Update(gameTime);
 			content.Audio.Update();
 
-			this.Window.Title = "FPS:" + (int)FPS + " " + this.content.Camera.Bounds.ToString();
+			Window.Title = "FPS:" + (int)FPS + " " + content.Camera.Bounds;
 
 			framesTimer += gameTime.ElapsedGameTime.TotalSeconds;
 			if (framesTimer > 1) {
@@ -155,14 +154,14 @@ namespace Rhovlyn.Engine
 		{
 			var then = DateTime.Now;
 
-			this.Render(gameTime, spriteBatch, content.Camera);
+			Render(gameTime, spriteBatch, content.Camera);
 
 			if (content.Input["core.screenshot"]) {
 				var backup = GraphicsDevice.GetRenderTargets();
 				var target = new RenderTarget2D(GraphicsDevice, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
 				GraphicsDevice.SetRenderTarget(target);
 
-				this.Render(gameTime, spriteBatch, content.Camera);
+				Render(gameTime, spriteBatch, content.Camera);
 
 				using (var file = new FileStream(String.Format("screenshot_{0}.png", DateTime.Now.ToString("%h-%m_%dd-%mm-%yy")), FileMode.Create)) {
 					target.SaveAsPng(file, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
@@ -184,14 +183,14 @@ namespace Rhovlyn.Engine
 
 		public void Render(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
 		{
-			if (this.content.CurrnetMap != null)
-				graphics.GraphicsDevice.Clear(this.content.CurrnetMap.Background);
+			if (content.CurrnetMap != null)
+				graphics.GraphicsDevice.Clear(content.CurrnetMap.Background);
 			else
 				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
 
-			this.content.CurrentState.Draw(gameTime, spriteBatch, camera);
+			content.CurrentState.Draw(gameTime, spriteBatch, camera);
 			if (RenderGraphs) {
 				drawTime.Draw(gameTime, spriteBatch, camera);
 				updateTime.Draw(gameTime, spriteBatch, camera);
@@ -241,7 +240,7 @@ namespace Rhovlyn.Engine
 			bool vsync = true;
 			content.Settings.Get<bool>("window", "vsync", ref vsync);
 			graphics.SynchronizeWithVerticalRetrace = vsync;
-			this.IsFixedTimeStep = vsync;
+			IsFixedTimeStep = vsync;
 
 			int width = 800;
 			if (!content.Settings.Get<int>("window", "width", ref width)) {
@@ -261,13 +260,13 @@ namespace Rhovlyn.Engine
 				}
 			}
 
-			this.graphics.PreferredBackBufferWidth = width;
-			this.graphics.PreferredBackBufferHeight = height;
-			this.graphics.ApplyChanges();
-			this.content.Camera.UpdateBounds(new Rectangle(0, 0, this.graphics.PreferredBackBufferWidth, this.graphics.PreferredBackBufferHeight));
+			graphics.PreferredBackBufferWidth = width;
+			graphics.PreferredBackBufferHeight = height;
+			graphics.ApplyChanges();
+			content.Camera.UpdateBounds(new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
 		}
 
-		private void AddParsers()
+		private static void AddParsers()
 		{
 			Parser.Add<Color>(o => {
 				if (o.StartsWith("0x") && (o.Length == 8 || o.Length == 5)) {
@@ -284,7 +283,7 @@ namespace Rhovlyn.Engine
 						return new Color(r, g, b);
 					}
 				} else {
-					int r = 0, g = 0, b = 0;
+					int r, g, b;
 					var rgb = o.Split(',');
 
 					//Parse a RGB comma sperated string

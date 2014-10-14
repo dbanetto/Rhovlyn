@@ -18,27 +18,23 @@ namespace Rhovlyn.Engine.Managers
 
 		#region Management
 
-		public IGameState CurrnetState { get { return this.states[Current]; } }
+		public IGameState CurrnetState { get { return states[Current]; } }
 
-		public string Current
-		{
-			get
-			{
-				return this.currnet;
+		public string Current {
+			get {
+				return currnet;
 			}
-			set
-			{
+			set {
 				if (currnet != null)
 					states[currnet].UnLoadContent(content);
-				this.currnet = value;
+				currnet = value;
 				states[currnet].LoadContent(content);
 			}
 		}
 
 		public bool Add(string name, IGameState state)
 		{
-			if (!Exists(name))
-			{
+			if (!Exists(name)) {
 				state.Initialize();
 				states.Add(name, state);
 				if (states.Count == 1)
@@ -50,7 +46,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Exists(string name)
 		{
-			return this.states.ContainsKey(name);
+			return states.ContainsKey(name);
 		}
 
 		#endregion

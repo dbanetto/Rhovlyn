@@ -1,7 +1,4 @@
-using System;
-using NUnit;
 using NUnit.Framework;
-
 using Microsoft.Xna.Framework;
 
 namespace Rhovlyn.Test.Engine

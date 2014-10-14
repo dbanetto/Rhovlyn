@@ -1,10 +1,8 @@
-using System;
 using Rhovlyn.Engine.IO;
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.States;
-using System.IO;
 using Rhovlyn.Engine.Util;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Rhovlyn.Engine.Managers
 {
@@ -14,15 +12,6 @@ namespace Rhovlyn.Engine.Managers
 		{
 			Parser.Init();
 			Settings = new Settings(settingsPath);
-			string path = "";
-			if (Settings.Get<String>("core", "input.settings", ref path))
-			{
-				Input = new InputManager(path);
-			}
-			else
-			{
-				throw new IOException("Cannot find input settings");
-			}
 		}
 
 		public void Init(GraphicsDevice device)
@@ -33,6 +22,7 @@ namespace Rhovlyn.Engine.Managers
 			Sprites = new SpriteManager(Textures);
 			Maps = new MapManager(Textures, Sprites);
 			Audio = new AudioManager();
+			Input = new InputManager();
 		}
 
 		public Map CurrnetMap { get { return Maps.CurrentMap; } }

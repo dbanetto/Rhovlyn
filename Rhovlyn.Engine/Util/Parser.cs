@@ -21,51 +21,41 @@ namespace Rhovlyn.Engine.Util
 				return;
 
 			parsers.Add(typeof(String), (i) => i);
-			parsers.Add(typeof(int), (i) =>
-			{ 
+			parsers.Add(typeof(int), (i) => { 
 				int s;
-				if (int.TryParse(i, out s))
-				{ 
+				if (int.TryParse(i, out s)) { 
 					return s;
 				}
 				return null;
 			}
 			);
-			parsers.Add(typeof(float), (i) =>
-			{ 
+			parsers.Add(typeof(float), (i) => { 
 				float s;
-				if (float.TryParse(i, out s))
-				{ 
+				if (float.TryParse(i, out s)) { 
 					return s; 
 				}
 				return null;
 			}
 			);
-			parsers.Add(typeof(double), (i) =>
-			{ 
+			parsers.Add(typeof(double), (i) => { 
 				double s;
-				if (double.TryParse(i, out s))
-				{ 
+				if (double.TryParse(i, out s)) { 
 					return s; 
 				}
 				return null;
 			}
 			);
-			parsers.Add(typeof(bool), (i) =>
-			{ 
+			parsers.Add(typeof(bool), (i) => { 
 				bool s;
-				if (bool.TryParse(i, out s))
-				{ 
+				if (bool.TryParse(i, out s)) { 
 					return s; 
 				}
 				return null;
 			}
 			);
-			parsers.Add(typeof(byte), (i) =>
-			{ 
+			parsers.Add(typeof(byte), (i) => { 
 				byte s;
-				if (byte.TryParse(i, out s))
-				{ 
+				if (byte.TryParse(i, out s)) { 
 					return s; 
 				}
 				return null;
@@ -79,19 +69,14 @@ namespace Rhovlyn.Engine.Util
 			if (!Inited)
 				Init();
 
-			if (parsers.ContainsKey(typeof(T)))
-			{
+			if (parsers.ContainsKey(typeof(T))) {
 				object parsed = null;
-				try
-				{
+				try {
 					parsed = parsers[typeof(T)](obj);
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					Console.WriteLine(String.Format("Error while parsing {0} : {1}", typeof(T), ex));
 				}
-				if (parsed != null)
-				{
+				if (parsed != null) {
 					result = (T)(parsed);
 					return true;
 				}
@@ -105,8 +90,7 @@ namespace Rhovlyn.Engine.Util
 			if (!Inited)
 				Init();
 
-			if (parsers.ContainsKey(typeof(T)))
-			{
+			if (parsers.ContainsKey(typeof(T))) {
 				return (T)(parsers[typeof(T)](obj));
 			}
 			throw new NotImplementedException(String.Format("Cannot parse unknown type: {0}", typeof(T)));
@@ -117,10 +101,8 @@ namespace Rhovlyn.Engine.Util
 			if (!Inited)
 				Init();
 
-			if (parsers.ContainsKey(typeof(T)))
-			{
-				if (overrides)
-				{
+			if (parsers.ContainsKey(typeof(T))) {
+				if (overrides) {
 					parsers[typeof(T)] = parser;
 					Console.WriteLine(String.Format("The Parser for {0} is overriden", typeof(T)));
 					return true;
