@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Rhovlyn.Test.Engine</RootNamespace>
     <AssemblyName>Rhovlyn.Engine.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,9 +58,13 @@
       <Project>{7F0330DE-7136-4C6A-AECF-1DD47612135C}</Project>
       <Name>Rhovlyn.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
-      <Project>{35253CE1-C864-4CD3-8249-4D1319748E8F}</Project>
-      <Name>MonoGame.Framework.SDL2</Name>
+    <ProjectReference Include="..\lib\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.csproj">
+      <Project>{EEEA67F9-9089-481D-A4DC-0966DEC9FD7D}</Project>
+      <Name>Newtonsoft.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\SharpDL\SharpDL.Graphics\SharpDL.Graphics.Mono.csproj">
+      <Project>{DA5E47BC-F509-40F5-9FC7-9C94D1D70809}</Project>
+      <Name>SharpDL.Graphics.Mono</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>

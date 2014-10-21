@@ -1,15 +1,12 @@
 using System;
 using Rhovlyn.Engine.Util;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Managers;
 using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Input;
 using Rhovlyn.Engine.Controller;
 using Rhovlyn.Engine.Maps;
-using Rhovlyn.Engine.IO.JSON;
-using System.IO;
-using Newtonsoft.Json.Linq;
+using SharpDL.Graphics;
+using SharpDL;
 
 
 namespace Rhovlyn.Engine.States
@@ -33,19 +30,19 @@ namespace Rhovlyn.Engine.States
 
 			MapGenerator.GenerateDungeonMap("gen-map.map", DateTime.Now.GetHashCode(), new Rectangle(-50000, -50000, 100000, 100000));
 
-			this.content.Audio.Add("sfx", "Content/sfx.wav");
+			//this.content.Audio.Add("sfx", "Content/sfx.wav");
 
 			content.Textures.Load("Content/textures.json");
-			content.Maps.Add("test", "gen-map.map");
-			this.content.CurrnetMap.Save("sdkljhgskl.map");
-			content.Maps.Add("loadSaved", "sdkljhgskl.map");
-			content.Maps.Current = "loadSaved";
+			//content.Maps.Add("test", "gen-map.map");
+			//this.content.CurrnetMap.Save("sdkljhgskl.map");
+			//content.Maps.Add("loadSaved", "sdkljhgskl.map");
+			//content.Maps.Current = "loadSaved";
 
-			content.Sprites.Add("player", new AnimatedSprite(Vector2.Zero, content.Textures["player-male"]));
+			content.Sprites.Add("player", new AnimatedSprite(Vector.Zero, content.Textures["player-male"]));
 
 			var playersprite = (AnimatedSprite)content.Sprites["player"];
 
-			this.content.Audio.ListenerObject = playersprite;
+			//this.content.Audio.ListenerObject = playersprite;
 			var player = new LocalController(playersprite);
 			player.Initialize();
 			player.LoadContent(content);
@@ -64,17 +61,20 @@ namespace Rhovlyn.Engine.States
 		{
 		}
 
-		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
+		public void Draw(GameTime gameTime, Renderer renderer, Camera camera)
 		{
 			cameracontroll.Update(new GameTime());
-			content.CurrnetMap.Draw(gameTime, spriteBatch, camera);
-			content.Sprites.Draw(gameTime, spriteBatch, camera);
+			if (content.CurrnetMap != null)
+				content.CurrnetMap.Draw(gameTime, renderer, camera);
+			content.Sprites.Draw(gameTime, renderer, camera);
 		}
 
 		public void Update(GameTime gameTime)
 		{
-			content.CurrnetMap.Update(gameTime);
-			content.Sprites.Update(gameTime);
+			if (content.CurrnetMap != null)
+				content.CurrnetMap.Update(gameTime);
+
+			//content.Sprites.Update(gameTime);
 			cameracontroll.Update(gameTime);
 		}
 	}

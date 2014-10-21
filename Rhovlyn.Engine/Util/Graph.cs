@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Rhovlyn.Engine.Graphics;
-using Microsoft.Xna.Framework.Graphics;
-using C3.XNA;
+using SharpDL.Graphics;
+using SharpDL;
+
 
 namespace Rhovlyn.Engine.Util
 {
@@ -42,15 +41,15 @@ namespace Rhovlyn.Engine.Util
 		private double min;
 		private double intervals;
 
-		private Vector2[] points;
+		private Vector[] points;
 
 		public List<Line> Lines { get; set; }
 
-		public Vector2 Position { get; set; }
+		public Vector Position { get; set; }
 
 		public Rectangle Area { get; set; }
 
-		public Graph(Vector2 position, int width, int height)
+		public Graph(Vector position, int width, int height)
 		{
 			Data = new List<double>();
 			Lines = new List<Line>();
@@ -62,7 +61,7 @@ namespace Rhovlyn.Engine.Util
 			Colour = Colour;
 		}
 
-		public Graph(Vector2 position, int width, int height, bool zeroIsMinimum, int maxDataPoints, MaxType type, Color colour)
+		public Graph(Vector position, int width, int height, bool zeroIsMinimum, int maxDataPoints, MaxType type, Color colour)
 		{
 			Data = new List<double>();
 			Lines = new List<Line>();
@@ -74,26 +73,26 @@ namespace Rhovlyn.Engine.Util
 			Colour = colour;
 		}
 
-		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
+		public void Draw(GameTime gameTime, Renderer renderer, Camera camera)
 		{
 			if (points == null)
 				Update(gameTime);
 
 			for (int i = 0; i < points.Length - 1; i++) {
-				Primitives2D.DrawLine(spriteBatch, points[i], points[i + 1], Colour);
+				//Primitives2D.DrawLine(spriteBatch, points[i], points[i + 1], Colour);
 			}
 
 			//Draw 
 			foreach (var l in Lines) {
 				var y = CalculateY(l.point);
-				if (y > Position.Y && y < Area.Bottom)
-					Primitives2D.DrawLine(spriteBatch, new Vector2(Position.X, y) 
-						, new Vector2(Position.X + Area.Width, y), l.colour);
+				//if (y > Position.Y && y < Area.Bottom)
+				//	Primitives2D.DrawLine(spriteBatch, new Vector(Position.X, y) 
+				//		, new Vector(Position.X + Area.Width, y), l.colour);
 			}
 			//Draw Axies
-			Primitives2D.DrawLine(spriteBatch, Position, Position + new Vector2(0, Area.Height), Colour);
-			Primitives2D.DrawLine(spriteBatch, Position + new Vector2(Area.Width, Area.Height) 
-				, Position + new Vector2(0, Area.Height), Colour);
+			//Primitives2D.DrawLine(spriteBatch, Position, Position + new Vector(0, Area.Height), Colour);
+			//Primitives2D.DrawLine(spriteBatch, Position + new Vector(Area.Width, Area.Height) 
+			//	, Position + new Vector(0, Area.Height), Colour);
 
 		}
 
@@ -102,7 +101,7 @@ namespace Rhovlyn.Engine.Util
 			while (Data.Count > MaxDataPoints)
 				Data.RemoveAt(0);
 
-			points = new Vector2[Data.Count];
+			points = new Vector[Data.Count];
 			intervals = (double)Area.Width / (double)MaxDataPoints;
 
 			min = (ZeroIsMinimum ? 0 : double.MaxValue);
@@ -119,7 +118,7 @@ namespace Rhovlyn.Engine.Util
 			}
 
 			for (int i = Data.Count - 1; i >= 0; i--)
-				points[i] = new Vector2((float)(Position.X + i * intervals), CalculateY(Data[i]));
+				points[i] = new Vector((float)(Position.X + i * intervals), CalculateY(Data[i]));
 
 		}
 

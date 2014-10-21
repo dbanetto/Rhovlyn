@@ -1,23 +1,22 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Rhovlyn.Engine.Graphics;
-using Microsoft.Xna.Framework;
 using System.Reflection;
 using Rhovlyn.Engine.IO.JSON;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Engine.Managers
 {
 	public class TextureManager
 	{
 		//private static GraphicsDevice graphics;
-		private Dictionary< string , SpriteMap > textures;
+		private Dictionary< string , SpriteMap> textures;
 
-		public TextureManager(GraphicsDevice graphics)
+		public TextureManager(Renderer renderer)
 		{
 			//TextureManager.graphics = graphics;
 			textures = new Dictionary<string, SpriteMap>();
@@ -37,16 +36,14 @@ namespace Rhovlyn.Engine.Managers
 							frames.Add(JParser.Parse<Rectangle>(item));
 						}
 
-						texture = new SpriteMap(Texture2D.FromStream(graphics 
-							, Rhovlyn.Engine.IO.Path.ResolvePath(path))
+						texture = new SpriteMap(new Texture(renderer, new Surface(path, SurfaceType.PNG))
 							, name
 							, frames);
 					} else if (texmap[0] is JValue) {
 						int width = (int)(texmap[0]);
 						int height = (int)(texmap[1]);
 
-						texture = new SpriteMap(Texture2D.FromStream(graphics 
-							, Rhovlyn.Engine.IO.Path.ResolvePath(path))
+						texture = new SpriteMap(new Texture(renderer, new Surface(path, SurfaceType.PNG))
 							, name
 							, width, height);
 					}
@@ -95,11 +92,11 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Add(SpriteMap spritemap)
 		{
-			if (String.IsNullOrEmpty(spritemap.Texture.Name))
+			if (String.IsNullOrEmpty(spritemap.Name))
 				throw new Exception("Cannot add a Texture with a empty name");
 
-			if (!Exists(spritemap.Texture.Name)) {
-				textures.Add(spritemap.Texture.Name, spritemap);
+			if (!Exists(spritemap.Name)) {
+				textures.Add(spritemap.Name, spritemap);
 				return true;
 			}
 			return false;

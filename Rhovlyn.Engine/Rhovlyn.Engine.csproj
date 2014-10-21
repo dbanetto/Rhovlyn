@@ -11,6 +11,7 @@
     <MonoGamePlatform>Linux</MonoGamePlatform>
     <AssemblyName>Rhovlyn.Engine</AssemblyName>
     <newfilesearch>OnLoad</newfilesearch>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,9 +37,6 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral">
-      <Package>monogame</Package>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,36 +96,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.SDL2.csproj">
-      <Project>{35253CE1-C864-4CD3-8249-4D1319748E8F}</Project>
-      <Name>MonoGame.Framework.SDL2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\MonoGame.Framework\MonoGame.Framework.Net.SDL2.csproj">
-      <Project>{77532C55-23B5-4270-9CE3-1C3D71CD165D}</Project>
-      <Name>MonoGame.Framework.Net.SDL2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\ThirdParty\Lidgren.Network\Lidgren.Network.SDL2.csproj">
-      <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
-      <Name>Lidgren.Network.SDL2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\ThirdParty\SDL2#\SDL2-CS.csproj">
-      <Project>{85480198-8711-4355-830E-72FD794AD3F6}</Project>
-      <Name>SDL2-CS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\MonoGame.SDL2\ThirdParty\TheoraPlay#\TheoraPlay-CS.csproj">
-      <Project>{47CF0C2E-3710-4188-BB11-30D248B2B5FB}</Project>
-      <Name>TheoraPlay-CS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\XNA-Primitives\Primitives2D.csproj">
-      <Project>{39AD1482-1881-4852-A05D-DC61B0D3446A}</Project>
-      <Name>Primitives2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.Net40.csproj">
-      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
-      <Name>Newtonsoft.Json.Net40</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="IO\JSON\SpriteMap.schema">
       <LogicalName>SpriteMap.schema</LogicalName>
       <DeployService-Deploy>True</DeployService-Deploy>
@@ -150,4 +118,34 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\lib\SDL2-CS\SDL2-CS.csproj">
+      <Project>{85480198-8711-4355-830E-72FD794AD3F6}</Project>
+      <Name>SDL2-CS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.csproj">
+      <Project>{EEEA67F9-9089-481D-A4DC-0966DEC9FD7D}</Project>
+      <Name>Newtonsoft.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\SharpDL\SharpDL.Input\SharpDL.Input.Mono.csproj">
+      <Project>{91EBB67F-91DC-4721-A62E-02B39F821062}</Project>
+      <Name>SharpDL.Input.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\SharpDL\SharpDL.Events\SharpDL.Events.Mono.csproj">
+      <Project>{CBAC74B4-D9CD-4E22-AFC8-C9553423A6C5}</Project>
+      <Name>SharpDL.Events.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\SharpDL\SharpDL.Graphics\SharpDL.Graphics.Mono.csproj">
+      <Project>{DA5E47BC-F509-40F5-9FC7-9C94D1D70809}</Project>
+      <Name>SharpDL.Graphics.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\SharpDL\SharpDL\SharpDL.Mono.csproj">
+      <Project>{65A37BD8-0987-4E05-A48A-CF59E4DE3F41}</Project>
+      <Name>SharpDL.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\SharpDL\SharpDL.Shared\SharpDL.Shared.csproj">
+      <Project>{02E40AF5-4608-4A26-9B4A-27EECE8AEA61}</Project>
+      <Name>SharpDL.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

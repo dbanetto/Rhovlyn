@@ -1,45 +1,33 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+using SharpDL;
 using System.Collections.Generic;
 using System.IO;
+using SDL2;
+using System;
 
 namespace Rhovlyn.Engine.Managers
 {
 	public class AudioManager
 	{
-		private Dictionary< string , SoundEffect > sounds;
-		private List<SoundEffectInstance> instances;
-		private AudioListener listener;
+		/*
+		private Dictionary< string , IntPtr > sounds;
+		//FIXME for audio
 
 		public Graphics.IDrawable ListenerObject { get; set; }
 
 		public AudioManager()
 		{
-			sounds = new Dictionary<string, SoundEffect>();
-			instances = new List<SoundEffectInstance>();
-			listener = new AudioListener();
-			listener.Velocity = Vector3.One;
+			sounds = new Dictionary<string, IntPtr>();
 		}
 
 		public void Update()
 		{
-			if (ListenerObject != null)
-				listener.Position = new Vector3(ListenerObject.Position, 0);
-
-			//Remove the dead instances
-			for (int i = 0; i < instances.Count; i++) {
-				if (instances[i].IsDisposed || instances[i].State == SoundState.Stopped)
-					instances.RemoveAt(i--);
-			}
+			//FIXME
 		}
 
 		public bool Play(string name, bool loop = false)
 		{
-			if (this.Exists(name)) {
-				var inst = this.sounds[name].CreateInstance();
-				instances.Add(inst);
-				inst.Play();
+			if (Exists(name)) {
+
 
 				return true;
 			}
@@ -47,6 +35,7 @@ namespace Rhovlyn.Engine.Managers
 		}
 
 		#region Management
+
 
 		public SoundEffect Get(string name)
 		{
@@ -78,7 +67,9 @@ namespace Rhovlyn.Engine.Managers
 			return sounds.ContainsKey(name);
 		}
 
+
 		#endregion
+		*/
 
 	}
 }

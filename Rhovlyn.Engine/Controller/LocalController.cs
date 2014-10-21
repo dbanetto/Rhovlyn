@@ -1,10 +1,11 @@
 using System;
 using Rhovlyn.Engine.Graphics;
 using Rhovlyn.Engine.Managers;
-using Microsoft.Xna.Framework;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.Util;
 using System.Collections.Generic;
+using SharpDL;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Engine.Controller
 {
@@ -40,14 +41,14 @@ namespace Rhovlyn.Engine.Controller
 		{
 			var searchArea = Target.Area;
 			var target = Target.Area;
-			searchArea.Inflate(target.Width, target.Height);
+			//searchArea.Inflate(target.Width, target.Height);
 			var goods = new List<Rectangle>();
 			foreach (var p in content.CurrnetMap.TilesInArea(searchArea)) {
 				goods.Add(p.Area);
 			}
 			RectangleUtil.PushBack(ref target, goods.ToArray());
-			var newpos = new Vector2(target.X, target.Y);
-			if (newpos != new Vector2((int)Target.Position.X, (int)Target.Position.Y)) {
+			var newpos = new Vector(target.X, target.Y);
+			if (newpos != new Vector((int)Target.Position.X, (int)Target.Position.Y)) {
 				Target.Position = newpos;
 			}
 

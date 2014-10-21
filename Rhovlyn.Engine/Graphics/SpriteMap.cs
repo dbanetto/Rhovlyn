@@ -1,7 +1,5 @@
-using System;
-using Microsoft.Xna.Framework.Graphics;
+using SharpDL.Graphics;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 
 namespace Rhovlyn.Engine.Graphics
 {
@@ -57,35 +55,35 @@ namespace Rhovlyn.Engine.Graphics
 
 	public class SpriteMap
 	{
-		public Texture2D Texture { get; private set; }
+		public Texture Texture { get; private set; }
 
 		public List<Rectangle> Frames { get; private set; }
 
-		public string TextureName { get { return Texture.Name; } private set { Texture.Name = value; } }
+		public string Name { get; private set; }
 
 		public Dictionary <string , Animation> Animations { get; private set; }
 
-		public SpriteMap(Texture2D texture, string name)
+		public SpriteMap(Texture texture, string name)
 		{
 			Texture = texture;
-			TextureName = name;
+			Name = name;
 			Frames = new List<Rectangle>();
 			Frames.Add(new Rectangle(0, 0, Texture.Width, Texture.Height));
 			Animations = new Dictionary<string , Animation>();
 		}
 
-		public SpriteMap(Texture2D texture, string name, List<Rectangle> frames)
+		public SpriteMap(Texture texture, string name, List<Rectangle> frames)
 		{
 			Texture = texture;
-			TextureName = name;
+			Name = name;
 			Frames = frames;
 			Animations = new Dictionary<string , Animation>();
 		}
 
-		public SpriteMap(Texture2D texture, string name, int rows, int coloumns)
+		public SpriteMap(Texture texture, string name, int rows, int coloumns)
 		{
 			Texture = texture;
-			TextureName = name;
+			Name = name;
 			Animations = new Dictionary<string , Animation>();
 			int w = Texture.Width / rows;
 			int h = Texture.Height / coloumns;

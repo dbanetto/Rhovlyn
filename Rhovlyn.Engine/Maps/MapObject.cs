@@ -1,13 +1,12 @@
-using System;
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Graphics;
-using Microsoft.Xna.Framework;
+using SharpDL.Graphics;
+
 
 namespace Rhovlyn.Engine.Maps
 {
 	public class MapObject : Sprite
 	{
-		public MapObject(Vector2 positon, SpriteMap spritemap)
+		public MapObject(Vector positon, SpriteMap spritemap)
 			: base(positon, spritemap)
 		{
 

@@ -1,7 +1,5 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Graphics;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -30,7 +28,7 @@ namespace Rhovlyn.Engine.Util
 		/// <remarks>Does not handle rotated textures</remarks>
 		public static bool IsTextureOverlap(Sprite a, Sprite b)
 		{
-			var intercept = Rectangle.Intersect(a.Area, b.Area);
+			/*var intercept = Rectangle.Intersect(a.Area, b.Area);
 			//If the intercept contains an area, there is no chance for the textures to NOT collide
 			if (intercept.Contains(a.Area) || intercept.Contains(b.Area))
 				return true;
@@ -46,7 +44,7 @@ namespace Rhovlyn.Engine.Util
 			for (int i = 0; i < A_data.Length; i++) {
 				if (A_data[i].A != 0 && B_data[i].A != 0)
 					return true;
-			}
+			}*/
 			return false;
 		}
 

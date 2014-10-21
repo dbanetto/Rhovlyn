@@ -1,13 +1,13 @@
 #region Using Statements
 using System;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.States;
 using Rhovlyn.Engine.Managers;
 using System.IO;
 using System.Globalization;
-using Microsoft.Xna.Framework;
+using SharpDL;
+using SharpDL.Graphics;
+using SDL2;
 
 #endregion
 namespace Rhovlyn.Engine
@@ -17,8 +17,6 @@ namespace Rhovlyn.Engine
 	/// </summary>
 	public class GameWindow : Game
 	{
-		GraphicsDeviceManager graphics;
-		SpriteBatch spriteBatch;
 		ContentManager content;
 		Graph drawTime;
 		Graph updateTime;
@@ -35,9 +33,6 @@ namespace Rhovlyn.Engine
 
 		public GameWindow()
 		{
-			graphics = new GraphicsDeviceManager(this);
-			Content.RootDirectory = "Content";
-
 			content = new ContentManager("Content/settings.ini");
 
 			ApplySettings();
@@ -51,13 +46,15 @@ namespace Rhovlyn.Engine
 		/// </summary>
 		protected override void Initialize()
 		{
+			base.Initialize();
+
+			this.CreateWindow("Rholyvn", 0, 0, 800, 600, WindowFlags.OpenGL);
+			CreateRenderer(RendererFlags.RendererAccelerated);
 			AddParsers();
 
-			IsMouseVisible = true;
-
-			drawTime = new Graph(new Vector2(10, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
-			updateTime = new Graph(new Vector2(220, 10), 200, 50, true, 100, MaxType.Auto, Color.LightGray);
-
+			drawTime = new Graph(new Vector(10, 10), 200, 50, true, 100, MaxType.Auto, new Color(80, 80, 80));
+			updateTime = new Graph(new Vector(220, 10), 200, 50, true, 100, MaxType.Auto, new Color(80, 80, 80));
+			/*
 			//Danger Lines
 			drawTime.Lines.Add(new Line(64, Color.Red));
 			drawTime.Lines.Add(new Line(32, Color.Orange));
@@ -74,17 +71,14 @@ namespace Rhovlyn.Engine
 			updateTime.Lines.Add(new Line(1, Color.DarkViolet));
 			updateTime.Lines.Add(new Line(0.5, Color.Purple));
 			updateTime.Lines.Add(new Line(0.01, Color.White));
-
-			content.Camera = new Camera(Vector2.Zero, Window.ClientBounds);
-			content.Init(graphics.GraphicsDevice);
-
-			graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+*/
+			content.Camera = new Camera(Vector.Zero, new Rectangle(0, 0, Window.Width, Window.Height));
+			content.Init(Renderer);
 
 			//Keep the camera up to date with the Client Size
-			Window.ClientSizeChanged += (sender, e) => {
-				content.Camera.UpdateBounds(Window.ClientBounds);
-			};
-			base.Initialize();
+			//Window.ClientSizeChanged += (sender, e) => {
+			//	content.Camera.UpdateBounds(new Rectangle(0, 0, Window.Width, Window.Height));
+			//};
 		}
 
 		/// <summary>
@@ -93,8 +87,6 @@ namespace Rhovlyn.Engine
 		/// </summary>
 		protected override void LoadContent()
 		{
-			spriteBatch = new SpriteBatch(GraphicsDevice);
-
 			content.GameStates.Add("world", new WorldState());
 
 			ApplyGraphicsSettings();
@@ -108,11 +100,11 @@ namespace Rhovlyn.Engine
 		protected override void Update(GameTime gameTime)
 		{
 			var then = DateTime.Now;
-			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
-				Exit();
-			}
+			//if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+			//	Exit();
+			//}
 			content.CurrentState.Update(gameTime);
-			content.Audio.Update();
+			//content.Audio.Update();
 
 			Window.Title = "FPS:" + (int)FPS + " " + content.Camera.Bounds;
 
@@ -154,10 +146,10 @@ namespace Rhovlyn.Engine
 		{
 			var then = DateTime.Now;
 
-			Render(gameTime, spriteBatch, content.Camera);
+			Render(gameTime, Renderer, content.Camera);
 
 			if (content.Input["core.screenshot"]) {
-				var backup = GraphicsDevice.GetRenderTargets();
+				/*var backup = GraphicsDevice.GetRenderTargets();
 				var target = new RenderTarget2D(GraphicsDevice, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
 				GraphicsDevice.SetRenderTarget(target);
 
@@ -167,7 +159,8 @@ namespace Rhovlyn.Engine
 					target.SaveAsPng(file, content.Camera.Bounds.Width, content.Camera.Bounds.Height);
 				}
 				target.Dispose();
-				GraphicsDevice.SetRenderTargets(backup);
+				GraphicsDevice.SetRenderTargets(backup);*/
+
 			}
 
 			framesPast++;
@@ -181,21 +174,21 @@ namespace Rhovlyn.Engine
 			base.Draw(gameTime);
 		}
 
-		public void Render(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
+		public void Render(GameTime gameTime, Renderer renderer, Camera camera)
 		{
-			if (content.CurrnetMap != null)
-				graphics.GraphicsDevice.Clear(content.CurrnetMap.Background);
-			else
-				graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-			spriteBatch.Begin();
-
-			content.CurrentState.Draw(gameTime, spriteBatch, camera);
-			if (RenderGraphs) {
-				drawTime.Draw(gameTime, spriteBatch, camera);
-				updateTime.Draw(gameTime, spriteBatch, camera);
+			if (content.CurrnetMap != null) {
+				Renderer.SetDrawColor(content.CurrnetMap.Background);
+			} else {
+				Renderer.SetDrawColor(128, 255, 126, 255);
 			}
-			spriteBatch.End();
+			Renderer.ClearScreen();
+
+			content.CurrentState.Draw(gameTime, renderer, camera);
+			if (RenderGraphs) {
+				drawTime.Draw(gameTime, renderer, camera);
+				updateTime.Draw(gameTime, renderer, camera);
+			}
+			Renderer.RenderPresent();
 		}
 
 		public void ApplySettings()
@@ -226,11 +219,11 @@ namespace Rhovlyn.Engine
 		{
 			bool resizable = false;
 			content.Settings.Get<bool>("window", "resizable", ref resizable);
-			Window.AllowUserResizing = resizable;
+			//Window.AllowUserResizing = resizable;
 
 			bool fullscreen = false;
 			content.Settings.Get<bool>("window", "fullscreen", ref fullscreen);
-			graphics.IsFullScreen = fullscreen;
+			//graphics.IsFullScreen = fullscreen;
 
 			// FIXME : IsBorderlessEXT is not a member of Window
 //			bool borderless = false;
@@ -239,15 +232,15 @@ namespace Rhovlyn.Engine
 
 			bool vsync = true;
 			content.Settings.Get<bool>("window", "vsync", ref vsync);
-			graphics.SynchronizeWithVerticalRetrace = vsync;
-			IsFixedTimeStep = vsync;
+			//graphics.SynchronizeWithVerticalRetrace = vsync;
+			//IsFixedTimeStep = vsync;
 
 			int width = 800;
 			if (!content.Settings.Get<int>("window", "width", ref width)) {
 				var str = "";
 				content.Settings.Get<String>("window", "width", ref str);
 				if (str == "auto") {
-					width = GraphicsDevice.DisplayMode.Width;
+					//width = GraphicsDevice.DisplayMode.Width;
 				}
 			}
 
@@ -256,30 +249,30 @@ namespace Rhovlyn.Engine
 				var str = "";
 				content.Settings.Get<String>("window", "height", ref str);
 				if (str == "auto") {
-					height = GraphicsDevice.DisplayMode.Height;
+					//height = GraphicsDevice.DisplayMode.Height;
 				}
 			}
 
-			graphics.PreferredBackBufferWidth = width;
-			graphics.PreferredBackBufferHeight = height;
-			graphics.ApplyChanges();
-			content.Camera.UpdateBounds(new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
+			//graphics.PreferredBackBufferWidth = width;
+			//graphics.PreferredBackBufferHeight = height;
+			//graphics.ApplyChanges();
+			//content.Camera.UpdateBounds(new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
 		}
 
 		private static void AddParsers()
 		{
-			Parser.Add<Color>(o => {
+			/*Parser.Add<Color>(o => {
 				if (o.StartsWith("0x") && (o.Length == 8 || o.Length == 5)) {
 					o = o.Substring(2);
 					if (o.Length == 3) {
-						var r = int.Parse(o.Substring(0, 1), NumberStyles.AllowHexSpecifier);
-						var g = int.Parse(o.Substring(1, 1), NumberStyles.AllowHexSpecifier);
-						var b = int.Parse(o.Substring(2, 1), NumberStyles.AllowHexSpecifier);
+						var r = byte.Parse(o.Substring(0, 1), NumberStyles.AllowHexSpecifier);
+						var g = byte.Parse(o.Substring(1, 1), NumberStyles.AllowHexSpecifier);
+						var b = byte.Parse(o.Substring(2, 1), NumberStyles.AllowHexSpecifier);
 						return new Color(r * 16, g * 16, b * 16);
 					} else {
-						var r = int.Parse(o.Substring(0, 2), NumberStyles.HexNumber);
-						var g = int.Parse(o.Substring(2, 2), NumberStyles.AllowHexSpecifier);
-						var b = int.Parse(o.Substring(4, 2), NumberStyles.AllowHexSpecifier);
+						var r = byte.Parse(o.Substring(0, 2), NumberStyles.HexNumber);
+						var g = byte.Parse(o.Substring(2, 2), NumberStyles.AllowHexSpecifier);
+						var b = byte.Parse(o.Substring(4, 2), NumberStyles.AllowHexSpecifier);
 						return new Color(r, g, b);
 					}
 				} else {
@@ -295,7 +288,7 @@ namespace Rhovlyn.Engine
 
 					return new Color(r, g, b);
 				}
-			});
+			});*/
 		}
 	}
 

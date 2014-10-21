@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Microsoft.Xna.Framework;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Test.Engine
 {

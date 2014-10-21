@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -15,8 +15,7 @@ namespace Rhovlyn.Engine.Util
 		{
 			//Find the Total area we are working in
 			var totalArea = sprite;
-			foreach (var r in good)
-			{
+			foreach (var r in good) {
 				totalArea = Rectangle.Union(totalArea, r);
 			}
 
@@ -25,25 +24,20 @@ namespace Rhovlyn.Engine.Util
 
 			int minx = int.MaxValue;
 			int miny = int.MaxValue;
-			foreach (var neg in negitive)
-			{
+			foreach (var neg in negitive) {
 				var inter = Rectangle.Intersect(sprite, neg);
 				if (inter.IsEmpty)
 					continue;
 
-				if (inter.Width < Math.Abs(minx) && inter.Width != sprite.Width && inter.Width != 0)
-				{
+				if (inter.Width < Math.Abs(minx) && inter.Width != sprite.Width && inter.Width != 0) {
 					minx = inter.Width;
-					if (inter.X != sprite.X)
-					{
+					if (inter.X != sprite.X) {
 						minx *= -1;
 					}
 				}
-				if (inter.Height < Math.Abs(miny) && inter.Height != sprite.Height && inter.Height != 0)
-				{
+				if (inter.Height < Math.Abs(miny) && inter.Height != sprite.Height && inter.Height != 0) {
 					miny = inter.Height;
-					if (inter.Y != sprite.Y)
-					{
+					if (inter.Y != sprite.Y) {
 						miny *= -1;
 					}
 				}
@@ -52,20 +46,15 @@ namespace Rhovlyn.Engine.Util
 				return;
 
 			//Apply the smallest
-			if (Math.Abs(minx) < Math.Abs(miny))
-			{
+			if (Math.Abs(minx) < Math.Abs(miny)) {
 				sprite.X += minx;
 				//If that is not enough apply the next smallest
-				if (!CoversRect(sprite, good))
-				{
+				if (!CoversRect(sprite, good)) {
 					sprite.Y += miny;
 				}
-			}
-			else
-			{
+			} else {
 				sprite.Y += miny;
-				if (!CoversRect(sprite, good))
-				{
+				if (!CoversRect(sprite, good)) {
 					sprite.X += minx;
 				}
 			}
@@ -113,11 +102,9 @@ namespace Rhovlyn.Engine.Util
 		{
 			Queue<Rectangle> areaQueue = new Queue<Rectangle>();
 			areaQueue.Enqueue(baseArea);
-			foreach (var rm in toRemove)
-			{
+			foreach (var rm in toRemove) {
 				Queue<Rectangle> tmpQ = new Queue<Rectangle>();
-				while (areaQueue.Count != 0)
-				{
+				while (areaQueue.Count != 0) {
 					var rect = areaQueue.Dequeue();
 					foreach (var r in SubtractArea(rect, rm))
 						tmpQ.Enqueue(r);

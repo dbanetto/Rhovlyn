@@ -1,11 +1,10 @@
 using System;
 using Rhovlyn.Engine.IO;
 using Rhovlyn.Engine.Managers;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Util;
-using System.Threading;
 using System.IO;
+using SharpDL.Graphics;
+using SharpDL;
 
 namespace Rhovlyn.Engine.Maps
 {
@@ -16,7 +15,7 @@ namespace Rhovlyn.Engine.Maps
 			this.Area = area;
 		}
 
-		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
+		public void Draw(GameTime gameTime, Renderer renderer, Camera camera)
 		{
 			throw new NotImplementedException();
 		}
@@ -31,7 +30,7 @@ namespace Rhovlyn.Engine.Maps
 			return string.Format(String.Format("{0},{1},{2},{3}", this.Area.X, this.Area.Y, this.Area.Width, this.Area.Height));
 		}
 
-		public Vector2 Position { get; set; }
+		public Vector Position { get; set; }
 
 		public Rectangle Area { get; set; }
 
@@ -56,8 +55,7 @@ namespace Rhovlyn.Engine.Maps
 
 		private void ParseBlocks()
 		{
-			foreach (var str in this.mapfile.BlockNames)
-			{
+			foreach (var str in this.mapfile.BlockNames) {
 				var parts = str.Split(',');
 				if (parts.Length != 4)
 					continue;
@@ -83,10 +81,8 @@ namespace Rhovlyn.Engine.Maps
 
 		public override void Update(GameTime gameTime)
 		{
-			foreach (var block in sections.Get(lastCamera))
-			{
-				if (!block.Loaded)
-				{
+			foreach (var block in sections.Get(lastCamera)) {
+				if (!block.Loaded) {
 					LoadBlock(block.ToString());
 					block.Loaded = true;
 				}

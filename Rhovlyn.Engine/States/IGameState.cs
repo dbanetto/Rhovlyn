@@ -1,8 +1,7 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Managers;
+using SharpDL.Graphics;
+using SharpDL;
 
 namespace Rhovlyn.Engine.States
 {
@@ -35,8 +34,9 @@ namespace Rhovlyn.Engine.States
 		void UnLoadContent(ContentManager content);
 
 
-		void Draw (GameTime gameTime , SpriteBatch spriteBatch , Camera camera);
-		void Update (GameTime gameTime);
+		void Draw(GameTime gameTime, Renderer renderer, Camera camera);
+
+		void Update(GameTime gameTime);
 
 	}
 }

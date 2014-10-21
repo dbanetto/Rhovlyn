@@ -1,21 +1,22 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
 using Rhovlyn.Engine.Util;
+using SharpDL.Input;
+using SDL2;
 
 namespace Rhovlyn.Engine.Input
 {
 	public struct KeyCondition
 	{
-		public KeyCondition(List<Keys> keys = null)
+		public KeyCondition(List<PhysicalKeyCode> keys = null)
 		{
-			this.keys = keys ?? new List<Keys>();
+			this.keys = keys ?? new List<PhysicalKeyCode>();
 		}
 
-		List<Keys> keys;
+		List<PhysicalKeyCode> keys;
 
-		public List<Keys> Keys { get { return keys; } set { keys = value; } }
+		public List<PhysicalKeyCode> Keys { get { return keys; } set { keys = value; } }
 	}
 
 	public class KeyBoardProvider : IInputProvider
@@ -57,9 +58,9 @@ namespace Rhovlyn.Engine.Input
 		public bool GetState(string name)
 		{
 			if (Exists(name)) {
-				var state = Keyboard.GetState();
+				var state = Keyboard.getState(); //FIXME
 				foreach (var k in keys[name].Keys) {
-					if (!state.IsKeyDown(k))
+					if (state[(int)k] == 0)
 						return false;
 				}
 				return true;
@@ -127,7 +128,7 @@ namespace Rhovlyn.Engine.Input
 		public static object ParseKeyBinding(string keystring)
 		{
 			var key = new KeyCondition();
-			key.Keys = new List<Keys>();
+			key.Keys = new List<PhysicalKeyCode>();
 			var segs = keystring.Split('+');
 
 			foreach (var seg in segs) {
@@ -137,7 +138,7 @@ namespace Rhovlyn.Engine.Input
 					var bytes = System.Text.Encoding.UTF8.GetBytes(seg.ToUpper());
 					if (bytes.Length == 1) {
 						if (bytes[0] >= 65 && bytes[0] <= 90) {
-							key.Keys.Add((Keys)bytes[0]);
+							key.Keys.Add((PhysicalKeyCode)bytes[0]);
 							continue;
 						}
 					}
@@ -145,7 +146,7 @@ namespace Rhovlyn.Engine.Input
 				//Read in as Scancodes
 				int code;
 				if (int.TryParse(seg, out code)) {
-					key.Keys.Add((Keys)code);
+					key.Keys.Add((PhysicalKeyCode)code);
 				} else {
 					return null;
 				}

@@ -1,26 +1,25 @@
-using System;
-using Microsoft.Xna.Framework;
 using Rhovlyn.Engine.Managers;
 using Rhovlyn.Engine.Util;
-using Rhovlyn.Engine.Graphics;
 using System.Collections.Generic;
+using SharpDL.Graphics;
+using SharpDL;
 
 namespace Rhovlyn.Engine.Controller
 {
 	public struct CameraCommand
 	{
-		public CameraCommand(double MovementTimerTotal, Vector2 Target, bool TargetStartDiffer, Vector2 TargetStart)
+		public CameraCommand(double movementTimerTotal, Vector target, bool targetStartDiffer, Vector targetStart)
 		{
-			this.movementTimer = MovementTimerTotal;
-			this.movementTimerTotal = MovementTimerTotal;
-			this.target = Target;
-			this.targetStart = TargetStart;
-			this.spriteTarget = null;
-			this.targetStartDiffer = TargetStartDiffer;
+			movementTimer = movementTimerTotal;
+			this.movementTimerTotal = movementTimerTotal;
+			this.target = target;
+			this.targetStart = targetStart;
+			spriteTarget = null;
+			this.targetStartDiffer = targetStartDiffer;
 		}
 
-		public Vector2 target;
-		public Vector2 targetStart;
+		public Vector target;
+		public Vector targetStart;
 		public double movementTimer;
 		public double movementTimerTotal;
 		public bool targetStartDiffer;
@@ -66,20 +65,17 @@ namespace Rhovlyn.Engine.Controller
 		public void Update(GameTime gameTime)
 		{
 			//An infinite timed command is used until another command is issued
-			if (current.movementTimerTotal == INF_TIME)
-			{
+			if (System.Math.Abs(current.movementTimerTotal - INF_TIME) < 0.01f) {
 				this.Camera.Position = current.target;
 			}
 
 			//If the target is a sprite, update the target position
-			if (current.spriteTarget != null)
-			{
+			if (current.spriteTarget != null) {
 				current.target.X = (current.spriteTarget.Position.X - Camera.Bounds.Width / 2 + current.spriteTarget.Area.Width / 2);
 				current.target.Y = (current.spriteTarget.Position.Y - Camera.Bounds.Height / 2 + current.spriteTarget.Area.Height / 2);
 			}
 
-			if (commands.Count > 0 && current.movementTimer <= 0)
-			{
+			if (commands.Count > 0 && current.movementTimer <= 0) {
 				//Pop the next command in line
 				InMotion = false;
 				current = commands[0];
@@ -90,19 +86,15 @@ namespace Rhovlyn.Engine.Controller
 				this.Camera.Position = current.targetStart;
 			}
 
-			if (current.movementTimer > 0)
-			{
+			if (current.movementTimer > 0) {
 				current.movementTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
-				if (current.movementTimer < 0)
-				{
+				if (current.movementTimer < 0) {
 					//Corrects for any calculation error that occurred during the movement
 					Camera.Position = current.target;
-				}
-				else
-				{
+				} else {
 					//Get the Percentage of how far the movement should be through
-					Camera.Position = new Vector2((float)((current.target.X - current.targetStart.X) * (current.movementTimerTotal - current.movementTimer) / current.movementTimerTotal + current.targetStart.X),
+					Camera.Position = new Vector((float)((current.target.X - current.targetStart.X) * (current.movementTimerTotal - current.movementTimer) / current.movementTimerTotal + current.targetStart.X),
 						(float)((current.target.Y - current.targetStart.Y) * (current.movementTimerTotal - current.movementTimer) / current.movementTimerTotal + current.targetStart.Y));
 					InMotion = true;
 				}
@@ -123,8 +115,7 @@ namespace Rhovlyn.Engine.Controller
 			this.current.movementTimer = -1;
 
 			//Swap out the current to the next command
-			if (commands.Count > 0)
-			{
+			if (commands.Count > 0) {
 				//Pop the next command in line
 				InMotion = false;
 				current = commands[0];
@@ -143,7 +134,7 @@ namespace Rhovlyn.Engine.Controller
 		public void FocusOn(Graphics.IDrawable target)
 		{
 
-			Vector2 targetpos = new Vector2();
+			Vector targetpos = new Vector();
 			targetpos.X = (target.Position.X - Camera.Bounds.Width / 2 + target.Area.Width / 2);
 			targetpos.Y = (target.Position.Y - Camera.Bounds.Height / 2 + target.Area.Height / 2);
 			var cmd = new CameraCommand(INF_TIME, targetpos, true, targetpos);
@@ -155,10 +146,10 @@ namespace Rhovlyn.Engine.Controller
 		/// <summary>
 		/// Centers Camera on Point
 		/// </summary>
-		/// <param name="point"><see cref="Vector2"/> to be focused on</param>
-		public void Goto(Vector2 point)
+		/// <param name="point"><see cref="Vector"/> to be focused on</param>
+		public void Goto(Vector point)
 		{
-			Vector2 target = new Vector2();
+			Vector target = new Vector();
 			target.X = (point.X - Camera.Bounds.Width / 2);
 			target.Y = (point.Y - Camera.Bounds.Height / 2);
 			this.commands.Add(new CameraCommand(INF_TIME, target, true, target));
@@ -171,10 +162,10 @@ namespace Rhovlyn.Engine.Controller
 		/// <param name="time">Time in seconds</param>
 		public void MoveTo(Graphics.IDrawable target, double time)
 		{
-			Vector2 targetpos = new Vector2();
+			Vector targetpos = new Vector();
 			targetpos.X = (target.Position.X - Camera.Bounds.Width / 2 + target.Area.Width / 2);
 			targetpos.Y = (target.Position.Y - Camera.Bounds.Height / 2 + target.Area.Height / 2);
-			var cmd = new CameraCommand(time, targetpos, false, Vector2.Zero);
+			var cmd = new CameraCommand(time, targetpos, false, Vector.Zero);
 			//Thanks to the wonders of references this keeps the target up to date
 			cmd.spriteTarget = target;
 			this.commands.Add(cmd);
@@ -183,11 +174,11 @@ namespace Rhovlyn.Engine.Controller
 		/// <summary>
 		/// Moves the Camera in a straight line to a point over a number of seconds
 		/// </summary>
-		/// <param name="point"><see cref="Vector2"/>Vector in terms of the origin</param>
+		/// <param name="point"><see cref="Vector"/>Vector in terms of the origin</param>
 		/// <param name="time">Time in seconds</param>
-		public void MoveTo(Vector2 point, double time)
+		public void MoveTo(Vector point, double time)
 		{
-			commands.Add(new CameraCommand(time, point, false, Vector2.Zero));
+			commands.Add(new CameraCommand(time, point, false, Vector.Zero));
 		}
 	}
 }

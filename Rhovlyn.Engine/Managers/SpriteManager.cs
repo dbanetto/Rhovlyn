@@ -1,11 +1,11 @@
-using Microsoft.Xna.Framework.Graphics;
 using Rhovlyn.Engine.Graphics;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Managers;
 using System.IO;
 using System;
+using SharpDL.Graphics;
+using SharpDL;
 
 namespace Rhovlyn.Engine.Managers
 {
@@ -21,10 +21,10 @@ namespace Rhovlyn.Engine.Managers
 			Textures = textures;
 		}
 
-		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Camera camera)
+		public void Draw(GameTime gameTime, Renderer renderer, Camera camera)
 		{
 			foreach (Sprite sp in sprites.Values)
-				sp.Draw(gameTime, spriteBatch, camera);
+				sp.Draw(gameTime, renderer, camera);
 		}
 
 		public void Update(GameTime gameTime)
@@ -37,12 +37,9 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Load(Stream stream, TextureManager textures)
 		{
-			using (var reader = new StreamReader(stream))
-			{
-				try
-				{
-					while (!reader.EndOfStream)
-					{
+			using (var reader = new StreamReader(stream)) {
+				try {
+					while (!reader.EndOfStream) {
 						var line = reader.ReadLine();
 						if (line.IndexOf("#") != -1)
 							line = line.Substring(0, line.IndexOf("#"));
@@ -51,32 +48,25 @@ namespace Rhovlyn.Engine.Managers
 							continue;
 
 						//Loads Texture File
-						if (line.StartsWith("@"))
-						{
+						if (line.StartsWith("@")) {
 							line = line.Substring(1);
 							//Load a Texture list
-							if (line.StartsWith("include:"))
-							{
+							if (line.StartsWith("include:")) {
 								var obj = line.Substring("include:".Length);
 								Textures.Load(IO.Path.ResolvePath(obj));
 							}
 
 							//Hard check for a texture
-							if (line.StartsWith("require:"))
-							{
+							if (line.StartsWith("require:")) {
 								var obj = line.Substring("require:".Length);
-								foreach (var tex in obj.Split(','))
-								{
-									if (!Textures.Exists(tex))
-									{
+								foreach (var tex in obj.Split(',')) {
+									if (!Textures.Exists(tex)) {
 										//TODO : Make a exception class for this
 										throw new Exception("Failed to meet the require texture " + tex);
 									}
 								}
 							}
-						}
-						else
-						{
+						} else {
 							// Sprite Example
 							// x,y,name,Texture[,TextureIndex]
 							//TODO : Load different Sprite types
@@ -87,25 +77,20 @@ namespace Rhovlyn.Engine.Managers
 							var name = args[2];
 							var tex = args[3];
 
-							if (args.Length > 3)
-							{
-								var obj = new Sprite(new Vector2(x, y), textures[tex]);
+							if (args.Length > 3) {
+								var obj = new Sprite(new Vector(x, y), textures[tex]);
 								int index = int.Parse(args[4]);
 								obj.Frameindex = index;
 
 								sprites.Add(name, obj);
-							}
-							else
-							{
-								sprites.Add(name, new Sprite(new Vector2(x, y), textures[tex]));
+							} else {
+								sprites.Add(name, new Sprite(new Vector(x, y), textures[tex]));
 							} 
 
 						}
 
 					}
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					Console.WriteLine(ex);
 					return false;
 				}
@@ -120,8 +105,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public Sprite Get(string name)
 		{
-			if (Exists(name))
-			{
+			if (Exists(name)) {
 				return sprites[name];
 			}
 			return null;
@@ -129,16 +113,14 @@ namespace Rhovlyn.Engine.Managers
 
 		public bool Add(string name, Sprite sprite)
 		{
-			if (!Exists(name))
-			{
+			if (!Exists(name)) {
 				sprites.Add(name, sprite);
 				return true;
 			}
 			return false;
 		}
 
-		public Sprite this [string name]
-		{
+		public Sprite this [string name] {
 			get { return Get(name); }
 		}
 

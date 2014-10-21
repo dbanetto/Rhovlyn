@@ -3,9 +3,9 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Schema;
 using System.Reflection;
-using Microsoft.Xna.Framework;
 using System.IO;
 using Newtonsoft.Json;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Engine.IO.JSON
 {

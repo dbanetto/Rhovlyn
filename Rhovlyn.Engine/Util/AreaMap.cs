@@ -1,9 +1,7 @@
 using System;
-using Rhovlyn.Engine.Graphics;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using C3.XNA;
+using SharpDL.Graphics;
+using SDL2;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -14,13 +12,17 @@ namespace Rhovlyn.Engine.Util
 		//Maximum Depth
 		public const int DepthLimit = 16;
 		//Minimum area of a Child
-		public static readonly Rectangle MinimumArea = new Rectangle(0,0,64,64);
+		public static readonly Rectangle MinimumArea = new Rectangle(0, 0, 64, 64);
 
-		public List<T> Nodes { get; private set;}
-		public AreaMap<T>[] Children { get; private set;}
+		public List<T> Nodes { get; private set; }
+
+		public AreaMap<T>[] Children { get; private set; }
+
 		public Rectangle Area { get; private set; }
-		public bool HasChildren {get; private set;}
-		public int Depth { get; private set;}
+
+		public bool HasChildren { get; private set; }
+
+		public int Depth { get; private set; }
 
 
 		//Root Node declearation
@@ -31,15 +33,15 @@ namespace Rhovlyn.Engine.Util
 			Area = Rectangle.Empty;
 			Depth = 0;
 
-			Children[0] = new AreaMap<T>(new Rectangle( int.MinValue, int.MinValue, int.MaxValue, int.MaxValue ), Depth + 1);
-			Children[1] = new AreaMap<T>(new Rectangle( int.MinValue,			0 , int.MaxValue, int.MaxValue ), Depth + 1);
-			Children[2] = new AreaMap<T>(new Rectangle( int.MinValue,			0 , int.MaxValue, int.MaxValue ), Depth + 1);
-			Children[3] = new AreaMap<T>(new Rectangle(	            0,          0 , int.MaxValue, int.MaxValue ), Depth + 1);
+			Children[0] = new AreaMap<T>(new Rectangle(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue), Depth + 1);
+			Children[1] = new AreaMap<T>(new Rectangle(int.MinValue, 0, int.MaxValue, int.MaxValue), Depth + 1);
+			Children[2] = new AreaMap<T>(new Rectangle(int.MinValue, 0, int.MaxValue, int.MaxValue), Depth + 1);
+			Children[3] = new AreaMap<T>(new Rectangle(0, 0, int.MaxValue, int.MaxValue), Depth + 1);
 			HasChildren = true;
 		}
 
 		//Child Node Declearation, can be used a root node
-		public AreaMap(Rectangle area , int depth = 0)
+		public AreaMap(Rectangle area, int depth = 0)
 		{
 			Nodes = new List<T>();
 			Children = new AreaMap<T>[4];
@@ -54,15 +56,12 @@ namespace Rhovlyn.Engine.Util
 			List<T> output = new List<T>();
 			to_check.Add(this);
 
-			while (to_check.Count != 0)
-			{
+			while (to_check.Count != 0) {
 				var check = to_check[0];
 				to_check.RemoveAt(0);
 
-				foreach (var obj in check.Nodes)
-				{
-					if (area.Intersects(obj.Area))
-					{
+				foreach (var obj in check.Nodes) {
+					if (area.Intersects(obj.Area)) {
 						output.Add(obj);
 					}
 				}
@@ -70,10 +69,8 @@ namespace Rhovlyn.Engine.Util
 				if (!check.HasChildren)
 					continue;
 
-				foreach (var child in check.Children)
-				{
-					if (area.Intersects(child.Area))
-					{
+				foreach (var child in check.Children) {
+					if (area.Intersects(child.Area)) {
 						to_check.Add(child);
 					}
 				}
@@ -85,15 +82,12 @@ namespace Rhovlyn.Engine.Util
 
 		public bool Add(T obj)
 		{
-			if (this.Area != Rectangle.Empty && !this.Area.Contains(obj.Area))
-				return false;
+			//if (this.Area != Rectangle.Empty && !this.Area.Contains(obj.Area))
+			//	return false;
 
-			if (HasChildren)
-			{
-				foreach (var child in Children)
-				{
-					if (child.Area.Contains(obj.Area))
-					{
+			if (HasChildren) {
+				foreach (var child in Children) {
+					if (child.Area.Contains(obj.Area)) {
 						if (child.Add(obj))
 							return true;
 					}
@@ -101,8 +95,7 @@ namespace Rhovlyn.Engine.Util
 			}
 
 			this.Nodes.Add(obj);
-			if (!HasChildren && this.Nodes.Count > NodesToSplit)
-			{
+			if (!HasChildren && this.Nodes.Count > NodesToSplit) {
 				this.Split();
 			}
 			return true;
@@ -123,27 +116,23 @@ namespace Rhovlyn.Engine.Util
 			if (!new Rectangle(0, 0, new_width, new_height).Contains(MinimumArea))
 				return;
 
-			Children[0] = new AreaMap<T>(new Rectangle( this.Area.X, this.Area.Y, new_width, new_height ), Depth + 1);
-			Children[1] = new AreaMap<T>(new Rectangle( this.Area.X, this.Area.Y + new_height, new_width, new_height), Depth + 1);
-			Children[2] = new AreaMap<T>(new Rectangle( this.Area.X + new_width, this.Area.Y + new_height, new_width, new_height ), Depth + 1);
-			Children[3] = new AreaMap<T>(new Rectangle( this.Area.X + new_width, this.Area.Y, new_width, new_height), Depth + 1);
+			Children[0] = new AreaMap<T>(new Rectangle(this.Area.X, this.Area.Y, new_width, new_height), Depth + 1);
+			Children[1] = new AreaMap<T>(new Rectangle(this.Area.X, this.Area.Y + new_height, new_width, new_height), Depth + 1);
+			Children[2] = new AreaMap<T>(new Rectangle(this.Area.X + new_width, this.Area.Y + new_height, new_width, new_height), Depth + 1);
+			Children[3] = new AreaMap<T>(new Rectangle(this.Area.X + new_width, this.Area.Y, new_width, new_height), Depth + 1);
 			HasChildren = true;
 
 			var toRemove = new List<T>();
-			foreach (var obj in this.Nodes)
-			{
-				foreach (var child in Children)
-				{
-					if (child.Area.Contains(obj.Area))
-					{
+			foreach (var obj in this.Nodes) {
+				foreach (var child in Children) {
+					if (child.Area.Contains(obj.Area)) {
 						if (child.Add(obj))
 							toRemove.Add(obj);
 					}
 				}
 			}
 
-			foreach (var obj in toRemove)
-			{
+			foreach (var obj in toRemove) {
 				this.Nodes.Remove(obj);
 			}
 		}
@@ -151,10 +140,8 @@ namespace Rhovlyn.Engine.Util
 		public int Count { 
 			get { 
 				int count = this.Nodes.Count;
-				if (HasChildren)
-				{
-					foreach (var child in this.Children)
-					{
+				if (HasChildren) {
+					foreach (var child in this.Children) {
 						count += child.Count;
 					}
 				}
@@ -171,20 +158,17 @@ namespace Rhovlyn.Engine.Util
 		/// <param name="spritebatch">Spritebatch.</param>
 		/// <param name="camera">Camera.</param>
 		/// <param name="DrawChildren">If set to <c>true</c> draw children.</param>
-		public void Draw (SpriteBatch spritebatch , Camera camera , bool DrawChildren = true)
+		public void Draw(Renderer renderer, Camera camera, bool DrawChildren = true)
 		{
-			if (HasChildren && DrawChildren)
-			{
-				foreach (var child in this.Children)
-				{
-					child.Draw(spritebatch, camera);
+			if (HasChildren && DrawChildren) {
+				foreach (var child in this.Children) {
+					child.Draw(renderer, camera);
 				}
 			}
-			if (camera.Bounds.Intersects(this.Area))
-			{
-				Primitives2D.DrawRectangle(spritebatch, 
-					new Rectangle(this.Area.X - (int)camera.Position.X, this.Area.Y - (int)camera.Position.Y, this.Area.Width, this.Area.Height)
-					, Color.Green);
+			if (camera.Bounds.Intersects(this.Area)) {
+				renderer.SetDrawColor(255, 255, 255, 128);
+				var rect = Area.ToSDLRect();
+				SDL.SDL_RenderDrawRect(renderer.Handle, ref rect);
 			}
 		}
 	}

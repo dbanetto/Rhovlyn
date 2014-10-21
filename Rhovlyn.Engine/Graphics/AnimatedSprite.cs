@@ -1,6 +1,5 @@
-using System;
-using Microsoft.Xna.Framework;
-using Rhovlyn.Engine.IO.JSON;
+using SharpDL.Graphics;
+using SharpDL;
 
 namespace Rhovlyn.Engine.Graphics
 {
@@ -16,7 +15,7 @@ namespace Rhovlyn.Engine.Graphics
 
 		public bool AnimationInProgress { get; private set; }
 
-		public AnimatedSprite(Vector2 position, SpriteMap spritemap)
+		public AnimatedSprite(Vector position, SpriteMap spritemap)
 			: base(position, spritemap)
 		{
 			AnimationSpeed = 1.0;

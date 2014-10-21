@@ -2,7 +2,7 @@ using Rhovlyn.Engine.IO;
 using Rhovlyn.Engine.Maps;
 using Rhovlyn.Engine.States;
 using Rhovlyn.Engine.Util;
-using Microsoft.Xna.Framework.Graphics;
+using SharpDL.Graphics;
 
 namespace Rhovlyn.Engine.Managers
 {
@@ -14,10 +14,10 @@ namespace Rhovlyn.Engine.Managers
 			Settings = new Settings(settingsPath);
 		}
 
-		public void Init(GraphicsDevice device)
+		public void Init(Renderer renderer)
 		{
-			GraphicsDevice = device;
-			Textures = new TextureManager(device);
+			Renderer = renderer;
+			Textures = new TextureManager(renderer);
 			GameStates = new GameStateManager(this);
 			Sprites = new SpriteManager(Textures);
 			Maps = new MapManager(Textures, Sprites);
@@ -45,7 +45,7 @@ namespace Rhovlyn.Engine.Managers
 
 		public InputManager Input { get; private set; }
 
-		public GraphicsDevice GraphicsDevice { get; private set; }
+		public Renderer Renderer { get; private set; }
 	}
 }
 

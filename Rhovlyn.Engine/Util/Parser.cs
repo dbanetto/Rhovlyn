@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTK.Graphics.ES10;
 
 namespace Rhovlyn.Engine.Util
 {
