@@ -79,20 +79,19 @@ namespace Rhovlyn.Engine.Util
 				Update(gameTime);
 
 			for (int i = 0; i < points.Length - 1; i++) {
-				//Primitives2D.DrawLine(spriteBatch, points[i], points[i + 1], Colour);
+				renderer.RenderLine(points[i], points[i + 1], Colour);
 			}
 
 			//Draw 
 			foreach (var l in Lines) {
 				var y = CalculateY(l.point);
-				//if (y > Position.Y && y < Area.Bottom)
-				//	Primitives2D.DrawLine(spriteBatch, new Vector(Position.X, y) 
-				//		, new Vector(Position.X + Area.Width, y), l.colour);
+				if (y > Position.Y && y < Area.Bottom)
+					renderer.RenderLine(new Vector(Position.X, y), new Vector(Position.X + Area.Width, y), l.colour);
 			}
 			//Draw Axies
-			//Primitives2D.DrawLine(spriteBatch, Position, Position + new Vector(0, Area.Height), Colour);
-			//Primitives2D.DrawLine(spriteBatch, Position + new Vector(Area.Width, Area.Height) 
-			//	, Position + new Vector(0, Area.Height), Colour);
+			renderer.RenderLine(Position, Position + new Vector(0, Area.Height), Colour);
+			renderer.RenderLine(Position + new Vector(Area.Width, Area.Height) 
+				, Position + new Vector(0, Area.Height), Colour);
 
 		}
 

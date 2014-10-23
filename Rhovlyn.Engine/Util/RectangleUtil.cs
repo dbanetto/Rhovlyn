@@ -79,35 +79,40 @@ namespace Rhovlyn.Engine.Util
 
 			//Does not subtract any area from baseArea
 			if (overlap.IsEmpty)
-				return new Rectangle[1] { baseArea };
+				return new [] { baseArea };
 
 			var area = new List<Rectangle>();
 
-			if (overlap.Top != baseArea.Top)
-				area.Add(new Rectangle(baseArea.X, baseArea.Y, baseArea.Width, overlap.Y - baseArea.Y));
+			var toAdd = new Rectangle(baseArea.X, baseArea.Y, baseArea.Width, overlap.Y - baseArea.Y);
+			if (toAdd.Area != 0)
+				area.Add(toAdd);
 
-			if (overlap.Bottom != baseArea.Bottom)
-				area.Add(new Rectangle(baseArea.Left, overlap.Bottom, baseArea.Width, baseArea.Bottom - overlap.Bottom));
+			toAdd = new Rectangle(baseArea.Left, overlap.Bottom, baseArea.Width, baseArea.Bottom - overlap.Bottom);
+			if (toAdd.Area != 0)
+				area.Add(toAdd);
 
-			if (overlap.Left != baseArea.Left)
-				area.Add(new Rectangle(baseArea.Left, overlap.Top, overlap.Left - baseArea.Left, overlap.Height));
+			toAdd = new Rectangle(baseArea.Left, overlap.Top, overlap.Left - baseArea.Left, overlap.Height);
+			if (toAdd.Area != 0)
+				area.Add(toAdd);
 
-			if (overlap.Right != baseArea.Right)
-				area.Add(new Rectangle(overlap.Right, overlap.Top, baseArea.Right - overlap.Right, overlap.Height));
+			toAdd = new Rectangle(overlap.Right, overlap.Top, baseArea.Right - overlap.Right, overlap.Height);
+			if (toAdd.Area != 0)
+				area.Add(toAdd);
 
 			return area.ToArray();
 		}
 
 		public static Rectangle[] SubtractArea(Rectangle baseArea, Rectangle[] toRemove)
 		{
-			Queue<Rectangle> areaQueue = new Queue<Rectangle>();
+			var areaQueue = new Queue<Rectangle>();
 			areaQueue.Enqueue(baseArea);
 			foreach (var rm in toRemove) {
-				Queue<Rectangle> tmpQ = new Queue<Rectangle>();
+				var tmpQ = new Queue<Rectangle>();
 				while (areaQueue.Count != 0) {
 					var rect = areaQueue.Dequeue();
 					foreach (var r in SubtractArea(rect, rm))
-						tmpQ.Enqueue(r);
+						if (r.Area != 0)
+							tmpQ.Enqueue(r);
 				}
 				areaQueue = tmpQ;
 				if (areaQueue.Count == 0)

@@ -153,14 +153,14 @@ namespace Rhovlyn.Engine.Maps
 
 		public bool Save(string filepath, int blocksize = 8)
 		{
-			List<string> required = new List<string>();
+			var required = new List<string>();
 
-			this.UpdateAreaMap(true);
+			UpdateAreaMap();
 			int rect_width = blocksize * TILE_WIDTH;
 			int rect_height = blocksize * TILE_HEIGHT;
 
 			int counter = 0;
-			using (StreamWriter writer = new StreamWriter(new FileStream(filepath, FileMode.Create))) {
+			using (var writer = new StreamWriter(new FileStream(filepath, FileMode.Create))) {
 				writer.WriteLine(String.Format("@background:{0},{1},{2}",
 					new Object[] { this.Background.R, this.Background.G, this.Background.B }));
 
@@ -210,9 +210,7 @@ namespace Rhovlyn.Engine.Maps
 
 			this.mapobjects.Add(pt, obj);
 
-			if (!this.MapArea.Contains(obj.Area)) {
-				ReqestAreaMapUpdate = true;
-			}
+			ReqestAreaMapUpdate |= !MapArea.Contains(obj.Area);
 
 			areamap.Add(obj);
 			return true;
@@ -246,7 +244,7 @@ namespace Rhovlyn.Engine.Maps
 		/// Draw the Map
 		/// </summary>
 		/// <param name="gameTime">Game time</param>
-		/// <param name="spriteBatch">Sprite batch to draw to</param>
+		/// <param name="renderer">SDL Renderer to draw to</param>
 		/// <param name="camera">Camera of the map</param>
 		public virtual void Draw(GameTime gameTime, Renderer renderer, Camera camera)
 		{

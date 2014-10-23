@@ -48,12 +48,13 @@ namespace Rhovlyn.Engine
 		{
 			base.Initialize();
 
-			this.CreateWindow("Rholyvn", 0, 0, 800, 600, WindowFlags.OpenGL);
-			CreateRenderer(RendererFlags.RendererAccelerated);
+			CreateWindow("Rholyvn", 0, 0, 800, 600, WindowFlags.OpenGL);
+			CreateRenderer(RendererFlags.RendererAccelerated | RendererFlags.RendererPresentVSync);
+			Renderer.ClearScreen();
 			AddParsers();
 
-			drawTime = new Graph(new Vector(10, 10), 200, 50, true, 100, MaxType.Auto, new Color(80, 80, 80));
-			updateTime = new Graph(new Vector(220, 10), 200, 50, true, 100, MaxType.Auto, new Color(80, 80, 80));
+			drawTime = new Graph(new Vector(10, 10), 200, 50, true, 100, MaxType.Auto, new Color(255, 0, 255));
+			updateTime = new Graph(new Vector(220, 10), 200, 50, true, 100, MaxType.Auto, new Color(0, 255, 255));
 			/*
 			//Danger Lines
 			drawTime.Lines.Add(new Line(64, Color.Red));
@@ -76,9 +77,9 @@ namespace Rhovlyn.Engine
 			content.Init(Renderer);
 
 			//Keep the camera up to date with the Client Size
-			//Window.ClientSizeChanged += (sender, e) => {
-			//	content.Camera.UpdateBounds(new Rectangle(0, 0, Window.Width, Window.Height));
-			//};
+			WindowResized += (sender, e) => {
+				content.Camera.UpdateBounds(new Rectangle(0, 0, Window.Width, Window.Height));
+			};
 		}
 
 		/// <summary>
@@ -134,6 +135,11 @@ namespace Rhovlyn.Engine
 				updateTime.Clear();
 			} else {
 				lockedGraphToggle = content.Input["core.togglegraphs"];
+			}
+			var sdl_error = SDL.SDL_GetError();
+			if (!String.IsNullOrEmpty(sdl_error)) {
+				Console.WriteLine("SDL Error : " + sdl_error);
+				SDL.SDL_ClearError();
 			}
 			base.Update(gameTime);
 		}
@@ -261,14 +267,14 @@ namespace Rhovlyn.Engine
 
 		private static void AddParsers()
 		{
-			/*Parser.Add<Color>(o => {
+			Parser.Add<Color>(o => {
 				if (o.StartsWith("0x") && (o.Length == 8 || o.Length == 5)) {
 					o = o.Substring(2);
 					if (o.Length == 3) {
 						var r = byte.Parse(o.Substring(0, 1), NumberStyles.AllowHexSpecifier);
 						var g = byte.Parse(o.Substring(1, 1), NumberStyles.AllowHexSpecifier);
 						var b = byte.Parse(o.Substring(2, 1), NumberStyles.AllowHexSpecifier);
-						return new Color(r * 16, g * 16, b * 16);
+						return new Color((byte)(r * 16), (byte)(g * 16), (byte)(b * 16));
 					} else {
 						var r = byte.Parse(o.Substring(0, 2), NumberStyles.HexNumber);
 						var g = byte.Parse(o.Substring(2, 2), NumberStyles.AllowHexSpecifier);
@@ -276,7 +282,7 @@ namespace Rhovlyn.Engine
 						return new Color(r, g, b);
 					}
 				} else {
-					int r, g, b;
+					byte r, g, b;
 					var rgb = o.Split(',');
 
 					//Parse a RGB comma sperated string
@@ -288,7 +294,7 @@ namespace Rhovlyn.Engine
 
 					return new Color(r, g, b);
 				}
-			});*/
+			});
 		}
 	}
 

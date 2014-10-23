@@ -1,10 +1,10 @@
+#define RENDER_SPRITE_AREA
+
 #region usings
 using SharpDL.Graphics;
 using Rhovlyn.Engine.Util;
 using Rhovlyn.Engine.Controller;
-using SDL2;
 using SharpDL;
-using System;
 
 #endregion
 
@@ -44,12 +44,13 @@ namespace Rhovlyn.Engine.Graphics
 		public virtual void Draw(GameTime gameTime, Renderer renderer, Camera camera)
 		{
 			//Check if on screen
-			if (camera.Bounds.Intersects(this.area)) {
+			if (camera.Bounds.Intersects(area)) {
 				//FIXME
 				renderer.RenderTexture(SpriteMap.Texture, Position, Area, Rotation, Origin);
 				#if RENDER_SPRITE_AREA
-				Primitives2D.DrawRectangle(spriteBatch, new Rectangle((int)Vector.Subtract(this.position, camera.Position).X, (int)Vector.Subtract(this.position, camera.Position).Y
-					, SpriteMap.Frames[Frameindex].Width, SpriteMap.Frames[Frameindex].Height), Color.Blue);
+				var render_pos = position - camera.Position;
+				renderer.RenderRect(new Rectangle((int)(render_pos.X), (int)(render_pos.Y)
+					, SpriteMap.Frames[Frameindex].Width, SpriteMap.Frames[Frameindex].Height), new Color(0, 255, 40));
 				#endif
 			}
 		}

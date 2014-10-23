@@ -33,10 +33,10 @@ namespace Rhovlyn.Engine.States
 			//this.content.Audio.Add("sfx", "Content/sfx.wav");
 
 			content.Textures.Load("Content/textures.json");
-			//content.Maps.Add("test", "gen-map.map");
-			//this.content.CurrnetMap.Save("sdkljhgskl.map");
-			//content.Maps.Add("loadSaved", "sdkljhgskl.map");
-			//content.Maps.Current = "loadSaved";
+			content.Maps.Add("test", "gen-map.map");
+			this.content.CurrnetMap.Save("sdkljhgskl.map");
+			content.Maps.Add("loadSaved", "sdkljhgskl.map");
+			content.Maps.Current = "loadSaved";
 
 			content.Sprites.Add("player", new AnimatedSprite(Vector.Zero, content.Textures["player-male"]));
 
