@@ -35,14 +35,12 @@ namespace Rhovlyn.Engine.Managers
 						foreach (var item in texmap) {
 							frames.Add(JParser.Parse<Rectangle>(item));
 						}
-
 						texture = new SpriteMap(new Texture(renderer, new Surface(path, SurfaceType.PNG))
 							, name
 							, frames);
 					} else if (texmap[0] is JValue) {
 						int width = (int)(texmap[0]);
 						int height = (int)(texmap[1]);
-
 						texture = new SpriteMap(new Texture(renderer, new Surface(path, SurfaceType.PNG))
 							, name
 							, width, height);

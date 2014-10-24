@@ -24,6 +24,7 @@ namespace Rhovlyn.Engine.States
 		{
 		}
 
+
 		public void LoadContent(ContentManager content)
 		{
 			this.content = content;
@@ -74,7 +75,7 @@ namespace Rhovlyn.Engine.States
 			if (content.CurrnetMap != null)
 				content.CurrnetMap.Update(gameTime);
 
-			//content.Sprites.Update(gameTime);
+			content.Sprites.Update(gameTime);
 			cameracontroll.Update(gameTime);
 		}
 	}

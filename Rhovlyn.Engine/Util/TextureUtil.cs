@@ -1,4 +1,5 @@
 ﻿using SharpDL.Graphics;
+using SDL2;
 
 namespace Rhovlyn.Engine.Util
 {
@@ -14,12 +15,13 @@ namespace Rhovlyn.Engine.Util
 				inArea = new Rectangle(0, 0, texture.Width, texture.Height);
 			}
 			var output = (Rectangle)inArea;
-			var pixels = new Color[output.Width * output.Height];
+			return output;
+			var pixels = texture.QueryPixels();
 
 
 			int top = output.Height, bot = 0, left = output.Width, right = 0;
-			/*
-		    texture.GetData<Color>(0, output, pixels, 0, pixels.Length);
+
+			//texture.GetData<Color>(0, output, pixels, 0, pixels.Length);
 			bool found = false;
 			//Check in horizontal slices
 			for (int y = 0; y < output.Height; y++) {
@@ -89,9 +91,10 @@ namespace Rhovlyn.Engine.Util
 				}
 				if (found)
 					break;
-			} */
+			} 
 			// +1's are to adjust the width/height to include the edges 
 			return new Rectangle(output.X + left, output.Y + top, right - left + 1, bot - top + 1);
+			//return (Rectangle)inArea; // HACK FIXME: Fix comment out code above
 		}
 
 

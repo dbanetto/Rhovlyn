@@ -9,14 +9,15 @@ namespace Rhovlyn.Engine.Input
 {
 	public struct KeyCondition
 	{
-		public KeyCondition(List<PhysicalKeyCode> keys = null)
+		public KeyCondition(List<SDL.SDL_Scancode> keys = null)
 		{
-			this.keys = keys ?? new List<PhysicalKeyCode>();
+			this.keys = keys ?? new List<SDL.SDL_Scancode>();
+
 		}
 
-		List<PhysicalKeyCode> keys;
+		List<SDL.SDL_Scancode> keys;
 
-		public List<PhysicalKeyCode> Keys { get { return keys; } set { keys = value; } }
+		public List<SDL.SDL_Scancode> Keys { get { return keys; } set { keys = value; } }
 	}
 
 	public class KeyBoardProvider : IInputProvider
@@ -58,9 +59,9 @@ namespace Rhovlyn.Engine.Input
 		public bool GetState(string name)
 		{
 			if (Exists(name)) {
-				var state = Keyboard.getState(); //FIXME
+				var state = Keyboard.GetState(); //FIXME
 				foreach (var k in keys[name].Keys) {
-					if (state[(int)k] == 0)
+					if (state.Keys[(int)k].State == 0)
 						return false;
 				}
 				return true;
@@ -128,28 +129,15 @@ namespace Rhovlyn.Engine.Input
 		public static object ParseKeyBinding(string keystring)
 		{
 			var key = new KeyCondition();
-			key.Keys = new List<PhysicalKeyCode>();
+			key.Keys = new List<SDL.SDL_Scancode>();
 			var segs = keystring.Split('+');
 
 			foreach (var seg in segs) {
-				//Convert a singel letter to scancode
-				if (seg.Length == 1) {
-					//XNA Scan codes for letters are mapped to UTF-8's upper case english letters
-					var bytes = System.Text.Encoding.UTF8.GetBytes(seg.ToUpper());
-					if (bytes.Length == 1) {
-						if (bytes[0] >= 65 && bytes[0] <= 90) {
-							key.Keys.Add((PhysicalKeyCode)bytes[0]);
-							continue;
-						}
-					}
-				}
-				//Read in as Scancodes
-				int code;
-				if (int.TryParse(seg, out code)) {
-					key.Keys.Add((PhysicalKeyCode)code);
-				} else {
+				var scancode = SDL.SDL_GetScancodeFromName(seg);
+				if (scancode != SDL.SDL_Scancode.SDL_SCANCODE_UNKNOWN)
+					key.Keys.Add(scancode);
+				else
 					return null;
-				}
 			}
 			return key;
 		}

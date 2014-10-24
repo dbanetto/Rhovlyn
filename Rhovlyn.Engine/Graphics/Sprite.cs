@@ -46,9 +46,9 @@ namespace Rhovlyn.Engine.Graphics
 			//Check if on screen
 			if (camera.Bounds.Intersects(area)) {
 				//FIXME
-				renderer.RenderTexture(SpriteMap.Texture, Position, Area, Rotation, Origin);
+				renderer.RenderTexture(SpriteMap.Texture, Position - camera.Position, Area, Rotation, Origin);
 				#if RENDER_SPRITE_AREA
-				var render_pos = position - camera.Position;
+				var render_pos = Position - camera.Position;
 				renderer.RenderRect(new Rectangle((int)(render_pos.X), (int)(render_pos.Y)
 					, SpriteMap.Frames[Frameindex].Width, SpriteMap.Frames[Frameindex].Height), new Color(0, 255, 40));
 				#endif

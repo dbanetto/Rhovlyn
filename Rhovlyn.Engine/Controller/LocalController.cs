@@ -41,7 +41,7 @@ namespace Rhovlyn.Engine.Controller
 		{
 			var searchArea = Target.Area;
 			var target = Target.Area;
-			//searchArea.Inflate(target.Width, target.Height);
+			searchArea.Inflate(target.Width, target.Height);
 			var goods = new List<Rectangle>();
 			foreach (var p in content.CurrnetMap.TilesInArea(searchArea)) {
 				goods.Add(p.Area);

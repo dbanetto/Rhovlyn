@@ -66,6 +66,10 @@
       <Project>{DA5E47BC-F509-40F5-9FC7-9C94D1D70809}</Project>
       <Name>SharpDL.Graphics.Mono</Name>
     </ProjectReference>
+    <ProjectReference Include="..\lib\SDL2-CS\SDL2-CS.csproj">
+      <Project>{85480198-8711-4355-830E-72FD794AD3F6}</Project>
+      <Name>SDL2-CS</Name>
+    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

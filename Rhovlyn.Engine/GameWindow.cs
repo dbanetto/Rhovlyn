@@ -49,7 +49,7 @@ namespace Rhovlyn.Engine
 			base.Initialize();
 
 			CreateWindow("Rholyvn", 0, 0, 800, 600, WindowFlags.OpenGL);
-			CreateRenderer(RendererFlags.RendererAccelerated | RendererFlags.RendererPresentVSync);
+			CreateRenderer(RendererFlags.RendererAccelerated);
 			Renderer.ClearScreen();
 			AddParsers();
 
@@ -79,6 +79,10 @@ namespace Rhovlyn.Engine
 			//Keep the camera up to date with the Client Size
 			WindowResized += (sender, e) => {
 				content.Camera.UpdateBounds(new Rectangle(0, 0, Window.Width, Window.Height));
+			};
+
+			this.Quitting += (sender, e) => {
+				this.Quit();
 			};
 		}
 
