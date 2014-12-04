@@ -12,6 +12,7 @@ using SDL2;
 #endregion
 namespace Rhovlyn.Engine
 {
+	//TODO: Move out the game specific code
 	/// <summary>
 	/// This is the main type for your game
 	/// </summary>
@@ -170,7 +171,6 @@ namespace Rhovlyn.Engine
 				}
 				target.Dispose();
 				GraphicsDevice.SetRenderTargets(backup);*/
-
 			}
 
 			framesPast++;

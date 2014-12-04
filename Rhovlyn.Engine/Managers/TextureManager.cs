@@ -53,14 +53,14 @@ namespace Rhovlyn.Engine.Managers
 						}
 					}
 
-					// HACK : This will break if there are multiple TextureManagers trying to load to different graphics devices
+					// HACK : This will break if there are multiple TextureManagers trying to load to different renderers
 					return texture;
 				}, JsonSchema.Read(new JsonTextReader(reader)));
 			}
 
 			using (TextReader reader = new StreamReader(rholib.GetManifestResourceStream("Animation.schema"))) {
 				JParser.Add<Animation>((i) => { 
-
+					//TODO: Add support for loops
 					if (i is JArray) {
 						var array = (JArray)(i);
 						var frames = new List<int>();
@@ -73,9 +73,9 @@ namespace Rhovlyn.Engine.Managers
 							}
 						}
 						return new Animation(frames, timings);
-					} else {
-						return new Animation(new List<int> { (int)i }, new List<double> { 0.0 });
-					}
+					} 
+					return new Animation(new List<int> { (int)i }, new List<double> { 0.0 });
+
 				}, JsonSchema.Read(new JsonTextReader(reader)));
 			}
 		}

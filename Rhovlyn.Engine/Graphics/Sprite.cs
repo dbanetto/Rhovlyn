@@ -46,7 +46,7 @@ namespace Rhovlyn.Engine.Graphics
 			//Check if on screen
 			if (camera.Bounds.Intersects(area)) {
 				//FIXME
-				renderer.RenderTexture(SpriteMap.Texture, Position - camera.Position, Area, Rotation, Origin);
+				renderer.RenderTexture(SpriteMap.Texture, Position - camera.Position, SpriteMap.Frames[Frameindex], Rotation, Origin);
 				#if RENDER_SPRITE_AREA
 				var render_pos = Position - camera.Position;
 				renderer.RenderRect(new Rectangle((int)(render_pos.X), (int)(render_pos.Y)
@@ -58,7 +58,7 @@ namespace Rhovlyn.Engine.Graphics
 		public virtual void Update(GameTime gameTime)
 		{
 			if (HasController)
-				this.controller.Update(gameTime);
+				controller.Update(gameTime);
 		}
 
 		#endregion

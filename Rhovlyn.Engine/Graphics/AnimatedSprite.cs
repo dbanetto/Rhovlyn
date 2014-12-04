@@ -33,15 +33,15 @@ namespace Rhovlyn.Engine.Graphics
 			if (currentDelta < 0) {
 				if (SpriteMap.Animations[CurrentAnimationName].Frames.Count == index + 1) {
 					loopCount++;
-//					if (SpriteMap.Animations[CurrentAnimationName].Loop > loopCount) {
-//						index = 0;
-//						Frameindex = SpriteMap.Animations[CurrentAnimationName].Frames[index];
-//						currentDelta = SpriteMap.Animations[CurrentAnimationName].Times[index];
-//						SpriteMap.Animations[CurrentAnimationName].OnFrameChanged(this, index);
-//					} else {
+					if (SpriteMap.Animations[CurrentAnimationName].Loop > loopCount) {
+						index = 0;
+						Frameindex = SpriteMap.Animations[CurrentAnimationName].Frames[index];
+						currentDelta = SpriteMap.Animations[CurrentAnimationName].Times[index];
+						SpriteMap.Animations[CurrentAnimationName].OnFrameChanged(this, index);
+					} else {
 					SpriteMap.Animations[CurrentAnimationName].OnAnimationEnded(this);
 					AnimationInProgress = false;
-//					}
+					}
 				} else {
 					index++;
 					Frameindex = SpriteMap.Animations[CurrentAnimationName].Frames[index];
@@ -54,6 +54,7 @@ namespace Rhovlyn.Engine.Graphics
 		public bool SetAnimation(string name)
 		{
 			if (SpriteMap.ExistsAnimation(name)) {
+
 				//End the last animation
 				if (AnimationInProgress && CurrentAnimationName != null) {
 					if (CurrentAnimationName != name)
@@ -61,6 +62,7 @@ namespace Rhovlyn.Engine.Graphics
 					else
 						return true;
 				}
+
 				//Set up for the new animation
 				CurrentAnimationName = name;
 				index = 0;

@@ -1,5 +1,9 @@
 namespace Rhovlyn.Engine.Input
 {
+	//TODO: implement JoyStick provider
+	//TODO: implement Gamepad provider 
+	//TODO: implement Mouse provider
+
 	public interface IInputProvider
 	{
 		/// <summary>

@@ -24,10 +24,12 @@ namespace Rhovlyn.Engine.Graphics
 
 		public List<int> Frames { get { return frames; } }
 
-		// Frame to use for index of animation
+		// Timings for each frame
 		List<double> times;
 
 		public List<double> Times { get { return  times; } }
+
+		public int Loop { get; private set; } //FIXME: Loops not fully working
 
 		//Events for Starting, Ending and changes in animation
 		public event AnimationStartedHandler AnimationStarted;

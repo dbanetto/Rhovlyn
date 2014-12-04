@@ -15,7 +15,7 @@ namespace Rhovlyn.Engine.Util
 				inArea = new Rectangle(0, 0, texture.Width, texture.Height);
 			}
 			var output = (Rectangle)inArea;
-			return output;
+			return output; //HACK: While there is no good way to query the contents of a texture
 			var pixels = texture.QueryPixels();
 
 

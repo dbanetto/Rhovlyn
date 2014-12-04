@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Rhovlyn.Engine.Util;
 using SharpDL.Input;
 using SDL2;
+using System.Diagnostics;
 
 namespace Rhovlyn.Engine.Input
 {
@@ -48,7 +49,7 @@ namespace Rhovlyn.Engine.Input
 
 		public void Unload()
 		{
-
+			//TODO: unload
 		}
 
 		public bool Exists(string name)
@@ -75,8 +76,7 @@ namespace Rhovlyn.Engine.Input
 				throw new InvalidDataException("Can only pass KeyCondition to KeyBoardProvider's set");
 
 			if (Exists(name)) {
-				object key = condition;
-				keys[name] = (KeyCondition)(key);
+				keys[name] = (KeyCondition)(object)(condition);
 				return true;
 			}
 			return false;
@@ -97,18 +97,14 @@ namespace Rhovlyn.Engine.Input
 
 		public void ParseSettings()
 		{
-			//Go through ALL of the headers
 			foreach (var header in settings.Headers) {
-				//Check all thier values
 				foreach (var key in settings[header].Keys) {
-					//if they have THIS Providers SettingsPostfix then deal with it
 					if (key.EndsWith(SettingsPostfix)) {
 						var result = new KeyCondition(null);
 						if (Parser.TryParse<KeyCondition>(settings[header][key], ref result)) {
 							//Remove SettingsPostfix from the key
-							//On a unsuccessful Parse, stop
-							Add(header + "." + key.Substring(0, key.Length - SettingsPostfix.Length - 1),
-								result);
+							Add(header + "." + 
+								key.Substring(0, key.Length - SettingsPostfix.Length - 1), result);
 						} else {
 							throw new InvalidDataException("Input Settings failed to load");
 						}
@@ -123,7 +119,7 @@ namespace Rhovlyn.Engine.Input
 		/// <returns><c>non-null</c>, if setting was parsed, <c>null</c> otherwise error has occured.</returns>
 		/// <param name="keystring">Key string.</param>
 		/// <remarks>Key String is a + sperated list containing English letters or scan-codes
-		/// refer to https://github.com/mono/MonoGame/blob/develop/MonoGame.Framework/Input/Keys.cs for scan-codes
+		/// refer to http://wiki.libsdl.org/SDL_Scancode for scan-codes
 		/// </remarks>
 		/// <note>This is to be a parser for Rhovlyn.Engine.Util.Parser and follows the delegate ObjectParser</note>
 		public static object ParseKeyBinding(string keystring)
@@ -133,11 +129,13 @@ namespace Rhovlyn.Engine.Input
 			var segs = keystring.Split('+');
 
 			foreach (var seg in segs) {
+				var keycode = SDL.SDL_GetScancodeFromKey(SDL.SDL_Keycode.SDLK_0);
+				Debug.Assert(keycode == SDL.SDL_Scancode.SDL_SCANCODE_0);
 				var scancode = SDL.SDL_GetScancodeFromName(seg);
 				if (scancode != SDL.SDL_Scancode.SDL_SCANCODE_UNKNOWN)
 					key.Keys.Add(scancode);
 				else
-					return null;
+					return null; //TODO: Throw error?
 			}
 			return key;
 		}
